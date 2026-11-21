@@ -10,7 +10,7 @@ Built
 - Docs: README, DEPLOYMENT, AGENTS, PROJECT, architecture (mermaid), runbook, ADRs 0001-0005.
 
 Deferred
-- Playwright e2e specs and screenshots (config only), `/design` page and primitives (slice 2), `docs/api.md` generation, Sentry/CSP nonces.
+- Playwright e2e specs and screenshots (config only), `/design` page and primitives (slice 2), `docs/api.md` generation, Sentry, nonce-based CSP (removes `'unsafe-inline'` from `script-src`; tracked deferred).
 - Docker images were not built here (no Docker on this machine); compose and Dockerfiles are untested end to end.
 - Fonts are fetched from Google at build time by `next/font` and self-hosted in the output; builds need network access once.
 
@@ -22,3 +22,4 @@ Decisions to review
 - `postcss` is pinned through npm `overrides` to clear a high-severity audit finding in Next's nested copy; drop it once Next 15 ships a fixed postcss.
 - `export_openapi.py` now adds the backend dir to `sys.path` so `make typegen` works from anywhere.
 - `vitest.config.ts` renamed to `.mts` to silence the CJS/ESM loader warning.
+- Fonts: an earlier brief named Fraunces/Instrument Sans, but spec line 85 forbids them. The spec wins (Piazzolla/Commissioner). Human to confirm.
