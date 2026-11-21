@@ -1,0 +1,58 @@
+@import "../styles/tokens.css";
+
+@layer base {
+  html {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size-adjust: from-font;
+    hanging-punctuation: first last;
+    text-rendering: optimizeLegibility;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    min-height: 100dvh;
+    font-size: var(--text-step-0);
+    line-height: var(--text-step-0--line-height);
+    background: var(--paper);
+  }
+  /* Paper grain: fixed layer behind content, never intercepts input */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-base);
+    pointer-events: none;
+    background-image: var(--paper-grain);
+    opacity: var(--grain-opacity);
+  }
+  ::selection {
+    background: var(--highlighter);
+    color: var(--on-highlighter);
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .num {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: var(--duration-fast) !important;
+    animation-iteration-count: 1 !important;
+  }
+}

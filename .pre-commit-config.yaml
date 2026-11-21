@@ -1,0 +1,26 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+        args: [--unsafe]
+      - id: check-added-large-files
+
+  - repo: https://github.com/psf/black
+    rev: 26.10.1
+    hooks:
+      - id: black
+        types: [python]
+        exclude: ^backend/migrations/
+
+  - repo: local
+    hooks:
+      - id: prettier-frontend
+        name: prettier (frontend/, pinned in frontend/package.json)
+        language: system
+        # Run inside frontend/ so npx resolves the project-local pinned prettier.
+        entry: bash -c 'cd frontend && npx --no-install prettier --version >/dev/null 2>&1 || npm ci --silent; npx --no-install prettier --write --cache --ignore-path .prettierignore .'
+        files: ^frontend/
+        pass_filenames: false

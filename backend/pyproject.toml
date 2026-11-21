@@ -1,0 +1,41 @@
+[project]
+name = "ufazhub-backend"
+version = "0.1.0"
+description = "UFAZ Hub backend API"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "SQLAlchemy[asyncio]>=2.0.36,<2.1",
+    "asyncpg>=0.30",
+    "alembic>=1.14",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    "redis>=5.2",
+    "sentry-sdk>=2.19",
+    "arq>=0.28.0",
+]
+
+[dependency-groups]
+dev = [
+    "black>=26.10.1",
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "pytest-cov>=6.0",
+    "httpx>=0.28",
+    "pip-audit>=2.7",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
+
+[tool.coverage.run]
+source = ["app"]
+
+[tool.black]
+target-version = ["py313"]
+extend-exclude = "migrations/"

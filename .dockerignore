@@ -1,0 +1,30 @@
+# Ignore Git, OS, and env files
+.git
+.github
+**/.DS_Store
+**/.env
+**/.env.*
+backend/secrets
+
+# Ignore Python virtualenvs and caches
+**/.venv
+**/.uv-cache
+**/__pycache__
+**/.pytest_cache
+backend/tests
+
+# Ignore Node.js build artifacts and dependencies
+**/node_modules
+**/.next
+**/npm-debug.log
+**/yarn-error.log
+
+# Ignore large documents and spreadsheets not needed for image build
+*.xlsx
+*.pdf
+*.csv
+docs/
+*.md
+
+# Database dumps (restore data, not build context)
+backups/

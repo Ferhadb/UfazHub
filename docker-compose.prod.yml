@@ -1,0 +1,45 @@
+# Production overrides — use with the base file:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+#
+# Differences from the base (dev) file:
+# - backend/worker code comes from the image, not a bind mount (secrets stay mounted)
+# - uploads live in the `media` named volume (/app/media), shared by backend + worker
+# - backend port 8000 is published on 127.0.0.1 only — nginx is the public
+#   entrypoint; SSH in to reach the API directly for debugging
+# - nginx switches to the TLS config + Let's Encrypt certs, and certbot runs
+
+services:
+  backend:
+    volumes: !override
+      - ./backend/secrets:/app/secrets:ro
+      - media:/app/media
+    ports: !override
+      - "127.0.0.1:8000:8000"
+
+  worker:
+    volumes: !override
+      - ./backend/secrets:/app/secrets:ro
+      - media:/app/media
+
+  nginx:
+    ports: !override
+      - "80:80"
+      - "443:443"
+    volumes: !override
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - certbot_www:/var/www/certbot
+      - certbot_conf:/etc/letsencrypt
+
+  certbot:
+    image: certbot/certbot:latest
+    restart: unless-stopped
+    volumes:
+      - certbot_www:/var/www/certbot
+      - certbot_conf:/etc/letsencrypt
+    entrypoint: >
+      sh -c "trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet; sleep 12h & wait $$!; done"
+
+volumes:
+  certbot_www:
+  certbot_conf:
+  media:

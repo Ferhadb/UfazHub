@@ -1,0 +1,193 @@
+/*
+ * THE single token file: colour, type, spacing, radii, elevation, z-index, motion.
+ * Theme: no data-theme = follow the OS; data-theme="light"|"dark" = explicit choice
+ * (set before paint by the inline script in app/layout.tsx).
+ * The OS-dark block and the [data-theme="dark"] block MUST stay identical
+ * (tokens.test.ts enforces it and checks WCAG AA contrast in both themes).
+ */
+@import "tailwindcss";
+
+:root {
+  color-scheme: light dark;
+
+  /* Light "paper" */
+  --paper: #f6f1e7;
+  --card: #fbf8f1;
+  --ink: #17140f;
+  --muted: #6b6458;
+  --rule: #cfc6b4;
+  --accent: #0e5a6b; /* Caspian teal-blue */
+  --accent-fg: #fbf8f1;
+  --flame: #e4572e; /* graphics only: stamps, dots, notification badges */
+  --flame-text: #b83a14; /* flame as readable text */
+  --highlighter: #f4d35e;
+  --on-highlighter: #17140f;
+  --danger: #a32a2a;
+  --success: #2f6b3a;
+  --warning: #8a5a00;
+
+  /* Content-type tints (tabs, stamps, spines); readable as text on paper and card */
+  --tint-resource: #0e5a6b;
+  --tint-article: #b83a14;
+  --tint-collection: #8a5a00;
+  --tint-question: #6b3a5e;
+  --tint-research: #2f6b3a;
+
+  /* Elevation: paper shadows */
+  --shadow-paper: 0 1px 0 rgb(23 20 15 / 0.06), 0 1px 3px rgb(23 20 15 / 0.1);
+  --shadow-lift: 0 2px 0 rgb(23 20 15 / 0.05), 0 8px 20px -6px rgb(23 20 15 / 0.22);
+
+  /* z-index */
+  --z-base: 0;
+  --z-sticky: 10;
+  --z-overlay: 40;
+  --z-modal: 50;
+  --z-toast: 60;
+  --z-tooltip: 70;
+
+  /* Motion: only transform/opacity are animated. Reduced motion zeroes the distance (fades only). */
+  --duration-fast: 120ms;
+  --duration-base: 220ms;
+  --duration-slow: 480ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --motion-shift: 8px;
+  --motion-rotate: 1deg;
+
+  /* Inline SVG paper grain (no asset request) */
+  --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+  --grain-opacity: 0.05;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* Dark "night reading room" */
+    --paper: #0f1420;
+    --card: #171d2c;
+    --ink: #f1eadb;
+    --muted: #a7a393;
+    --rule: #2f3850;
+    --accent: #5cb8cc;
+    --accent-fg: #0f1420;
+    --flame: #f27a55;
+    --flame-text: #f58a68;
+    --highlighter: #f4d35e;
+    --on-highlighter: #17140f;
+    --danger: #f08a8a;
+    --success: #7fcf8f;
+    --warning: #e0b050;
+    --tint-resource: #5cb8cc;
+    --tint-article: #f58a68;
+    --tint-collection: #e0b050;
+    --tint-question: #d49ac4;
+    --tint-research: #7fcf8f;
+    --shadow-paper: 0 1px 0 rgb(0 0 0 / 0.3), 0 1px 3px rgb(0 0 0 / 0.4);
+    --shadow-lift: 0 2px 0 rgb(0 0 0 / 0.3), 0 10px 24px -6px rgb(0 0 0 / 0.6);
+    --grain-opacity: 0.07;
+  }
+}
+
+:root[data-theme="dark"] {
+  --paper: #0f1420;
+  --card: #171d2c;
+  --ink: #f1eadb;
+  --muted: #a7a393;
+  --rule: #2f3850;
+  --accent: #5cb8cc;
+  --accent-fg: #0f1420;
+  --flame: #f27a55;
+  --flame-text: #f58a68;
+  --highlighter: #f4d35e;
+  --on-highlighter: #17140f;
+  --danger: #f08a8a;
+  --success: #7fcf8f;
+  --warning: #e0b050;
+  --tint-resource: #5cb8cc;
+  --tint-article: #f58a68;
+  --tint-collection: #e0b050;
+  --tint-question: #d49ac4;
+  --tint-research: #7fcf8f;
+  --shadow-paper: 0 1px 0 rgb(0 0 0 / 0.3), 0 1px 3px rgb(0 0 0 / 0.4);
+  --shadow-lift: 0 2px 0 rgb(0 0 0 / 0.3), 0 10px 24px -6px rgb(0 0 0 / 0.6);
+  --grain-opacity: 0.07;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-shift: 0px;
+    --motion-rotate: 0deg;
+    --duration-fast: 80ms;
+    --duration-base: 120ms;
+    --duration-slow: 160ms;
+    --ease-spring: linear;
+  }
+}
+
+/* Tailwind theme: utilities (bg-paper, text-ink, font-display, text-step-3, rounded-card, ...) */
+@theme inline {
+  --color-*: initial;
+  --color-paper: var(--paper);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-rule: var(--rule);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-flame: var(--flame);
+  --color-flame-text: var(--flame-text);
+  --color-highlighter: var(--highlighter);
+  --color-on-highlighter: var(--on-highlighter);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-resource: var(--tint-resource);
+  --color-article: var(--tint-article);
+  --color-collection: var(--tint-collection);
+  --color-question: var(--tint-question);
+  --color-research: var(--tint-research);
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --shadow-paper: var(--shadow-paper);
+  --shadow-lift: var(--shadow-lift);
+
+  --font-display: var(--font-piazzolla), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-commissioner), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-script: var(--font-caveat), "Segoe Print", cursive;
+
+  --ease-out: var(--ease-out);
+  --ease-spring: var(--ease-spring);
+}
+
+@theme {
+  /* 4px base grid: spacing-1 = 4px, spacing-2 = 8px, ... */
+  --spacing: 0.25rem;
+
+  /* Slightly uneven radii: hand-cut paper, not machine-rounded */
+  --radius-sm: 2px 3px 2px 3px;
+  --radius-md: 3px 5px 4px 6px;
+  --radius-lg: 6px 9px 7px 10px;
+
+  /* Fluid type scale (360px -> 1440px) */
+  --text-step--1: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+  --text-step--1--line-height: 1.5;
+  --text-step-0: clamp(1rem, 0.96rem + 0.18vw, 1.125rem);
+  --text-step-0--line-height: 1.6;
+  --text-step-1: clamp(1.25rem, 1.15rem + 0.45vw, 1.5rem);
+  --text-step-1--line-height: 1.35;
+  --text-step-2: clamp(1.563rem, 1.35rem + 0.95vw, 2.1rem);
+  --text-step-2--line-height: 1.2;
+  --text-step-3: clamp(1.95rem, 1.55rem + 1.8vw, 3rem);
+  --text-step-3--line-height: 1.1;
+  --text-step-4: clamp(2.44rem, 1.75rem + 3.1vw, 4.25rem);
+  --text-step-4--line-height: 1.02;
+  --text-step-5: clamp(3.05rem, 1.9rem + 5.1vw, 6.5rem);
+  --text-step-5--line-height: 0.95;
+}

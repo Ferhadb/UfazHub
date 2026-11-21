@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+.venv/
+
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+!.env.playground.example
+backend/secrets/*
+!backend/secrets/.gitkeep
+
+# Local playground + local test Postgres
+.playground/
+backend/.pgtest/
+
+# Makefile mode flag (PROD=1 on the EC2 box only)
+make.env
+
+# Node / Next.js (never commit build caches)
+node_modules/
+.next/
+.next-cache/
+out/
+next-env.d.ts
+*.tsbuildinfo
+test-results/
+playwright-report/
+blob-report/
+coverage/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Database dumps (contain user PII — never commit)
+backups/
+
+# Uploads in local dev (production keeps them in the `media` Docker volume)
+backend/media/
