@@ -47,3 +47,7 @@ Decisions to review
 - Rate-limit auth default is 20 requests/min/IP because campus NAT shares IPs.
 - CSRF token is a random unsigned double-submit value (adequate with SameSite=Lax); can be HMAC-signed later.
 - Added `argon2-cffi`, `pyjwt`, `email-validator`, `@radix-ui/*` (dialog, tooltip, tabs, switch, checkbox, toast), `clsx`.
+
+### Slice 2 verifier follow-up
+- Added backend test that logout rejects a missing or forged CSRF token and leaves the session intact.
+- Still deferred: applying `limit_write/limit_vote/limit_search` (no such routes yet); icons beyond 24; browser-based visual check of `/design` light/dark, focus rings and 44px targets (only build and jsdom tests so far).

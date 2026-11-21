@@ -206,6 +206,15 @@ async def test_logout_revokes_session(client):
     assert r.status_code == 401
 
 
+async def test_logout_requires_csrf(client):
+    await registered(client)
+    r = await client.post("/api/auth/logout")
+    assert r.status_code == 403 and r.json()["code"] == "csrf_failed"
+    r = await client.post("/api/auth/logout", headers={"X-CSRF-Token": "forged"})
+    assert r.status_code == 403
+    assert client.cookies.get("refresh_token", path="/api/auth")  # session untouched
+
+
 async def test_logout_everywhere(client):
     email, body = await registered(client)
     first = client.cookies.get("refresh_token", path="/api/auth")
