@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Avatar } from "@/components/ui/avatar";
 import { buttonClass } from "@/components/ui/button";
+import { SearchPalette } from "@/components/search-palette";
 import { useSession } from "@/lib/auth/use-session";
 
 export function SiteHeader() {
@@ -17,6 +18,10 @@ export function SiteHeader() {
           UFAZ <span className="text-flame-text ml-1">Hub</span>
         </Link>
         <div className="flex items-center gap-2">
+          <Link href="/resources" className={buttonClass("ghost")}>
+            Resources
+          </Link>
+          <SearchPalette />
           <Link href="/design" className={buttonClass("ghost")}>
             Design
           </Link>

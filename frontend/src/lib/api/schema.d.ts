@@ -194,6 +194,78 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/content/{item_id}/bookmark": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Add Bookmark */
+    put: operations["add_bookmark_api_content__item_id__bookmark_put"];
+    post?: never;
+    /** Remove Bookmark */
+    delete: operations["remove_bookmark_api_content__item_id__bookmark_delete"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/content/{item_id}/hide": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Hide */
+    post: operations["hide_api_content__item_id__hide_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/content/{item_id}/publish": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Publish
+     * @description Approve a pending item or restore a hidden one.
+     */
+    post: operations["publish_api_content__item_id__publish_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/content/{item_id}/vote": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Vote */
+    put: operations["vote_api_content__item_id__vote_put"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/health": {
     parameters: {
       query?: never;
@@ -234,10 +306,138 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/resources": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List Resources */
+    get: operations["list_resources_api_resources_get"];
+    put?: never;
+    /** Create Resource */
+    post: operations["create_resource_api_resources_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/resources/duplicates": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Duplicates */
+    get: operations["duplicates_api_resources_duplicates_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/resources/{call_number}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get Resource */
+    get: operations["get_resource_api_resources__call_number__get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/resources/{item_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Update Resource */
+    patch: operations["update_resource_api_resources__item_id__patch"];
+    trace?: never;
+  };
+  "/api/search": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Search */
+    get: operations["search_api_search_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/tags": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Tags
+     * @description Most used tags first; bounded top-N, so there is never a next page.
+     */
+    get: operations["tags_api_tags_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    /** AuthorOut */
+    AuthorOut: {
+      /** Display Name */
+      display_name: string;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+    };
+    /** BookmarkOut */
+    BookmarkOut: {
+      /** Bookmark Count */
+      bookmark_count: number;
+      /** Bookmarked */
+      bookmarked: boolean;
+    };
+    /**
+     * ContentType
+     * @enum {string}
+     */
+    ContentType: "resource" | "article" | "collection" | "question";
     /** DevLoginIn */
     DevLoginIn: {
       /**
@@ -245,6 +445,23 @@ export interface components {
        * Format: email
        */
       email: string;
+    };
+    /**
+     * Difficulty
+     * @enum {string}
+     */
+    Difficulty: "beginner" | "intermediate" | "advanced";
+    /** DuplicateHit */
+    DuplicateHit: {
+      /** Call Number */
+      call_number: string;
+      /**
+       * Match
+       * @enum {string}
+       */
+      match: "same_link" | "similar_title";
+      /** Title */
+      title: string;
     };
     /** ErrorBody */
     ErrorBody: {
@@ -267,6 +484,33 @@ export interface components {
        */
       email: string;
     };
+    /** HideIn */
+    HideIn: {
+      /** Reason */
+      reason: string;
+    };
+    /** LinkIn */
+    LinkIn: {
+      /**
+       * Label
+       * @default
+       */
+      label: string;
+      /** Url */
+      url: string;
+    };
+    /** LinkOut */
+    LinkOut: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /** Label */
+      label: string;
+      /** Url */
+      url: string;
+    };
     /** LoginIn */
     LoginIn: {
       /**
@@ -277,12 +521,217 @@ export interface components {
       /** Password */
       password: string;
     };
+    /** Page[ResourceOut] */
+    Page_ResourceOut_: {
+      /** Items */
+      items: components["schemas"]["ResourceOut"][];
+      /** Next Cursor */
+      next_cursor?: string | null;
+    };
+    /** Page[SearchHit] */
+    Page_SearchHit_: {
+      /** Items */
+      items: components["schemas"]["SearchHit"][];
+      /** Next Cursor */
+      next_cursor?: string | null;
+    };
+    /** Page[TagOut] */
+    Page_TagOut_: {
+      /** Items */
+      items: components["schemas"]["TagOut"][];
+      /** Next Cursor */
+      next_cursor?: string | null;
+    };
     /** ResetIn */
     ResetIn: {
       /** Password */
       password: string;
       /** Token */
       token: string;
+    };
+    /** ResourceIn */
+    ResourceIn: {
+      /**
+       * Best Part
+       * @default
+       */
+      best_part: string;
+      /**
+       * Category
+       * @default
+       */
+      category: string;
+      /** Description */
+      description: string;
+      difficulty: components["schemas"]["Difficulty"];
+      /**
+       * Is Research
+       * @default false
+       */
+      is_research: boolean;
+      /** Links */
+      links: components["schemas"]["LinkIn"][];
+      /**
+       * Prerequisites
+       * @default
+       */
+      prerequisites: string;
+      resource_type: components["schemas"]["ResourceType"];
+      /**
+       * Student Note
+       * @default
+       */
+      student_note: string;
+      /** Tags */
+      tags?: string[];
+      /** Time Commitment Minutes */
+      time_commitment_minutes?: number | null;
+      /** Title */
+      title: string;
+      /**
+       * Warning
+       * @default
+       */
+      warning: string;
+    };
+    /** ResourceOut */
+    ResourceOut: {
+      author: components["schemas"]["AuthorOut"];
+      /** Best Part */
+      best_part: string;
+      /** Bookmark Count */
+      bookmark_count: number;
+      /**
+       * Bookmarked
+       * @default false
+       */
+      bookmarked: boolean;
+      /** Call Number */
+      call_number: string;
+      /** Category */
+      category: string;
+      /** Comment Count */
+      comment_count: number;
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+      /** Description */
+      description: string;
+      difficulty: components["schemas"]["Difficulty"];
+      /** Hidden Reason */
+      hidden_reason?: string | null;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /** Is Research */
+      is_research: boolean;
+      /** Links */
+      links: components["schemas"]["LinkOut"][];
+      /**
+       * My Vote
+       * @default 0
+       * @enum {integer}
+       */
+      my_vote: -1 | 0 | 1;
+      /** Prerequisites */
+      prerequisites: string;
+      resource_type: components["schemas"]["ResourceType"];
+      /** Status */
+      status: string;
+      /** Student Note */
+      student_note: string;
+      /** Tags */
+      tags: string[];
+      /** Time Commitment Minutes */
+      time_commitment_minutes: number | null;
+      /** Title */
+      title: string;
+      /**
+       * Type
+       * @constant
+       */
+      type: "resource";
+      /** View Count */
+      view_count: number;
+      /** Vote Score */
+      vote_score: number;
+      /** Warning */
+      warning: string;
+    };
+    /**
+     * ResourcePatch
+     * @description Every field optional; only the ones sent change.
+     */
+    ResourcePatch: {
+      /** Best Part */
+      best_part?: string | null;
+      /** Category */
+      category?: string | null;
+      /** Description */
+      description?: string | null;
+      difficulty?: components["schemas"]["Difficulty"] | null;
+      /** Is Research */
+      is_research?: boolean | null;
+      /** Links */
+      links?: components["schemas"]["LinkIn"][] | null;
+      /** Prerequisites */
+      prerequisites?: string | null;
+      resource_type?: components["schemas"]["ResourceType"] | null;
+      /** Student Note */
+      student_note?: string | null;
+      /** Tags */
+      tags?: string[] | null;
+      /** Time Commitment Minutes */
+      time_commitment_minutes?: number | null;
+      /** Title */
+      title?: string | null;
+      /** Warning */
+      warning?: string | null;
+    };
+    /**
+     * ResourceType
+     * @enum {string}
+     */
+    ResourceType:
+      | "book"
+      | "video"
+      | "course"
+      | "article"
+      | "paper"
+      | "notes"
+      | "exam"
+      | "tool"
+      | "dataset"
+      | "other";
+    /** SearchHit */
+    SearchHit: {
+      /** Call Number */
+      call_number: string;
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /** Is Research */
+      is_research: boolean;
+      /** Snippet */
+      snippet: string;
+      /** Title */
+      title: string;
+      /** Title Hl */
+      title_hl: string;
+      type: components["schemas"]["ContentType"];
+      /** Vote Score */
+      vote_score: number;
     };
     /** SignupIn */
     SignupIn: {
@@ -295,6 +744,15 @@ export interface components {
       email: string;
       /** Password */
       password: string;
+    };
+    /** TagOut */
+    TagOut: {
+      /** Count */
+      count: number;
+      /** Name */
+      name: string;
+      /** Slug */
+      slug: string;
     };
     /** TokenIn */
     TokenIn: {
@@ -336,6 +794,24 @@ export interface components {
       role: string;
       /** Status */
       status: string;
+    };
+    /** VoteIn */
+    VoteIn: {
+      /**
+       * Value
+       * @enum {integer}
+       */
+      value: -1 | 0 | 1;
+    };
+    /** VoteOut */
+    VoteOut: {
+      /**
+       * My Vote
+       * @enum {integer}
+       */
+      my_vote: -1 | 0 | 1;
+      /** Vote Score */
+      vote_score: number;
     };
   };
   responses: never;
@@ -687,6 +1163,165 @@ export interface operations {
       };
     };
   };
+  add_bookmark_api_content__item_id__bookmark_put: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["BookmarkOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  remove_bookmark_api_content__item_id__bookmark_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["BookmarkOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  hide_api_content__item_id__hide_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["HideIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  publish_api_content__item_id__publish_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  vote_api_content__item_id__vote_put: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["VoteIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["VoteOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
   health_api_health_get: {
     parameters: {
       query?: never;
@@ -734,6 +1369,242 @@ export interface operations {
         };
         content: {
           "application/json": unknown;
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  list_resources_api_resources_get: {
+    parameters: {
+      query?: {
+        sort?: "latest" | "top";
+        tag?: string | null;
+        difficulty?: ("beginner" | "intermediate" | "advanced") | null;
+        research?: boolean | null;
+        cursor?: string | null;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Page_ResourceOut_"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  create_resource_api_resources_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ResourceIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ResourceOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  duplicates_api_resources_duplicates_get: {
+    parameters: {
+      query?: {
+        url?: string | null;
+        title?: string | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DuplicateHit"][];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  get_resource_api_resources__call_number__get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        call_number: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ResourceOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  update_resource_api_resources__item_id__patch: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ResourcePatch"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ResourceOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  search_api_search_get: {
+    parameters: {
+      query: {
+        q: string;
+        type?: ("resource" | "article" | "collection" | "question") | null;
+        tag?: string | null;
+        research?: boolean | null;
+        difficulty?: ("beginner" | "intermediate" | "advanced") | null;
+        cursor?: string | null;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Page_SearchHit_"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  tags_api_tags_get: {
+    parameters: {
+      query?: {
+        q?: string;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Page_TagOut_"];
         };
       };
       /** @description Error envelope */

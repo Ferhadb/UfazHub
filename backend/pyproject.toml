@@ -38,6 +38,7 @@ asyncio_default_test_loop_scope = "session"
 
 [tool.coverage.run]
 source = ["app"]
+concurrency = ["greenlet", "thread"]  # async SQLAlchemy runs in greenlets
 
 [tool.black]
 target-version = ["py313"]

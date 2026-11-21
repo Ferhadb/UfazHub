@@ -1,6 +1,53 @@
 {
   "components": {
     "schemas": {
+      "AuthorOut": {
+        "properties": {
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "display_name"
+        ],
+        "title": "AuthorOut",
+        "type": "object"
+      },
+      "BookmarkOut": {
+        "properties": {
+          "bookmark_count": {
+            "title": "Bookmark Count",
+            "type": "integer"
+          },
+          "bookmarked": {
+            "title": "Bookmarked",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "bookmark_count",
+          "bookmarked"
+        ],
+        "title": "BookmarkOut",
+        "type": "object"
+      },
+      "ContentType": {
+        "enum": [
+          "resource",
+          "article",
+          "collection",
+          "question"
+        ],
+        "title": "ContentType",
+        "type": "string"
+      },
       "DevLoginIn": {
         "properties": {
           "email": {
@@ -13,6 +60,42 @@
           "email"
         ],
         "title": "DevLoginIn",
+        "type": "object"
+      },
+      "Difficulty": {
+        "enum": [
+          "beginner",
+          "intermediate",
+          "advanced"
+        ],
+        "title": "Difficulty",
+        "type": "string"
+      },
+      "DuplicateHit": {
+        "properties": {
+          "call_number": {
+            "title": "Call Number",
+            "type": "string"
+          },
+          "match": {
+            "enum": [
+              "same_link",
+              "similar_title"
+            ],
+            "title": "Match",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "call_number",
+          "title",
+          "match"
+        ],
+        "title": "DuplicateHit",
         "type": "object"
       },
       "ErrorBody": {
@@ -72,6 +155,66 @@
         "title": "ForgotIn",
         "type": "object"
       },
+      "HideIn": {
+        "properties": {
+          "reason": {
+            "maxLength": 500,
+            "minLength": 3,
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "title": "HideIn",
+        "type": "object"
+      },
+      "LinkIn": {
+        "properties": {
+          "label": {
+            "default": "",
+            "maxLength": 120,
+            "title": "Label",
+            "type": "string"
+          },
+          "url": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "LinkIn",
+        "type": "object"
+      },
+      "LinkOut": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "label"
+        ],
+        "title": "LinkOut",
+        "type": "object"
+      },
       "LoginIn": {
         "properties": {
           "email": {
@@ -91,6 +234,87 @@
           "password"
         ],
         "title": "LoginIn",
+        "type": "object"
+      },
+      "Page_ResourceOut_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ResourceOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "Page[ResourceOut]",
+        "type": "object"
+      },
+      "Page_SearchHit_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SearchHit"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "Page[SearchHit]",
+        "type": "object"
+      },
+      "Page_TagOut_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TagOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "Page[TagOut]",
         "type": "object"
       },
       "ResetIn": {
@@ -113,6 +337,502 @@
           "password"
         ],
         "title": "ResetIn",
+        "type": "object"
+      },
+      "ResourceIn": {
+        "properties": {
+          "best_part": {
+            "default": "",
+            "maxLength": 2000,
+            "title": "Best Part",
+            "type": "string"
+          },
+          "category": {
+            "default": "",
+            "maxLength": 60,
+            "title": "Category",
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 2000,
+            "minLength": 10,
+            "title": "Description",
+            "type": "string"
+          },
+          "difficulty": {
+            "$ref": "#/components/schemas/Difficulty"
+          },
+          "is_research": {
+            "default": false,
+            "title": "Is Research",
+            "type": "boolean"
+          },
+          "links": {
+            "items": {
+              "$ref": "#/components/schemas/LinkIn"
+            },
+            "maxItems": 5,
+            "minItems": 1,
+            "title": "Links",
+            "type": "array"
+          },
+          "prerequisites": {
+            "default": "",
+            "maxLength": 2000,
+            "title": "Prerequisites",
+            "type": "string"
+          },
+          "resource_type": {
+            "$ref": "#/components/schemas/ResourceType"
+          },
+          "student_note": {
+            "default": "",
+            "maxLength": 2000,
+            "title": "Student Note",
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 8,
+            "title": "Tags",
+            "type": "array"
+          },
+          "time_commitment_minutes": {
+            "anyOf": [
+              {
+                "maximum": 100000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time Commitment Minutes"
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 3,
+            "title": "Title",
+            "type": "string"
+          },
+          "warning": {
+            "default": "",
+            "maxLength": 2000,
+            "title": "Warning",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "resource_type",
+          "difficulty",
+          "links"
+        ],
+        "title": "ResourceIn",
+        "type": "object"
+      },
+      "ResourceOut": {
+        "properties": {
+          "author": {
+            "$ref": "#/components/schemas/AuthorOut"
+          },
+          "best_part": {
+            "title": "Best Part",
+            "type": "string"
+          },
+          "bookmark_count": {
+            "title": "Bookmark Count",
+            "type": "integer"
+          },
+          "bookmarked": {
+            "default": false,
+            "title": "Bookmarked",
+            "type": "boolean"
+          },
+          "call_number": {
+            "title": "Call Number",
+            "type": "string"
+          },
+          "category": {
+            "title": "Category",
+            "type": "string"
+          },
+          "comment_count": {
+            "title": "Comment Count",
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "difficulty": {
+            "$ref": "#/components/schemas/Difficulty"
+          },
+          "hidden_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hidden Reason"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_research": {
+            "title": "Is Research",
+            "type": "boolean"
+          },
+          "links": {
+            "items": {
+              "$ref": "#/components/schemas/LinkOut"
+            },
+            "title": "Links",
+            "type": "array"
+          },
+          "my_vote": {
+            "default": 0,
+            "enum": [
+              -1,
+              0,
+              1
+            ],
+            "title": "My Vote",
+            "type": "integer"
+          },
+          "prerequisites": {
+            "title": "Prerequisites",
+            "type": "string"
+          },
+          "resource_type": {
+            "$ref": "#/components/schemas/ResourceType"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "student_note": {
+            "title": "Student Note",
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tags",
+            "type": "array"
+          },
+          "time_commitment_minutes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time Commitment Minutes"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "type": {
+            "const": "resource",
+            "title": "Type",
+            "type": "string"
+          },
+          "view_count": {
+            "title": "View Count",
+            "type": "integer"
+          },
+          "vote_score": {
+            "title": "Vote Score",
+            "type": "integer"
+          },
+          "warning": {
+            "title": "Warning",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "call_number",
+          "title",
+          "description",
+          "status",
+          "is_research",
+          "author",
+          "tags",
+          "vote_score",
+          "bookmark_count",
+          "comment_count",
+          "view_count",
+          "resource_type",
+          "category",
+          "difficulty",
+          "time_commitment_minutes",
+          "prerequisites",
+          "best_part",
+          "warning",
+          "student_note",
+          "links",
+          "created_at"
+        ],
+        "title": "ResourceOut",
+        "type": "object"
+      },
+      "ResourcePatch": {
+        "description": "Every field optional; only the ones sent change.",
+        "properties": {
+          "best_part": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Best Part"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "maxLength": 60,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "minLength": 10,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "difficulty": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Difficulty"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "is_research": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Research"
+          },
+          "links": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/LinkIn"
+                },
+                "maxItems": 5,
+                "minItems": 1,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Links"
+          },
+          "prerequisites": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prerequisites"
+          },
+          "resource_type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResourceType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "student_note": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Student Note"
+          },
+          "tags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 8,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tags"
+          },
+          "time_commitment_minutes": {
+            "anyOf": [
+              {
+                "maximum": 100000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time Commitment Minutes"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "minLength": 3,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "warning": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Warning"
+          }
+        },
+        "title": "ResourcePatch",
+        "type": "object"
+      },
+      "ResourceType": {
+        "enum": [
+          "book",
+          "video",
+          "course",
+          "article",
+          "paper",
+          "notes",
+          "exam",
+          "tool",
+          "dataset",
+          "other"
+        ],
+        "title": "ResourceType",
+        "type": "string"
+      },
+      "SearchHit": {
+        "properties": {
+          "call_number": {
+            "title": "Call Number",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_research": {
+            "title": "Is Research",
+            "type": "boolean"
+          },
+          "snippet": {
+            "title": "Snippet",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "title_hl": {
+            "title": "Title Hl",
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ContentType"
+          },
+          "vote_score": {
+            "title": "Vote Score",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "call_number",
+          "title",
+          "title_hl",
+          "snippet",
+          "is_research",
+          "vote_score",
+          "created_at"
+        ],
+        "title": "SearchHit",
         "type": "object"
       },
       "SignupIn": {
@@ -141,6 +861,29 @@
           "display_name"
         ],
         "title": "SignupIn",
+        "type": "object"
+      },
+      "TagOut": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "slug",
+          "count"
+        ],
+        "title": "TagOut",
         "type": "object"
       },
       "TokenIn": {
@@ -228,6 +971,47 @@
           "created_at"
         ],
         "title": "UserOut",
+        "type": "object"
+      },
+      "VoteIn": {
+        "properties": {
+          "value": {
+            "enum": [
+              -1,
+              0,
+              1
+            ],
+            "title": "Value",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "title": "VoteIn",
+        "type": "object"
+      },
+      "VoteOut": {
+        "properties": {
+          "my_vote": {
+            "enum": [
+              -1,
+              0,
+              1
+            ],
+            "title": "My Vote",
+            "type": "integer"
+          },
+          "vote_score": {
+            "title": "Vote Score",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "vote_score",
+          "my_vote"
+        ],
+        "title": "VoteOut",
         "type": "object"
       }
     },
@@ -672,6 +1456,251 @@
         ]
       }
     },
+    "/api/content/{item_id}/bookmark": {
+      "delete": {
+        "operationId": "remove_bookmark_api_content__item_id__bookmark_delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookmarkOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Remove Bookmark",
+        "tags": [
+          "content"
+        ]
+      },
+      "put": {
+        "operationId": "add_bookmark_api_content__item_id__bookmark_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookmarkOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Add Bookmark",
+        "tags": [
+          "content"
+        ]
+      }
+    },
+    "/api/content/{item_id}/hide": {
+      "post": {
+        "operationId": "hide_api_content__item_id__hide_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HideIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Hide",
+        "tags": [
+          "content"
+        ]
+      }
+    },
+    "/api/content/{item_id}/publish": {
+      "post": {
+        "description": "Approve a pending item or restore a hidden one.",
+        "operationId": "publish_api_content__item_id__publish_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Publish",
+        "tags": [
+          "content"
+        ]
+      }
+    },
+    "/api/content/{item_id}/vote": {
+      "put": {
+        "operationId": "vote_api_content__item_id__vote_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VoteIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoteOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Vote",
+        "tags": [
+          "content"
+        ]
+      }
+    },
     "/api/health": {
       "get": {
         "description": "Liveness: the process is up.",
@@ -735,6 +1764,567 @@
         "summary": "Ready",
         "tags": [
           "health"
+        ]
+      }
+    },
+    "/api/resources": {
+      "get": {
+        "operationId": "list_resources_api_resources_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "default": "latest",
+              "enum": [
+                "latest",
+                "top"
+              ],
+              "title": "Sort",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tag",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 48,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tag"
+            }
+          },
+          {
+            "in": "query",
+            "name": "difficulty",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "beginner",
+                    "intermediate",
+                    "advanced"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Difficulty"
+            }
+          },
+          {
+            "in": "query",
+            "name": "research",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Research"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 50,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ResourceOut_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Resources",
+        "tags": [
+          "content"
+        ]
+      },
+      "post": {
+        "operationId": "create_resource_api_resources_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResourceIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Resource",
+        "tags": [
+          "content"
+        ]
+      }
+    },
+    "/api/resources/duplicates": {
+      "get": {
+        "operationId": "duplicates_api_resources_duplicates_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "url",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 2048,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Url"
+            }
+          },
+          {
+            "in": "query",
+            "name": "title",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Title"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DuplicateHit"
+                  },
+                  "title": "Response Duplicates Api Resources Duplicates Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "summary": "Duplicates",
+        "tags": [
+          "content"
+        ]
+      }
+    },
+    "/api/resources/{call_number}": {
+      "get": {
+        "operationId": "get_resource_api_resources__call_number__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "call_number",
+            "required": true,
+            "schema": {
+              "title": "Call Number",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Resource",
+        "tags": [
+          "content"
+        ]
+      }
+    },
+    "/api/resources/{item_id}": {
+      "patch": {
+        "operationId": "update_resource_api_resources__item_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResourcePatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Resource",
+        "tags": [
+          "content"
+        ]
+      }
+    },
+    "/api/search": {
+      "get": {
+        "operationId": "search_api_search_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "required": true,
+            "schema": {
+              "maxLength": 100,
+              "minLength": 2,
+              "title": "Q",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "resource",
+                    "article",
+                    "collection",
+                    "question"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Type"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tag",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 48,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tag"
+            }
+          },
+          {
+            "in": "query",
+            "name": "research",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Research"
+            }
+          },
+          {
+            "in": "query",
+            "name": "difficulty",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "beginner",
+                    "intermediate",
+                    "advanced"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Difficulty"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 10,
+              "maximum": 50,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_SearchHit_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "summary": "Search",
+        "tags": [
+          "content"
+        ]
+      }
+    },
+    "/api/tags": {
+      "get": {
+        "description": "Most used tags first; bounded top-N, so there is never a next page.",
+        "operationId": "tags_api_tags_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "default": "",
+              "maxLength": 40,
+              "title": "Q",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 50,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_TagOut_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "summary": "Tags",
+        "tags": [
+          "content"
         ]
       }
     }

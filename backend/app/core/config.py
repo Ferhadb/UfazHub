@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     VERIFY_TOKEN_HOURS: int = 48
     RESET_TOKEN_MINUTES: int = 60
     RATE_LIMIT_ENABLED: bool = True
+    VOTE_DAILY_CAP: int = 200  # vote changes per user per rolling 24h
 
     # Email (sent by the arq worker; logged instead when SMTP_USERNAME is empty)
     SMTP_HOST: str = "localhost"

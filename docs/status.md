@@ -51,3 +51,33 @@ Decisions to review
 ### Slice 2 verifier follow-up
 - Added backend test that logout rejects a missing or forged CSRF token and leaves the session intact.
 - Still deferred: applying `limit_write/limit_vote/limit_search` (no such routes yet); icons beyond 24; browser-based visual check of `/design` light/dark, focus rings and 44px targets (only build and jsdom tests so far).
+
+## Slice 3: content base, resources, votes, bookmarks, search
+
+Built
+- Migration `0003`: `content_items` base table (joined-table inheritance; `type`/`status` VARCHAR + CHECK, `hidden` requires `hidden_reason`, call numbers like `RES-0421` from per-type sequences, counters, `search_vector`), `resources` subtype (all spec fields), `resource_links` (up to 5 per resource, canonical URL stored), `tags` + `content_tags`, `votes` (PK `(user_id, item_id)`, value CHECK +-1), `bookmarks`.
+- Search: `ufaz_search` text-search configuration (unaccent + English stemming), trigger-maintained weighted `tsvector` (title A, tags B, description C, resource notes D) with GIN, trigram GIN on the folded title via an immutable `f_unaccent` wrapper. `GET /api/search`: `websearch_to_tsquery` + `ts_rank_cd`; when full text finds nothing it reruns on `pg_trgm` word similarity (typo tolerance). `ts_headline` snippets, filters (type, tag, research, difficulty), cursor pagination, rate limited. Highlights use U+0002/U+0003 markers so no markup ever reaches the client.
+- API: `GET/POST/PATCH /api/resources`, `GET /api/resources/{call_number}`, `GET /api/resources/duplicates` (canonical-URL match + similar titles), `GET /api/tags`, `PUT /api/content/{id}/vote` (-1/0/1), `PUT|DELETE /api/content/{id}/bookmark`, admin `POST /api/content/{id}/hide|publish` (audited). Cursor-paginated lists (latest, top).
+- Votes: item row is locked (`FOR UPDATE`) so the vote upsert and `vote_score` change are one serialised transaction; no self-votes; daily cap (`VOTE_DAILY_CAP`, default 200) answers 429. Bookmarks are idempotent; only the request that inserts or deletes the row moves `bookmark_count`.
+- Permission layer `app/api/permissions.py`: `optional_user`, `ActiveUser` (muted blocked), `VerifiedUser` (email verified), `AdminUser`, `can_manage`, `initial_status`. Verified students and admins publish directly; everyone else lands in `pending_review`.
+- Tests (backend 129, coverage 95% overall, services 96-99%): permission matrix (7 actors x 7 write endpoints), vote constraints and concurrency (15 voters, 8 simultaneous double clicks, concurrent flips: counter always equals the sum), bookmark idempotency, canonical URLs, duplicates, ranking weights, typo and accent folding, websearch syntax, snippets, filters, cursor stability, index following edits, rate limits. Test helpers in `tests/factories.py`.
+- Seed: 6 users and 17 realistic UFAZ resources with tags, votes, bookmarks; writes demo logins to `backend/.playground/accounts.txt`; refuses production.
+- Frontend: `/resources` (list/grid/shelf toggle, difficulty/order/research/tag filters in the URL, skeletons, empty, error + retry, load more by cursor), `/resources/[callNumber]` (links with `rel="noopener nofollow ugc"`, margin note, warning callout), `/submit` (react-hook-form + zod, server field errors mapped onto fields, duplicate warning, unverified-email block), Cmd/Ctrl+K palette (full-screen catalogue overlay, type tabs, results grouped by type, highlighted matches, combobox keyboard navigation, Radix focus trap and focus return), optimistic votes and bookmarks with rollback and sign-in redirect for guests. 2 icons added (arrow-up, arrow-down). Frontend tests: 116 passing.
+
+Deferred
+- Attachments: `resources.primary_attachment_id` is a plain nullable UUID; slice 4 adds the `attachments` table and the foreign key.
+- View counting (`view_count` exists, nothing increments it), comments (`comment_count` exists), a bookmarks list page and `GET /api/me/bookmarks`, tag rename re-indexing, pending-review queue UI (approval is only `POST /content/{id}/publish`).
+- Articles, collections and questions: the search endpoint, ranking and palette already accept their types; their routes (`/articles/...`) do not exist yet.
+- Playwright e2e + axe for resources/palette; browser check was one manual pass of `/resources` and the palette in the dark theme.
+
+Decisions to review
+- Search falls back to trigram matching only when full text returns nothing (so `-word` and quoted phrases stay exact). A page mixing exact and fuzzy hits is not supported; the cursor records which mode produced it. Fuzzy hits are not highlighted.
+- Stock `unaccent` does not fold the Azerbaijani schwa, so `f_unaccent` translates it to `e` and the vector indexes text both as written and folded. Highlights on folded matches are absent (the snippet shows the original text).
+- Search uses the `english` stemmer for every language; EN is exact, AZ/FR/RU rely on exact tokens plus the trigram fallback.
+- Daily vote cap counts vote rows touched in the last 24h; taking a vote back is always allowed, so delete-and-recast can reuse a slot. The per-minute limiter (60/min/user) bounds that.
+- Muted users cannot vote or bookmark (all writes blocked); unverified-email users can vote and bookmark but not submit.
+- `time_commitment_minutes` (integer) instead of free text; `category` is free text until the course taxonomy (slice 7).
+- Resource detail is addressed by call number (`/resources/RES-0421`), votes and edits by UUID.
+- One global `call_seq_<type>` sequence per type: numbers are never reused, but gaps appear when a create rolls back.
+- `/api/tags` is a bounded top-N (limit <= 50) returned as a `Page` with no next cursor.
+- Added `concurrency = ["greenlet", "thread"]` to coverage config; without it async SQLAlchemy lines were reported as missed.
