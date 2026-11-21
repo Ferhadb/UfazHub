@@ -34,6 +34,7 @@ class Settings(BaseSettings):
     RESET_TOKEN_MINUTES: int = 60
     RATE_LIMIT_ENABLED: bool = True
     VOTE_DAILY_CAP: int = 200  # vote changes per user per rolling 24h
+    REP_DAILY_CAP: int = 200  # vote reputation a user can earn per rolling 24h
 
     # Uploads (local disk now; `Storage` in app/core/storage.py is the seam for S3)
     MEDIA_ROOT: str = "media"

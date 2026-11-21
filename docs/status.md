@@ -99,3 +99,29 @@ Decisions to review
 - Signed media URLs expire on a ttl-snapped boundary so cached pages keep stable URLs.
 - SSRF guard allows only http/https on ports 80/443 and rejects private, loopback, link-local, NAT64 and IPv4-mapped addresses at connect time.
 - Margin notes show up to three short top-level comments; the editor preview is rendered by the server so it matches what is published.
+
+## Slice 5: Q&A, reputation, notifications
+
+Built
+- Migration `0005`: `questions` (topic, optional linked resource, `duplicate_of_id`) and `answers` (accepted/pinned timestamps with partial unique indexes: one of each per question) as content subtypes, so votes, comments and moderation work unchanged; `reputation_events` ledger (`UNIQUE (user_id, event_key)` makes every event idempotent); `notifications` (dedupe key, read/emailed timestamps); `users.reputation` and `users.email_digest`; `answer` added to the content type CHECK and a `call_seq_answer` sequence (`ANS-0001`). Down/up round trip and `alembic check` are covered by the existing migration tests.
+- Q&A API: list (latest/top, topic, tag, unanswered), `GET /questions/similar` (trigram plus full-text, typo tolerant, excludes duplicates), detail, ask, answers list (accepted, then pinned, then score; keyset cursor), answer, `PUT|DELETE /answers/{id}/accept` (asker only, moves the tick along), `PUT|DELETE /answers/{id}/pin` (admin), `PUT|DELETE /questions/{id}/duplicate` (asker, admin, or 100 reputation; no chains, duplicates of a duplicate follow along; the API exposes `duplicate_of` and the page redirects). Answers are excluded from search.
+- Reputation: points table, privileges and daily cap are constants in `services/reputation.py`; `GET /api/reputation/rules` feeds the public page from them. Vote events upsert one ledger row per (voter, item), so repeat, flip and undo never stack; vote reputation is capped per rolling day (`REP_DAILY_CAP`, 200); no self-votes (existing) and no reward for accepting your own answer; downvoting answers needs 15 reputation. `users.reputation` moves by the same delta in the same transaction; tests assert it always equals the ledger sum. `GET /api/me/reputation` is the user's cursor-paged ledger.
+- Notifications: reply (item author and parent comment author), answer (to the asker), answer accepted, vote milestones (10/25/50/100/250/500, once each), moderation (hide/publish, pin, duplicate mark). Never notifies you of your own action. `GET /notifications` (cursor, unread filter), `/notifications/unread`, `POST /notifications/read` (ids or all), `GET|PUT /notifications/settings` (digest opt-in). arq cron `email_digest` (07:00) emails one summary per opted-in user and stamps `emailed_at`.
+- Validation error envelope fix: a field literally named `body` was reported under `_`; only the leading source marker is stripped now.
+- Backend tests: 308 passing (37 new for Q&A, acceptance permissions, duplicate merging, reputation rules and caps, notification fan-out, cursors, digest); services coverage 97%.
+- Frontend: `/questions` (index tabs), `/questions/[callNumber]` as an annotated exam paper (red "checked" stamp on the accepted answer, circled score in the margin, pin, merge form, answer composer, per-answer notes, redirect for merged questions), `/ask` with live similar-question suggestions, `/notifications` (unread filter, mark read, digest switch), header bell with a flame dot and spoken count, public `/reputation` with your history. Frontend tests: 158 passing.
+
+Deferred
+- Editing questions and answers; answer comments are available but not counted on the question card; notification when a pending answer is later approved.
+- Seed data for Q&A; Playwright e2e + axe for the new pages; real-time bell (it polls every 60s).
+- Per-pair voting-ring detection (only the per-user caps exist); reputation floor at zero; privileges beyond downvote and duplicate marking (they arrive with moderation in slice 6).
+- Course taxonomy for `topic` (free text until slice 7); "for you" tag feeds.
+
+Decisions to review
+- Answers are `content_items` rows (type `answer`, title copied from the question) rather than a separate table: one vote/comment/moderation path, at the cost of filtering them out of search and feeds.
+- Answers are plain text (no Markdown); answer body max 10,000 characters.
+- Only the asker accepts (an admin cannot); admins pin. Acceptance points are not subject to the daily cap.
+- Merged questions keep their answers; new answers on a merged question are refused (409) with a pointer to the original.
+- Point values (resource/article/question +5, collection +3, answer +10, any downvote -2, accepted +15 / accepting +2) and thresholds are placeholders to tune.
+- The margin score is shown twice (circled mark and the vote control); the mark is decorative and hidden from screen readers.
+- Answers by users who are not verified students go to `pending_review` like other content.

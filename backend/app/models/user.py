@@ -2,7 +2,17 @@ import enum
 import uuid
 from datetime import datetime
 
-from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Index, String, Uuid, func
+from sqlalchemy import (
+    Boolean,
+    CheckConstraint,
+    DateTime,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+    Uuid,
+    func,
+)
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -47,6 +57,9 @@ class User(Base):
     avatar_attachment_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("attachments.id", ondelete="SET NULL", use_alter=True)
     )
+    # Sum of the user's reputation_events; only app.services.reputation writes it.
+    reputation: Mapped[int] = mapped_column(Integer, server_default="0")
+    email_digest: Mapped[bool] = mapped_column(Boolean, server_default="false")
     created_at: Mapped[datetime] = _now()
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()

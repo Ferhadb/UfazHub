@@ -103,7 +103,13 @@ def install_error_handlers(app: FastAPI) -> None:
     async def _validation_error(request: Request, exc: RequestValidationError):
         fields = {}
         for err in exc.errors():
-            loc = [str(p) for p in err["loc"] if p not in ("body", "query", "path")]
+            # Only the leading source marker goes; a field may itself be called "body".
+            parts = (
+                err["loc"][1:]
+                if err["loc"][0] in ("body", "query", "path")
+                else err["loc"]
+            )
+            loc = [str(p) for p in parts]
             fields[".".join(loc) or "_"] = err["msg"]
         return _json(
             request,

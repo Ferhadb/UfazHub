@@ -79,3 +79,55 @@ def png_bytes(size=(40, 30), color=(200, 30, 30)) -> bytes:
     buf = io.BytesIO()
     Image.new("RGB", size, color).save(buf, "PNG")
     return buf.getvalue()
+
+
+def question_payload(**over) -> dict:
+    base = {
+        "title": "How do I prove Dijkstra's algorithm is correct?",
+        "body": "I follow the steps but the invariant proof loses me. Where should I start?",
+        "topic": "Algorithms",
+        "tags": ["algorithms"],
+    }
+    return {**base, **over}
+
+
+async def make_question(client, headers, **over) -> dict:
+    r = await client.post(
+        "/api/questions", json=question_payload(**over), headers=headers
+    )
+    assert r.status_code == 201, r.text
+    return r.json()
+
+
+async def make_answer(
+    client, question, headers, body="Start with the loop invariant."
+) -> dict:
+    r = await client.post(
+        f"/api/questions/{question['id']}/answers", json={"body": body}, headers=headers
+    )
+    assert r.status_code == 201, r.text
+    return r.json()
+
+
+async def set_reputation(user, n: int) -> None:
+    from sqlalchemy import update
+
+    async with SessionLocal() as db:
+        await db.execute(update(User).where(User.id == user.id).values(reputation=n))
+        await db.commit()
+
+
+async def reputation_of(user) -> tuple[int, int]:
+    """(users.reputation, sum of the ledger): they must always agree."""
+    from sqlalchemy import func, select
+
+    from app.models.qa import ReputationEvent
+
+    async with SessionLocal() as db:
+        total = await db.scalar(select(User.reputation).where(User.id == user.id))
+        ledger = await db.scalar(
+            select(func.coalesce(func.sum(ReputationEvent.points), 0)).where(
+                ReputationEvent.user_id == user.id
+            )
+        )
+    return total, ledger

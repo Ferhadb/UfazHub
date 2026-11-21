@@ -38,6 +38,7 @@ class ContentType(enum.StrEnum):
     article = "article"
     collection = "collection"
     question = "question"
+    answer = "answer"
 
 
 CALL_PREFIX = {
@@ -45,6 +46,7 @@ CALL_PREFIX = {
     ContentType.article: "ART",
     ContentType.collection: "COL",
     ContentType.question: "QST",
+    ContentType.answer: "ANS",
 }
 
 

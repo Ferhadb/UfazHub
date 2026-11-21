@@ -6,7 +6,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.core.urls import canonical_url
-from app.models.content import ContentType, Difficulty, ResourceType
+from app.models.content import Difficulty, ResourceType
 from app.models.media import Attachment
 from app.schemas.media import AttachmentOut
 
@@ -24,6 +24,7 @@ class AuthorOut(BaseModel):
     id: uuid.UUID
     display_name: str
     avatar_url: str | None = None  # signed, expiring
+    reputation: int = 0
 
 
 class LinkIn(BaseModel):
@@ -177,7 +178,9 @@ class DuplicateHit(BaseModel):
 
 class SearchHit(BaseModel):
     id: uuid.UUID
-    type: ContentType
+    type: Literal[
+        "resource", "article", "collection", "question"
+    ]  # answers live on questions
     call_number: str
     title: str
     # Highlights are wrapped in U+0002 / U+0003, never HTML, so clients render them without risk.

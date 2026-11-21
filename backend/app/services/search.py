@@ -29,7 +29,7 @@ hits AS (
            + CASE WHEN :fuzzy THEN word_similarity(q.qn, f_unaccent(lower(ci.title)))::float8
                   ELSE 0 END AS rank
   FROM content_items ci, q
-  WHERE ci.status = 'published'
+  WHERE ci.status = 'published' AND ci.type <> 'answer'
     AND (ci.search_vector @@ q.tsq
          OR (:fuzzy AND q.qn <% f_unaccent(lower(ci.title))))
     {filters}

@@ -11,7 +11,8 @@ from app.models.content import Comment, ContentItem, ContentStatus
 from app.models.user import Role, User
 from app.schemas.comments import CommentIn, CommentOut
 from app.schemas.common import Page, decode_cursor, encode_cursor
-from app.services import audit
+from app.models.qa import NotificationKind
+from app.services import audit, notifications
 from app.services.content import _lock_visible
 
 MAX_REPLIES = 50  # per thread, so no list is ever unbounded
@@ -78,7 +79,7 @@ async def list_comments(
 async def create_comment(
     db: AsyncSession, user: User, item_id: uuid.UUID, data: CommentIn
 ) -> CommentOut:
-    await _lock_visible(
+    _, item_author, _ = await _lock_visible(
         db, item_id
     )  # serialises counter updates and the reply cap per item
     if data.parent_id:
@@ -114,6 +115,15 @@ async def create_comment(
         .values(comment_count=ContentItem.comment_count + 1)
     )
     await db.flush()
+    for target in {item_author, parent.author_id if data.parent_id else item_author}:
+        await notifications.notify(
+            db,
+            target,
+            NotificationKind.reply,
+            item_id,
+            actor=user,
+            message=data.body[:140],
+        )
     await db.refresh(comment)  # server-side created_at
     return CommentOut.model_validate(comment, from_attributes=True)
 

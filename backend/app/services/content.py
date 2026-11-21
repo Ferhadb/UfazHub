@@ -38,7 +38,8 @@ from app.schemas.content import (
     TagOut,
     VoteOut,
 )
-from app.services import audit
+from app.models.qa import NotificationKind
+from app.services import audit, notifications, reputation
 from app.services.uploads import owned_attachment
 
 # --- helpers -----------------------------------------------------------------------
@@ -289,19 +290,25 @@ async def set_status(
         after={"status": item.status, "hidden_reason": reason},
         reason=reason,
     )
+    await notifications.notify(
+        db,
+        item.author_id,
+        NotificationKind.moderation,
+        item.id,
+        actor=actor,
+        message=reason or "approved and visible again",
+    )
     await db.flush()
 
 
 # --- votes and bookmarks -----------------------------------------------------------------
 
 
-async def _lock_visible(
-    db: AsyncSession, item_id: uuid.UUID
-) -> tuple[uuid.UUID, uuid.UUID]:
-    """Lock the item row (serialises concurrent votes on it) and return (id, author_id)."""
+async def _lock_visible(db: AsyncSession, item_id: uuid.UUID):
+    """Lock the published item row (serialises votes, comments on it); returns (id, author_id, type)."""
     row = (
         await db.execute(
-            select(ContentItem.id, ContentItem.author_id)
+            select(ContentItem.id, ContentItem.author_id, ContentItem.type)
             .where(
                 ContentItem.id == item_id,
                 ContentItem.status == ContentStatus.published.value,
@@ -311,14 +318,14 @@ async def _lock_visible(
     ).one_or_none()
     if row is None:
         raise NotFound("Not found.")
-    return row.id, row.author_id
+    return row.id, row.author_id, row.type
 
 
 async def cast_vote(
     db: AsyncSession, user: User, item_id: uuid.UUID, value: int
 ) -> VoteOut:
     """Write the vote and adjust `vote_score` in one transaction, under the item's row lock."""
-    _, author_id = await _lock_visible(db, item_id)
+    _, author_id, item_type = await _lock_visible(db, item_id)
     if author_id == user.id:
         raise Forbidden("You cannot vote on your own post.", code="self_vote")
     old = (
@@ -327,6 +334,8 @@ async def cast_vote(
         )
     ).scalar_one_or_none() or 0
     if value != old:
+        if value == -1 and item_type == ContentType.answer:
+            reputation.require_privilege(user, "downvote_answers")
         if value == 0:
             await db.execute(
                 delete(Vote).where(Vote.user_id == user.id, Vote.item_id == item_id)
@@ -365,6 +374,11 @@ async def cast_vote(
             .returning(ContentItem.vote_score)
         )
     ).scalar_one()
+    if value != old:
+        await reputation.on_vote(db, user, author_id, item_type, item_id, value)
+        await notifications.vote_milestone(
+            db, author_id, item_id, score - (value - old), score
+        )
     return VoteOut(vote_score=score, my_vote=value)  # type: ignore[arg-type]
 
 

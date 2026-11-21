@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Callout } from "@/components/ui/callout";
@@ -121,12 +121,13 @@ function Entry({ c, itemId, canReply }: { c: Comment; itemId: string; canReply: 
 /** Threaded comments (one level of replies) for any content item. */
 export function Comments({ itemId, count }: { itemId: string; count: number }) {
   const { user, status } = useSession();
+  const heading = useId();
   const q = useComments(itemId);
   const items = q.data?.pages.flatMap((p) => p.items) ?? [];
   const canPost = status === "authenticated" && user?.email_verified;
   return (
-    <section aria-labelledby="comments-h" className="no-print mt-12">
-      <h2 id="comments-h" className="font-display text-step-2">
+    <section aria-labelledby={heading} className="no-print mt-12">
+      <h2 id={heading} className="font-display text-step-2">
         Notes in the margin <span className="text-muted font-mono text-base">{count}</span>
       </h2>
       <div className="mt-4">

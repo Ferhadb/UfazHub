@@ -8,9 +8,11 @@ import { useResourceActions, type Votable } from "@/lib/api/content";
 export function ResourceActions({
   resource,
   className,
+  bookmarks = true,
 }: {
   resource: Votable;
   className?: string;
+  bookmarks?: boolean;
 }) {
   const { vote, toggleBookmark } = useResourceActions(resource);
   return (
@@ -37,16 +39,20 @@ export function ResourceActions({
           onClick={() => vote(-1)}
         />
       </div>
-      <IconButton
-        label={resource.bookmarked ? "Remove bookmark" : "Bookmark"}
-        icon="bookmark"
-        aria-pressed={resource.bookmarked}
-        className={cn(resource.bookmarked && "text-accent [&_path]:fill-current")}
-        onClick={toggleBookmark}
-      />
-      <span className="text-step--1 text-muted font-mono tabular-nums">
-        {resource.bookmark_count} saved
-      </span>
+      {bookmarks && (
+        <>
+          <IconButton
+            label={resource.bookmarked ? "Remove bookmark" : "Bookmark"}
+            icon="bookmark"
+            aria-pressed={resource.bookmarked}
+            className={cn(resource.bookmarked && "text-accent [&_path]:fill-current")}
+            onClick={toggleBookmark}
+          />
+          <span className="text-step--1 text-muted font-mono tabular-nums">
+            {resource.bookmark_count} saved
+          </span>
+        </>
+      )}
     </div>
   );
 }

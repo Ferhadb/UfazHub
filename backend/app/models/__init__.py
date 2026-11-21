@@ -16,3 +16,4 @@ from app.models.content import (  # noqa: F401
     Tag,
     Vote,
 )
+from app.models.qa import Answer, Notification, Question, ReputationEvent  # noqa: F401

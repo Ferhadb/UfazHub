@@ -1,6 +1,118 @@
 {
   "components": {
     "schemas": {
+      "AnswerIn": {
+        "properties": {
+          "body": {
+            "maxLength": 10000,
+            "minLength": 10,
+            "title": "Body",
+            "type": "string"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "title": "AnswerIn",
+        "type": "object"
+      },
+      "AnswerOut": {
+        "properties": {
+          "accepted": {
+            "title": "Accepted",
+            "type": "boolean"
+          },
+          "author": {
+            "$ref": "#/components/schemas/AuthorOut"
+          },
+          "body": {
+            "title": "Body",
+            "type": "string"
+          },
+          "bookmarked": {
+            "default": false,
+            "title": "Bookmarked",
+            "type": "boolean"
+          },
+          "call_number": {
+            "title": "Call Number",
+            "type": "string"
+          },
+          "comment_count": {
+            "title": "Comment Count",
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "hidden_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hidden Reason"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "my_vote": {
+            "default": 0,
+            "enum": [
+              -1,
+              0,
+              1
+            ],
+            "title": "My Vote",
+            "type": "integer"
+          },
+          "pinned": {
+            "title": "Pinned",
+            "type": "boolean"
+          },
+          "question_id": {
+            "format": "uuid",
+            "title": "Question Id",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "type": {
+            "const": "answer",
+            "title": "Type",
+            "type": "string"
+          },
+          "vote_score": {
+            "title": "Vote Score",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "call_number",
+          "question_id",
+          "body",
+          "status",
+          "author",
+          "vote_score",
+          "comment_count",
+          "accepted",
+          "pinned",
+          "created_at"
+        ],
+        "title": "AnswerOut",
+        "type": "object"
+      },
       "ArticleCard": {
         "properties": {
           "author": {
@@ -561,6 +673,11 @@
             "format": "uuid",
             "title": "Id",
             "type": "string"
+          },
+          "reputation": {
+            "default": 0,
+            "title": "Reputation",
+            "type": "integer"
           }
         },
         "required": [
@@ -679,7 +796,7 @@
       "CollectionItemOut": {
         "properties": {
           "item": {
-            "$ref": "#/components/schemas/ItemRef"
+            "$ref": "#/components/schemas/app__schemas__collections__ItemRef"
           },
           "note": {
             "title": "Note",
@@ -976,7 +1093,8 @@
           "resource",
           "article",
           "collection",
-          "question"
+          "question",
+          "answer"
         ],
         "title": "ContentType",
         "type": "string"
@@ -1029,6 +1147,21 @@
           "match"
         ],
         "title": "DuplicateHit",
+        "type": "object"
+      },
+      "DuplicateIn": {
+        "properties": {
+          "of": {
+            "maxLength": 16,
+            "minLength": 1,
+            "title": "Of",
+            "type": "string"
+          }
+        },
+        "required": [
+          "of"
+        ],
+        "title": "DuplicateIn",
         "type": "object"
       },
       "ErrorBody": {
@@ -1101,49 +1234,6 @@
           "reason"
         ],
         "title": "HideIn",
-        "type": "object"
-      },
-      "ItemRef": {
-        "properties": {
-          "call_number": {
-            "title": "Call Number",
-            "type": "string"
-          },
-          "description": {
-            "title": "Description",
-            "type": "string"
-          },
-          "id": {
-            "format": "uuid",
-            "title": "Id",
-            "type": "string"
-          },
-          "is_research": {
-            "title": "Is Research",
-            "type": "boolean"
-          },
-          "title": {
-            "title": "Title",
-            "type": "string"
-          },
-          "type": {
-            "$ref": "#/components/schemas/ContentType"
-          },
-          "vote_score": {
-            "title": "Vote Score",
-            "type": "integer"
-          }
-        },
-        "required": [
-          "id",
-          "type",
-          "call_number",
-          "title",
-          "description",
-          "is_research",
-          "vote_score"
-        ],
-        "title": "ItemRef",
         "type": "object"
       },
       "LinkIn": {
@@ -1245,6 +1335,101 @@
         "title": "LoginIn",
         "type": "object"
       },
+      "NotificationOut": {
+        "properties": {
+          "actor": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AuthorOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "call_number": {
+            "title": "Call Number",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "read": {
+            "title": "Read",
+            "type": "boolean"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "call_number",
+          "title",
+          "message",
+          "read",
+          "created_at"
+        ],
+        "title": "NotificationOut",
+        "type": "object"
+      },
+      "NotificationSettings": {
+        "properties": {
+          "email_digest": {
+            "title": "Email Digest",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "email_digest"
+        ],
+        "title": "NotificationSettings",
+        "type": "object"
+      },
+      "Page_AnswerOut_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AnswerOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "Page[AnswerOut]",
+        "type": "object"
+      },
       "Page_ArticleCard_": {
         "properties": {
           "items": {
@@ -1324,6 +1509,87 @@
           "items"
         ],
         "title": "Page[CommentOut]",
+        "type": "object"
+      },
+      "Page_NotificationOut_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/NotificationOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "Page[NotificationOut]",
+        "type": "object"
+      },
+      "Page_QuestionOut_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/QuestionOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "Page[QuestionOut]",
+        "type": "object"
+      },
+      "Page_ReputationEventOut_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ReputationEventOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "Page[ReputationEventOut]",
         "type": "object"
       },
       "Page_ResourceOut_": {
@@ -1407,6 +1673,29 @@
         "title": "Page[TagOut]",
         "type": "object"
       },
+      "PointRule": {
+        "properties": {
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "points": {
+            "title": "Points",
+            "type": "integer"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason",
+          "label",
+          "points"
+        ],
+        "title": "PointRule",
+        "type": "object"
+      },
       "PreviewIn": {
         "properties": {
           "body_md": {
@@ -1445,6 +1734,313 @@
           "reading_minutes"
         ],
         "title": "PreviewOut",
+        "type": "object"
+      },
+      "PrivilegeRule": {
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "threshold": {
+            "title": "Threshold",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "threshold"
+        ],
+        "title": "PrivilegeRule",
+        "type": "object"
+      },
+      "QuestionIn": {
+        "properties": {
+          "body": {
+            "maxLength": 5000,
+            "minLength": 10,
+            "title": "Body",
+            "type": "string"
+          },
+          "linked_resource": {
+            "anyOf": [
+              {
+                "maxLength": 16,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Linked Resource"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 8,
+            "title": "Tags",
+            "type": "array"
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 10,
+            "title": "Title",
+            "type": "string"
+          },
+          "topic": {
+            "maxLength": 60,
+            "minLength": 2,
+            "title": "Topic",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "body",
+          "topic"
+        ],
+        "title": "QuestionIn",
+        "type": "object"
+      },
+      "QuestionOut": {
+        "properties": {
+          "answer_count": {
+            "default": 0,
+            "title": "Answer Count",
+            "type": "integer"
+          },
+          "author": {
+            "$ref": "#/components/schemas/AuthorOut"
+          },
+          "body": {
+            "title": "Body",
+            "type": "string"
+          },
+          "bookmark_count": {
+            "title": "Bookmark Count",
+            "type": "integer"
+          },
+          "bookmarked": {
+            "default": false,
+            "title": "Bookmarked",
+            "type": "boolean"
+          },
+          "call_number": {
+            "title": "Call Number",
+            "type": "string"
+          },
+          "comment_count": {
+            "title": "Comment Count",
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "duplicate_of": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/app__schemas__qa__ItemRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "has_accepted": {
+            "default": false,
+            "title": "Has Accepted",
+            "type": "boolean"
+          },
+          "hidden_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hidden Reason"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_research": {
+            "title": "Is Research",
+            "type": "boolean"
+          },
+          "linked_resource": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/app__schemas__qa__ItemRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "my_vote": {
+            "default": 0,
+            "enum": [
+              -1,
+              0,
+              1
+            ],
+            "title": "My Vote",
+            "type": "integer"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tags",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "topic": {
+            "title": "Topic",
+            "type": "string"
+          },
+          "type": {
+            "const": "question",
+            "title": "Type",
+            "type": "string"
+          },
+          "vote_score": {
+            "title": "Vote Score",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "call_number",
+          "title",
+          "body",
+          "topic",
+          "status",
+          "is_research",
+          "author",
+          "tags",
+          "vote_score",
+          "bookmark_count",
+          "comment_count",
+          "created_at"
+        ],
+        "title": "QuestionOut",
+        "type": "object"
+      },
+      "ReadIn": {
+        "properties": {
+          "ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ids"
+          }
+        },
+        "title": "ReadIn",
+        "type": "object"
+      },
+      "ReputationEventOut": {
+        "properties": {
+          "call_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Call Number"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "points": {
+            "title": "Points",
+            "type": "integer"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "required": [
+          "reason",
+          "points",
+          "created_at"
+        ],
+        "title": "ReputationEventOut",
+        "type": "object"
+      },
+      "ReputationRules": {
+        "properties": {
+          "daily_vote_cap": {
+            "title": "Daily Vote Cap",
+            "type": "integer"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/PointRule"
+            },
+            "title": "Points",
+            "type": "array"
+          },
+          "privileges": {
+            "items": {
+              "$ref": "#/components/schemas/PrivilegeRule"
+            },
+            "title": "Privileges",
+            "type": "array"
+          }
+        },
+        "required": [
+          "points",
+          "privileges",
+          "daily_vote_cap"
+        ],
+        "title": "ReputationRules",
         "type": "object"
       },
       "ResetIn": {
@@ -1978,7 +2574,14 @@
             "type": "string"
           },
           "type": {
-            "$ref": "#/components/schemas/ContentType"
+            "enum": [
+              "resource",
+              "article",
+              "collection",
+              "question"
+            ],
+            "title": "Type",
+            "type": "string"
           },
           "vote_score": {
             "title": "Vote Score",
@@ -2025,6 +2628,34 @@
           "display_name"
         ],
         "title": "SignupIn",
+        "type": "object"
+      },
+      "SimilarHit": {
+        "properties": {
+          "answer_count": {
+            "title": "Answer Count",
+            "type": "integer"
+          },
+          "call_number": {
+            "title": "Call Number",
+            "type": "string"
+          },
+          "has_accepted": {
+            "title": "Has Accepted",
+            "type": "boolean"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "call_number",
+          "title",
+          "answer_count",
+          "has_accepted"
+        ],
+        "title": "SimilarHit",
         "type": "object"
       },
       "TagOut": {
@@ -2114,6 +2745,19 @@
         "title": "TokenOut",
         "type": "object"
       },
+      "UnreadOut": {
+        "properties": {
+          "unread": {
+            "title": "Unread",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "unread"
+        ],
+        "title": "UnreadOut",
+        "type": "object"
+      },
       "UserOut": {
         "properties": {
           "avatar_url": {
@@ -2148,6 +2792,11 @@
             "format": "uuid",
             "title": "Id",
             "type": "string"
+          },
+          "reputation": {
+            "default": 0,
+            "title": "Reputation",
+            "type": "integer"
           },
           "role": {
             "title": "Role",
@@ -2210,6 +2859,67 @@
         ],
         "title": "VoteOut",
         "type": "object"
+      },
+      "app__schemas__collections__ItemRef": {
+        "properties": {
+          "call_number": {
+            "title": "Call Number",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_research": {
+            "title": "Is Research",
+            "type": "boolean"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ContentType"
+          },
+          "vote_score": {
+            "title": "Vote Score",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "call_number",
+          "title",
+          "description",
+          "is_research",
+          "vote_score"
+        ],
+        "title": "ItemRef",
+        "type": "object"
+      },
+      "app__schemas__qa__ItemRef": {
+        "properties": {
+          "call_number": {
+            "title": "Call Number",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "call_number",
+          "title"
+        ],
+        "title": "ItemRef",
+        "type": "object"
       }
     },
     "securitySchemes": {
@@ -2225,6 +2935,194 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/answers/{answer_id}/accept": {
+      "delete": {
+        "operationId": "unaccept_api_answers__answer_id__accept_delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "answer_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Answer Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnswerOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Unaccept",
+        "tags": [
+          "questions"
+        ]
+      },
+      "put": {
+        "operationId": "accept_api_answers__answer_id__accept_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "answer_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Answer Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnswerOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Accept",
+        "tags": [
+          "questions"
+        ]
+      }
+    },
+    "/api/answers/{answer_id}/pin": {
+      "delete": {
+        "operationId": "unpin_api_answers__answer_id__pin_delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "answer_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Answer Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnswerOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Unpin",
+        "tags": [
+          "questions"
+        ]
+      },
+      "put": {
+        "operationId": "pin_api_answers__answer_id__pin_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "answer_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Answer Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnswerOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Pin",
+        "tags": [
+          "questions"
+        ]
+      }
+    },
     "/api/articles": {
       "get": {
         "operationId": "list_articles_api_articles_get",
@@ -3744,6 +4642,801 @@
         ]
       }
     },
+    "/api/me/reputation": {
+      "get": {
+        "operationId": "my_reputation_api_me_reputation_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 50,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ReputationEventOut_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "My Reputation",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/api/notifications": {
+      "get": {
+        "operationId": "list_notifications_api_notifications_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "unread",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Unread",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 50,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_NotificationOut_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Notifications",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/api/notifications/read": {
+      "post": {
+        "operationId": "mark_read_api_notifications_read_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReadIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnreadOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Mark Read",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/api/notifications/settings": {
+      "get": {
+        "operationId": "get_settings_api_notifications_settings_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationSettings"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Settings",
+        "tags": [
+          "notifications"
+        ]
+      },
+      "put": {
+        "operationId": "put_settings_api_notifications_settings_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotificationSettings"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationSettings"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Put Settings",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/api/notifications/unread": {
+      "get": {
+        "operationId": "unread_api_notifications_unread_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnreadOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Unread",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/api/questions": {
+      "get": {
+        "operationId": "list_questions_api_questions_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "default": "latest",
+              "enum": [
+                "latest",
+                "top"
+              ],
+              "title": "Sort",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "topic",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 60,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Topic"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tag",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 48,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tag"
+            }
+          },
+          {
+            "in": "query",
+            "name": "unanswered",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Unanswered",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 50,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_QuestionOut_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Questions",
+        "tags": [
+          "questions"
+        ]
+      },
+      "post": {
+        "operationId": "ask_api_questions_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Ask",
+        "tags": [
+          "questions"
+        ]
+      }
+    },
+    "/api/questions/similar": {
+      "get": {
+        "description": "Suggestions shown while the asker types a title.",
+        "operationId": "similar_api_questions_similar_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "title",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "minLength": 4,
+              "title": "Title",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SimilarHit"
+                  },
+                  "title": "Response Similar Api Questions Similar Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "summary": "Similar",
+        "tags": [
+          "questions"
+        ]
+      }
+    },
+    "/api/questions/{call_number}": {
+      "get": {
+        "operationId": "get_question_api_questions__call_number__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "call_number",
+            "required": true,
+            "schema": {
+              "title": "Call Number",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Question",
+        "tags": [
+          "questions"
+        ]
+      }
+    },
+    "/api/questions/{call_number}/answers": {
+      "get": {
+        "operationId": "list_answers_api_questions__call_number__answers_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "call_number",
+            "required": true,
+            "schema": {
+              "title": "Call Number",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 50,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_AnswerOut_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Answers",
+        "tags": [
+          "questions"
+        ]
+      }
+    },
+    "/api/questions/{item_id}/answers": {
+      "post": {
+        "operationId": "answer_api_questions__item_id__answers_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnswerIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnswerOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Answer",
+        "tags": [
+          "questions"
+        ]
+      }
+    },
+    "/api/questions/{item_id}/duplicate": {
+      "delete": {
+        "operationId": "unmark_duplicate_api_questions__item_id__duplicate_delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Unmark Duplicate",
+        "tags": [
+          "questions"
+        ]
+      },
+      "put": {
+        "operationId": "mark_duplicate_api_questions__item_id__duplicate_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DuplicateIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Mark Duplicate",
+        "tags": [
+          "questions"
+        ]
+      }
+    },
     "/api/ready": {
       "get": {
         "description": "Readiness: dependencies answer.",
@@ -3771,6 +5464,38 @@
         "summary": "Ready",
         "tags": [
           "health"
+        ]
+      }
+    },
+    "/api/reputation/rules": {
+      "get": {
+        "description": "Public: the points table and privilege thresholds, straight from the code that enforces them.",
+        "operationId": "reputation_rules_api_reputation_rules_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReputationRules"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "summary": "Reputation Rules",
+        "tags": [
+          "notifications"
         ]
       }
     },

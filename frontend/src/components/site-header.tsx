@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Avatar } from "@/components/ui/avatar";
 import { buttonClass } from "@/components/ui/button";
+import { NotificationBell } from "@/components/notifications/bell";
 import { SearchPalette } from "@/components/search-palette";
 import { useSession } from "@/lib/auth/use-session";
 
@@ -27,18 +28,24 @@ export function SiteHeader() {
           <Link href="/collections" className={buttonClass("ghost")}>
             Collections
           </Link>
+          <Link href="/questions" className={buttonClass("ghost")}>
+            Questions
+          </Link>
           <SearchPalette />
           <Link href="/design" className={buttonClass("ghost")}>
             Design
           </Link>
           {status === "authenticated" && user ? (
-            <Link
-              href="/settings"
-              aria-label={`Settings for ${user.display_name}`}
-              className="inline-flex min-h-11 min-w-11 items-center justify-center"
-            >
-              <Avatar name={user.display_name} />
-            </Link>
+            <>
+              <NotificationBell />
+              <Link
+                href="/settings"
+                aria-label={`Settings for ${user.display_name}`}
+                className="inline-flex min-h-11 min-w-11 items-center justify-center"
+              >
+                <Avatar name={user.display_name} />
+              </Link>
+            </>
           ) : status === "anonymous" ? (
             <Link href="/signin" className={buttonClass("primary")}>
               Sign in

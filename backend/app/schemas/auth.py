@@ -56,6 +56,7 @@ class UserOut(BaseModel):
     status: str
     email_verified: bool
     avatar_url: str | None = None
+    reputation: int = 0
     created_at: datetime
 
 

@@ -4,6 +4,42 @@
  */
 
 export interface paths {
+  "/api/answers/{answer_id}/accept": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Accept */
+    put: operations["accept_api_answers__answer_id__accept_put"];
+    post?: never;
+    /** Unaccept */
+    delete: operations["unaccept_api_answers__answer_id__accept_delete"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/answers/{answer_id}/pin": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Pin */
+    put: operations["pin_api_answers__answer_id__pin_put"];
+    post?: never;
+    /** Unpin */
+    delete: operations["unpin_api_answers__answer_id__pin_delete"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/articles": {
     parameters: {
       query?: never;
@@ -465,6 +501,199 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/me/reputation": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** My Reputation */
+    get: operations["my_reputation_api_me_reputation_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/notifications": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List Notifications */
+    get: operations["list_notifications_api_notifications_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/notifications/read": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Mark Read */
+    post: operations["mark_read_api_notifications_read_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/notifications/settings": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get Settings */
+    get: operations["get_settings_api_notifications_settings_get"];
+    /** Put Settings */
+    put: operations["put_settings_api_notifications_settings_put"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/notifications/unread": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Unread */
+    get: operations["unread_api_notifications_unread_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/questions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List Questions */
+    get: operations["list_questions_api_questions_get"];
+    put?: never;
+    /** Ask */
+    post: operations["ask_api_questions_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/questions/similar": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Similar
+     * @description Suggestions shown while the asker types a title.
+     */
+    get: operations["similar_api_questions_similar_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/questions/{call_number}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get Question */
+    get: operations["get_question_api_questions__call_number__get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/questions/{call_number}/answers": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List Answers */
+    get: operations["list_answers_api_questions__call_number__answers_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/questions/{item_id}/answers": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Answer */
+    post: operations["answer_api_questions__item_id__answers_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/questions/{item_id}/duplicate": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Mark Duplicate */
+    put: operations["mark_duplicate_api_questions__item_id__duplicate_put"];
+    post?: never;
+    /** Unmark Duplicate */
+    delete: operations["unmark_duplicate_api_questions__item_id__duplicate_delete"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/ready": {
     parameters: {
       query?: never;
@@ -477,6 +706,26 @@ export interface paths {
      * @description Readiness: dependencies answer.
      */
     get: operations["ready_api_ready_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/reputation/rules": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Reputation Rules
+     * @description Public: the points table and privilege thresholds, straight from the code that enforces them.
+     */
+    get: operations["reputation_rules_api_reputation_rules_get"];
     put?: never;
     post?: never;
     delete?: never;
@@ -612,6 +861,62 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    /** AnswerIn */
+    AnswerIn: {
+      /** Body */
+      body: string;
+    };
+    /** AnswerOut */
+    AnswerOut: {
+      /** Accepted */
+      accepted: boolean;
+      author: components["schemas"]["AuthorOut"];
+      /** Body */
+      body: string;
+      /**
+       * Bookmarked
+       * @default false
+       */
+      bookmarked: boolean;
+      /** Call Number */
+      call_number: string;
+      /** Comment Count */
+      comment_count: number;
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+      /** Hidden Reason */
+      hidden_reason?: string | null;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /**
+       * My Vote
+       * @default 0
+       * @enum {integer}
+       */
+      my_vote: -1 | 0 | 1;
+      /** Pinned */
+      pinned: boolean;
+      /**
+       * Question Id
+       * Format: uuid
+       */
+      question_id: string;
+      /** Status */
+      status: string;
+      /**
+       * Type
+       * @constant
+       */
+      type: "answer";
+      /** Vote Score */
+      vote_score: number;
+    };
     /** ArticleCard */
     ArticleCard: {
       author: components["schemas"]["AuthorOut"];
@@ -827,6 +1132,11 @@ export interface components {
        * Format: uuid
        */
       id: string;
+      /**
+       * Reputation
+       * @default 0
+       */
+      reputation: number;
     };
     /** Body_upload_api_uploads_post */
     Body_upload_api_uploads_post: {
@@ -880,7 +1190,7 @@ export interface components {
     };
     /** CollectionItemOut */
     CollectionItemOut: {
-      item: components["schemas"]["ItemRef"];
+      item: components["schemas"]["app__schemas__collections__ItemRef"];
       /** Note */
       note: string;
       /** Position */
@@ -992,7 +1302,7 @@ export interface components {
      * ContentType
      * @enum {string}
      */
-    ContentType: "resource" | "article" | "collection" | "question";
+    ContentType: "resource" | "article" | "collection" | "question" | "answer";
     /** DevLoginIn */
     DevLoginIn: {
       /**
@@ -1017,6 +1327,11 @@ export interface components {
       match: "same_link" | "similar_title";
       /** Title */
       title: string;
+    };
+    /** DuplicateIn */
+    DuplicateIn: {
+      /** Of */
+      of: string;
     };
     /** ErrorBody */
     ErrorBody: {
@@ -1043,25 +1358,6 @@ export interface components {
     HideIn: {
       /** Reason */
       reason: string;
-    };
-    /** ItemRef */
-    ItemRef: {
-      /** Call Number */
-      call_number: string;
-      /** Description */
-      description: string;
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
-      /** Is Research */
-      is_research: boolean;
-      /** Title */
-      title: string;
-      type: components["schemas"]["ContentType"];
-      /** Vote Score */
-      vote_score: number;
     };
     /** LinkIn */
     LinkIn: {
@@ -1101,6 +1397,42 @@ export interface components {
       /** Password */
       password: string;
     };
+    /** NotificationOut */
+    NotificationOut: {
+      actor?: components["schemas"]["AuthorOut"] | null;
+      /** Call Number */
+      call_number: string;
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /** Kind */
+      kind: string;
+      /** Message */
+      message: string;
+      /** Read */
+      read: boolean;
+      /** Title */
+      title: string;
+    };
+    /** NotificationSettings */
+    NotificationSettings: {
+      /** Email Digest */
+      email_digest: boolean;
+    };
+    /** Page[AnswerOut] */
+    Page_AnswerOut_: {
+      /** Items */
+      items: components["schemas"]["AnswerOut"][];
+      /** Next Cursor */
+      next_cursor?: string | null;
+    };
     /** Page[ArticleCard] */
     Page_ArticleCard_: {
       /** Items */
@@ -1119,6 +1451,27 @@ export interface components {
     Page_CommentOut_: {
       /** Items */
       items: components["schemas"]["CommentOut"][];
+      /** Next Cursor */
+      next_cursor?: string | null;
+    };
+    /** Page[NotificationOut] */
+    Page_NotificationOut_: {
+      /** Items */
+      items: components["schemas"]["NotificationOut"][];
+      /** Next Cursor */
+      next_cursor?: string | null;
+    };
+    /** Page[QuestionOut] */
+    Page_QuestionOut_: {
+      /** Items */
+      items: components["schemas"]["QuestionOut"][];
+      /** Next Cursor */
+      next_cursor?: string | null;
+    };
+    /** Page[ReputationEventOut] */
+    Page_ReputationEventOut_: {
+      /** Items */
+      items: components["schemas"]["ReputationEventOut"][];
       /** Next Cursor */
       next_cursor?: string | null;
     };
@@ -1143,6 +1496,15 @@ export interface components {
       /** Next Cursor */
       next_cursor?: string | null;
     };
+    /** PointRule */
+    PointRule: {
+      /** Label */
+      label: string;
+      /** Points */
+      points: number;
+      /** Reason */
+      reason: string;
+    };
     /** PreviewIn */
     PreviewIn: {
       /** Body Md */
@@ -1156,6 +1518,122 @@ export interface components {
       reading_minutes: number;
       /** Toc */
       toc: components["schemas"]["TocEntry"][];
+    };
+    /** PrivilegeRule */
+    PrivilegeRule: {
+      /** Key */
+      key: string;
+      /** Label */
+      label: string;
+      /** Threshold */
+      threshold: number;
+    };
+    /** QuestionIn */
+    QuestionIn: {
+      /** Body */
+      body: string;
+      /** Linked Resource */
+      linked_resource?: string | null;
+      /** Tags */
+      tags?: string[];
+      /** Title */
+      title: string;
+      /** Topic */
+      topic: string;
+    };
+    /** QuestionOut */
+    QuestionOut: {
+      /**
+       * Answer Count
+       * @default 0
+       */
+      answer_count: number;
+      author: components["schemas"]["AuthorOut"];
+      /** Body */
+      body: string;
+      /** Bookmark Count */
+      bookmark_count: number;
+      /**
+       * Bookmarked
+       * @default false
+       */
+      bookmarked: boolean;
+      /** Call Number */
+      call_number: string;
+      /** Comment Count */
+      comment_count: number;
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+      duplicate_of?: components["schemas"]["app__schemas__qa__ItemRef"] | null;
+      /**
+       * Has Accepted
+       * @default false
+       */
+      has_accepted: boolean;
+      /** Hidden Reason */
+      hidden_reason?: string | null;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /** Is Research */
+      is_research: boolean;
+      linked_resource?: components["schemas"]["app__schemas__qa__ItemRef"] | null;
+      /**
+       * My Vote
+       * @default 0
+       * @enum {integer}
+       */
+      my_vote: -1 | 0 | 1;
+      /** Status */
+      status: string;
+      /** Tags */
+      tags: string[];
+      /** Title */
+      title: string;
+      /** Topic */
+      topic: string;
+      /**
+       * Type
+       * @constant
+       */
+      type: "question";
+      /** Vote Score */
+      vote_score: number;
+    };
+    /** ReadIn */
+    ReadIn: {
+      /** Ids */
+      ids?: string[] | null;
+    };
+    /** ReputationEventOut */
+    ReputationEventOut: {
+      /** Call Number */
+      call_number?: string | null;
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+      /** Points */
+      points: number;
+      /** Reason */
+      reason: string;
+      /** Title */
+      title?: string | null;
+    };
+    /** ReputationRules */
+    ReputationRules: {
+      /** Daily Vote Cap */
+      daily_vote_cap: number;
+      /** Points */
+      points: components["schemas"]["PointRule"][];
+      /** Privileges */
+      privileges: components["schemas"]["PrivilegeRule"][];
     };
     /** ResetIn */
     ResetIn: {
@@ -1349,7 +1827,11 @@ export interface components {
       title: string;
       /** Title Hl */
       title_hl: string;
-      type: components["schemas"]["ContentType"];
+      /**
+       * Type
+       * @enum {string}
+       */
+      type: "resource" | "article" | "collection" | "question";
       /** Vote Score */
       vote_score: number;
     };
@@ -1364,6 +1846,17 @@ export interface components {
       email: string;
       /** Password */
       password: string;
+    };
+    /** SimilarHit */
+    SimilarHit: {
+      /** Answer Count */
+      answer_count: number;
+      /** Call Number */
+      call_number: string;
+      /** Has Accepted */
+      has_accepted: boolean;
+      /** Title */
+      title: string;
     };
     /** TagOut */
     TagOut: {
@@ -1402,6 +1895,11 @@ export interface components {
       token_type: string;
       user: components["schemas"]["UserOut"];
     };
+    /** UnreadOut */
+    UnreadOut: {
+      /** Unread */
+      unread: number;
+    };
     /** UserOut */
     UserOut: {
       /** Avatar Url */
@@ -1422,6 +1920,11 @@ export interface components {
        * Format: uuid
        */
       id: string;
+      /**
+       * Reputation
+       * @default 0
+       */
+      reputation: number;
       /** Role */
       role: string;
       /** Status */
@@ -1445,6 +1948,32 @@ export interface components {
       /** Vote Score */
       vote_score: number;
     };
+    /** ItemRef */
+    app__schemas__collections__ItemRef: {
+      /** Call Number */
+      call_number: string;
+      /** Description */
+      description: string;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /** Is Research */
+      is_research: boolean;
+      /** Title */
+      title: string;
+      type: components["schemas"]["ContentType"];
+      /** Vote Score */
+      vote_score: number;
+    };
+    /** ItemRef */
+    app__schemas__qa__ItemRef: {
+      /** Call Number */
+      call_number: string;
+      /** Title */
+      title: string;
+    };
   };
   responses: never;
   parameters: never;
@@ -1454,6 +1983,130 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  accept_api_answers__answer_id__accept_put: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        answer_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AnswerOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  unaccept_api_answers__answer_id__accept_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        answer_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AnswerOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  pin_api_answers__answer_id__pin_put: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        answer_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AnswerOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  unpin_api_answers__answer_id__pin_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        answer_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AnswerOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
   list_articles_api_articles_get: {
     parameters: {
       query?: {
@@ -2416,6 +3069,457 @@ export interface operations {
       };
     };
   };
+  my_reputation_api_me_reputation_get: {
+    parameters: {
+      query?: {
+        cursor?: string | null;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Page_ReputationEventOut_"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  list_notifications_api_notifications_get: {
+    parameters: {
+      query?: {
+        unread?: boolean;
+        cursor?: string | null;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Page_NotificationOut_"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  mark_read_api_notifications_read_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReadIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UnreadOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  get_settings_api_notifications_settings_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["NotificationSettings"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  put_settings_api_notifications_settings_put: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["NotificationSettings"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["NotificationSettings"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  unread_api_notifications_unread_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UnreadOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  list_questions_api_questions_get: {
+    parameters: {
+      query?: {
+        sort?: "latest" | "top";
+        topic?: string | null;
+        tag?: string | null;
+        unanswered?: boolean;
+        cursor?: string | null;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Page_QuestionOut_"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  ask_api_questions_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["QuestionIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuestionOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  similar_api_questions_similar_get: {
+    parameters: {
+      query: {
+        title: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SimilarHit"][];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  get_question_api_questions__call_number__get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        call_number: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuestionOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  list_answers_api_questions__call_number__answers_get: {
+    parameters: {
+      query?: {
+        cursor?: string | null;
+        limit?: number;
+      };
+      header?: never;
+      path: {
+        call_number: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Page_AnswerOut_"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  answer_api_questions__item_id__answers_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AnswerIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AnswerOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  mark_duplicate_api_questions__item_id__duplicate_put: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DuplicateIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  unmark_duplicate_api_questions__item_id__duplicate_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
   ready_api_ready_get: {
     parameters: {
       query?: never;
@@ -2432,6 +3536,35 @@ export interface operations {
         };
         content: {
           "application/json": unknown;
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  reputation_rules_api_reputation_rules_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReputationRules"];
         };
       };
       /** @description Error envelope */

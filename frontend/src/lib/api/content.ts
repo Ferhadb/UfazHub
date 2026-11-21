@@ -23,7 +23,17 @@ export type ResourceFilters = NonNullable<
 const RESOURCES = "resources"; // infinite lists
 const RESOURCE = "resource"; // single detail
 /** Every cache that can hold a votable item: lists ("...s") and details of each content type. */
-const CONTENT_KEYS = [RESOURCES, RESOURCE, "articles", "article", "collections", "collection"];
+const CONTENT_KEYS = [
+  RESOURCES,
+  RESOURCE,
+  "articles",
+  "article",
+  "collections",
+  "collection",
+  "questions",
+  "question",
+  "answers",
+];
 
 /** The fields votes and bookmarks touch; resources, articles and collections all have them. */
 export type Votable = Pick<
