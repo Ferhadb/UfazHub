@@ -74,7 +74,7 @@ jobs:
           uv run alembic check
 
       - name: Run backend tests
-        run: uv run pytest -q --cov --cov-report=term-missing
+        run: uv run pytest -q --cov=app.services --cov-report=term-missing --cov-fail-under=85
 
       - name: Audit Python dependencies
         run: uv run pip-audit

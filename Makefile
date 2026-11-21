@@ -116,12 +116,12 @@ test-db: ## Start the local test Postgres on :5433 (no Docker needed)
 	@bash scripts/pg.sh start
 
 test: test-db ## Backend test suite (real Postgres) + frontend unit tests
-	@cd backend && TEST_DATABASE_URL=$(TEST_DATABASE_URL) uv run pytest -q
+	@cd backend && TEST_DATABASE_URL=$(TEST_DATABASE_URL) uv run pytest -q --cov=app.services --cov-fail-under=85
 	@cd frontend && npm test
 
 lint: test-db ## All CI checks: black, pytest, alembic check, prettier, eslint, tsc, typegen drift
 	@cd backend && uv run black --check app tests scripts
-	@cd backend && TEST_DATABASE_URL=$(TEST_DATABASE_URL) uv run pytest -q
+	@cd backend && TEST_DATABASE_URL=$(TEST_DATABASE_URL) uv run pytest -q --cov=app.services --cov-fail-under=85
 	@cd frontend && npm run format:check && npm run lint && npm run typecheck && npm test
 	@cd backend && uv run python scripts/export_openapi.py | diff -q - ../frontend/openapi.json >/dev/null || { echo "frontend/openapi.json is stale: run make typegen" >&2; exit 1; }
 

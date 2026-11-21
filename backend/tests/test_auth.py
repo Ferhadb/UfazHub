@@ -410,7 +410,34 @@ def test_production_refuses_default_secret_and_insecure_cookie():
         )
     with pytest.raises(ValueError, match="COOKIE_SECURE"):
         Settings(APP_ENV="production", JWT_SECRET_KEY="x" * 40)
-    assert Settings(APP_ENV="production", JWT_SECRET_KEY="x" * 40, COOKIE_SECURE=True)
+    with pytest.raises(ValueError, match="SITE_URL"):
+        Settings(APP_ENV="production", JWT_SECRET_KEY="x" * 40, COOKIE_SECURE=True)
+
+
+@pytest.mark.parametrize(
+    "origin",
+    ["http://ufazhub.xyz", "https://localhost", "*", "https://ufazhub.xyz/path"],
+)
+def test_production_rejects_unsafe_cors_origins(origin):
+    with pytest.raises(ValueError, match="CORS_ORIGINS"):
+        Settings(
+            APP_ENV="production",
+            JWT_SECRET_KEY="x" * 40,
+            COOKIE_SECURE=True,
+            SITE_URL="https://ufazhub.xyz",
+            CORS_ORIGINS=[origin],
+        )
+
+
+def test_production_accepts_https_cors_allowlist():
+    config = Settings(
+        APP_ENV="production",
+        JWT_SECRET_KEY="x" * 40,
+        COOKIE_SECURE=True,
+        SITE_URL="https://ufazhub.xyz",
+        CORS_ORIGINS=["https://ufazhub.xyz"],
+    )
+    assert config.CORS_ORIGINS == ["https://ufazhub.xyz"]
 
 
 def test_page_cursor_roundtrip():

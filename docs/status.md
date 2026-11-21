@@ -196,3 +196,15 @@ Decisions to review
 - The view cookie is valid for 30 days, while item-specific deduplication receipts expire after 24 hours. Counts remain aggregate after cleanup.
 - RSS and Atom expose up to 50 latest published articles per feed. A missing tag returns 404.
 - No production deploy was performed. Docker is unavailable locally.
+
+## Slice 9: hardening and deploy readiness
+
+Built
+- `scripts/loadtest.py` measures unified search and RSS article feeds with bounded asyncio/httpx concurrency, warmups, response checks, and p50/p95 reporting. On the seeded playground (18 content items, one article), with rate limiting disabled, 400 measured requests per endpoint and concurrency 20: search 703.1 req/s, p50 15.5 ms, p95 88.9 ms; RSS 613.4 req/s, p50 18.7 ms, p95 101.2 ms. These are local fixture measurements, not production capacity estimates. Query plans showed submillisecond execution on the small seed; no index was justified.
+- Real-Postgres backend suite: 355 tests passed; `app/services` coverage is 97% (1846 statements, 51 missed). CI and the local test/lint targets now enforce a floor of 85% service coverage.
+
+Deferred
+- Load testing against a production-like dataset and deployed network path; the current seed is too small to expose index bottlenecks or establish production capacity.
+
+Decisions to review
+- Keep the existing GIN full-text/trigram and article feed indexes until larger data and query plans show a concrete need for another index.

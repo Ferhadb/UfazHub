@@ -1,5 +1,6 @@
 from functools import lru_cache
 from typing import Literal
+from urllib.parse import urlsplit
 
 from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -71,6 +72,33 @@ class Settings(BaseSettings):
                 )
             if not self.COOKIE_SECURE:
                 raise ValueError("COOKIE_SECURE must be true in production")
+            site = urlsplit(self.SITE_URL)
+            if (
+                site.scheme != "https"
+                or not site.hostname
+                or site.hostname in {"localhost", "127.0.0.1", "::1"}
+                or site.username
+                or site.password
+                or site.path not in {"", "/"}
+                or site.query
+                or site.fragment
+            ):
+                raise ValueError("SITE_URL must be an HTTPS origin in production")
+            for origin in self.CORS_ORIGINS:
+                parsed = urlsplit(origin)
+                if (
+                    parsed.scheme != "https"
+                    or not parsed.hostname
+                    or parsed.hostname in {"localhost", "127.0.0.1", "::1"}
+                    or parsed.username
+                    or parsed.password
+                    or parsed.path
+                    or parsed.query
+                    or parsed.fragment
+                ):
+                    raise ValueError(
+                        "CORS_ORIGINS must contain HTTPS origins only in production"
+                    )
         return self
 
     @property

@@ -1,184 +1,65 @@
-# AWS Deployment
+# EC2 deployment
 
-## Files to use
+UFAZ Hub runs on one EC2 host with Docker Compose. Use both Compose files for production; the base file alone is an HTTP development stack with a backend bind mount. Production publishes Nginx on ports 80/443 and the API on `127.0.0.1:8000`. PostgreSQL and Redis have no host ports. Uploads live in the `media` Docker volume; database dumps live in `./backups` on the host.
 
-- `docker-compose.yml` (Postgres, Redis, backend, arq worker, frontend, backup, nginx — HTTP-only dev config)
-- `docker-compose.prod.yml` (production overrides — image-built backend and worker, `media` volume for uploads, backend on 127.0.0.1 only, TLS nginx, certbot; use on EC2)
-- `nginx.conf` (production TLS) and `nginx.dev.conf` (development HTTP, no certs needed)
-- `backend/Dockerfile` (installs deps with `uv sync`)
-- `backend/pyproject.toml` and `backend/uv.lock`
-- `frontend/Dockerfile`
-- `backend/.env` copied from `backend/.env.example`
-- root `.env` copied from `deploy.env.example`
+## Prepare the host
 
-## Compose: development vs production
+1. Install Docker Engine with the Compose plugin and Git. Give the deploy user access to Docker and enough disk for images, the PostgreSQL volume, uploads, and backups. Restrict SSH to trusted addresses; allow inbound TCP 80 and 443.
+2. Point the `ufazhub.xyz` A record at the EC2 public IPv4 and `www.ufazhub.xyz` at the same host (A or CNAME). Confirm both resolve before requesting a certificate.
+3. Clone the repository as `~/ufazhub` (or set the `EC2_TARGET_DIR` GitHub secret to another existing checkout). The CI deploy job needs `EC2_HOST`, `EC2_USER`, `EC2_SSH_KEY`, and optionally `EC2_PORT` and `EC2_TARGET_DIR` repository secrets. A push to `main` deploys only after backend and frontend checks pass. The job pulls, builds, recreates containers, and prunes unused images; it does not take a pre-deploy backup or run HTTP smoke checks.
+4. From the repo root, copy `deploy.env.example` to `.env` and `backend/.env.example` to `backend/.env`. Set restrictive permissions (`chmod 600 .env backend/.env`). Set a strong unique `POSTGRES_PASSWORD` in the root `.env`; keep the default `POSTGRES_USER=ufaz` and `POSTGRES_DB=ufazhub` because the current restore Make target uses those names. In `backend/.env`, set a random `JWT_SECRET_KEY` (at least 32 characters), `APP_ENV=production`, `COOKIE_SECURE=true`, `SITE_URL=https://ufazhub.xyz`, and `CORS_ORIGINS=["https://ufazhub.xyz"]`. Set `SMTP_USERNAME`, `SMTP_PASSWORD`, `MAIL_FROM` and the correct SMTP host/port for email verification and password reset. Optionally set `SIGNUP_ALLOWED_DOMAINS=ufaz.az`, `SENTRY_DSN`, and a separate `MEDIA_SIGNING_KEY`. Compose supplies the database and Redis URLs to its services. Never commit either env file.
+5. Create `make.env` containing `PROD=1` if using the runbook's `make` commands. This file is local to the host. Without it, always pass both Compose files as shown below.
 
-| Environment                                                     | Command                                                                         |
-| --------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| **Local / dev on server** (live-edit `backend/` via bind mount) | `docker compose up -d --build`                                                  |
-| **Production EC2** (backend code from the image only)           | `docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build` |
+Use a separate SMTP account or app password. The supplied example uses Gmail STARTTLS on port 587; sender address and mailbox policy must permit the configured `MAIL_FROM`.
 
-Optional shortcut on the server:
+## First TLS certificate and start
+
+The production Nginx configuration requires certificate files before it can start. Wait for DNS to resolve and ensure port 80 is free. From the project root:
 
 ```bash
-export COMPOSE_FILE=docker-compose.yml:docker-compose.prod.yml
-docker compose up -d --build
+docker compose -f docker-compose.yml -f docker-compose.prod.yml run --rm -p 80:80 --entrypoint certbot certbot certonly --standalone -d ufazhub.xyz -d www.ufazhub.xyz --agree-tos -m you@example.com --no-eff-email
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+docker compose -f docker-compose.yml -f docker-compose.prod.yml ps
 ```
 
-After changing only the backend or frontend image, rebuild and recreate that service (`nginx.conf` uses Docker DNS re-resolution so a nginx restart is optional):
+Replace the email. If an HTTP server already occupies port 80, stop it first. The certificate is stored in the `certbot_conf` volume shared with Nginx. The backend runs `alembic upgrade head` on startup, so wait for the backend to start before checking readiness; no separate migration command is required. Check logs if a service exits:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.prod.yml build backend
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d backend
+docker compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=100 backend worker nginx certbot
 ```
 
-After editing `nginx.conf` (gzip, cache and security headers, upstream DNS), reload nginx:
+## Verify a deploy
+
+Run these from the EC2 host after the stack starts:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.prod.yml restart nginx
+curl -fsS http://127.0.0.1:8000/api/ready
+curl -sSI http://ufazhub.xyz/ | head -n 1
+curl -fsSI https://ufazhub.xyz/
+curl -fsS https://ufazhub.xyz/api/ready
 ```
 
-Verify gzip and caching: `curl -Ik -H 'Accept-Encoding: gzip' https://ufazhub.xyz/` should show `Content-Encoding: gzip`; a `/_next/static/...` asset should include `Cache-Control: public, max-age=31536000, immutable`. Both responses should include the HSTS (with `includeSubDomains`), content-type, frame, referrer, and Content Security Policy headers from `nginx.conf`.
+Readiness must return `{"status":"ok","db":"ok","redis":"ok"}`. HTTP should return `301` to HTTPS. The HTTPS command validates the certificate because it does not use `-k`; it should return a successful status and the Nginx security headers. For compression, request a nontrivial page with `curl -sS -D - -o /dev/null -H 'Accept-Encoding: gzip' https://ufazhub.xyz/` and inspect `Content-Encoding`. A `/_next/static/...` response should include `Cache-Control: public, max-age=31536000, immutable`; use a real asset URL from the page. Check signup and email delivery through a test account after SMTP configuration.
 
-**Verify prod mounts:** `docker compose -f docker-compose.yml -f docker-compose.prod.yml exec backend ls /app/app` should match the image (rebuild after git pull), not an out-of-date host checkout.
+The production override removes the backend/worker source bind mounts. To inspect the merged configuration without starting containers, run `docker compose -f docker-compose.yml -f docker-compose.prod.yml config`.
 
-## On the EC2 instance
+## Update and rollback
 
-1. Copy the repository to the server.
-2. In the project root, create the env files:
-   - `cp deploy.env.example .env`
-   - `cp backend/.env.example backend/.env`
-3. Edit `backend/.env` and set:
-   - `JWT_SECRET_KEY` (64 random characters; production refuses the default)
-   - `APP_ENV=production`, `COOKIE_SECURE=true`, `SITE_URL=https://ufazhub.xyz`
-   - `CORS_ORIGINS=["https://ufazhub.xyz"]`
-   - `SMTP_USERNAME`, `SMTP_PASSWORD`, `MAIL_FROM` for verification and reset emails
-   - `SIGNUP_ALLOWED_DOMAINS=ufaz.az` to restrict signup to university addresses (optional)
-   - `SENTRY_DSN` (optional)
-   - `DATABASE_URL` and `REDIS_URL` can stay as-is: compose overrides them
-4. Uploads are stored in the `media` named volume (`/app/media`), shared by backend and worker. It is not part of the database dump; see `docs/runbook.md` for backing it up.
-5. After deploy, run `docker compose -f docker-compose.yml -f docker-compose.prod.yml exec backend alembic upgrade head` (the backend container also runs migrations automatically on start).
-6. Edit `.env` if you want custom database credentials.
-7. Start the stack (production compose):
-   - `docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build`
-8. Check logs:
-   - `docker compose -f docker-compose.yml -f docker-compose.prod.yml logs -f backend`
-   - `docker compose -f docker-compose.yml -f docker-compose.prod.yml logs -f frontend`
-
-For Gmail SMTP, create a Google app password for the mailbox that sends email. The backend uses `smtp.gmail.com` on port `587` with STARTTLS.
-
-## Database backups (daily, local + Telegram)
-
-The compose stack includes a `backup` sidecar (`backup/Dockerfile` running Postgres client
-tools over `backup/db-backup.sh`). Every run:
-
-1. `pg_dump -Fc` (custom format) of the live DB into `./backups/db_<UTC-stamp>.dump`
-   on the host — one dump every 24h. On container startup it checks the newest dump
-   and skips the immediate dump when that backup is still fresh, so restarting the
-   stack does not create another dump.
-2. Sends that dump as a file to a Telegram chat (off-site copy, **best-effort**: a failed
-   send only logs a warning and retries on the next run — the local file is always kept).
-3. Prunes local dumps older than `BACKUP_KEEP_DAYS` days (default 14).
-
-The off-site copy is what matters if the AWS account/instance becomes unreachable: dumps
-stay archived in the Telegram chat and download from any device. Telegram's bot upload
-limit is 50 MB per file — the current DB is far below it; larger dumps still land locally
-with a WARN in the logs (the local file is always kept).
-
-### Enable the Telegram copy
-
-1. `backend/.env` already carries `TELEGRAM_BOT_TOKEN` (the same bot as the in-app bot).
-2. Get a target chat id: message **@userinfobot** (it replies with your chat id), or make
-   the bot an **admin** of a private channel dedicated to backups and use that channel's
-   id (negative, `-100…`). A channel works even in webhook mode, unlike `getUpdates`.
-3. In the root `.env` (see `deploy.env.example`): `BACKUP_TELEGRAM_CHAT_ID=<id>` and
-   optionally `BACKUP_KEEP_DAYS=14`.
-4. Recreate the stack: `make update` — then watch `make logs S=backup` for
-   "dump done" and "Telegram off-site copy sent".
-
-Without the token/chat id backups still run locally every day; the log just says the
-Telegram copy was skipped.
-
-### Manual ops
+With `PROD=1` in `make.env`, `make deploy` pulls with `--ff-only`, takes a database dump, builds, and recreates services. `make update` builds and recreates without pulling or backing up. The GitHub deploy workflow performs its own pull/build/up sequence as described above. For a manual update without `make.env`:
 
 ```bash
-make backup-now    # one dump immediately (still uploaded to Telegram if configured)
-make backups       # list dumps inside ./backups/
+docker compose -f docker-compose.yml -f docker-compose.prod.yml build
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ```
 
-### Restore
+Review migrations before rolling back application code: migrations are applied on backend startup and are not automatically reversed. Follow [the runbook](docs/runbook.md) for rollback and secret rotation.
 
-Telegram chat → download a dump → `scp` it into the server's `./backups/`, then:
+## Backups and restore
 
-```bash
-make db-restore FILE=backups/db_2026-10-20_0317.dump
-make restart S=backend
-```
+The `backup` service creates a PostgreSQL custom-format dump at `./backups/db_<UTC-stamp>.dump` on startup and roughly every 24 hours. It keeps local dumps for `BACKUP_KEEP_DAYS` (default 14). If `TELEGRAM_BOT_TOKEN` is set in `backend/.env` and `BACKUP_TELEGRAM_CHAT_ID` in the root `.env`, it also attempts a Telegram copy. Upload failures are logged; the local dump remains. Telegram Bot API upload size limits can prevent larger offsite dumps, so monitor the backup logs and arrange independent offsite storage as data grows.
 
-`db-restore` drops and recreates the `ufazhub` database and rebuilds it from the dump —
-everything else (Redis, the `media` volume, secrets files) is unaffected; the backend just needs a
-restart to pick up fresh connections. Restoring into a *fresh* server: start the stack
-first (creates an empty DB), then run the same two commands.
+The dump contains the database only. Back up the `media` volume and the two env files separately; Redis contains rate-limit counters and queued jobs, not source-of-truth content. See [the runbook](docs/runbook.md) for backup verification, restore, and secret rotation. A restore overwrites the live database, so use a maintenance window and a verified dump.
 
-## HTTPS (Let's Encrypt + Nginx in Docker)
+## Certificate renewal
 
-This repo serves traffic through the `nginx` container. HTTPS is enabled by:
-
-- Sharing `/etc/letsencrypt` and the ACME challenge webroot with a `certbot` container
-- Serving `/.well-known/acme-challenge/` on port 80
-- Redirecting all other HTTP traffic to HTTPS
-
-### Prerequisites (DNS)
-
-- `A` record: `ufazhub.xyz` -> your EC2 public IPv4
-- `CNAME` record: `www` -> `ufazhub.xyz`
-
-Wait until these resolve from your laptop:
-
-- `nslookup ufazhub.xyz`
-- `nslookup www.ufazhub.xyz`
-
-### First certificate issuance
-
-The base compose runs an HTTP-only nginx (`nginx.dev.conf`), so a fresh machine boots without any certificates. But the first certificate needs port 80, so issue it **standalone** while nginx is down:
-
-1. Stop nginx (a base `docker compose up` may have started it):
-   - `docker compose stop nginx`
-2. Run certbot standalone (replace the email):
-   - `docker compose -f docker-compose.yml -f docker-compose.prod.yml run --rm -p 80:80 certbot certonly --standalone -d ufazhub.xyz -d www.ufazhub.xyz --agree-tos -m you@example.com --no-eff-email`
-3. Bring the full production stack up (nginx now finds the issued cert and serves TLS):
-   - `docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build`
-
-2. Run Certbot once to issue the cert (replace the email):
-   - `docker compose -f docker-compose.yml -f docker-compose.prod.yml run --rm certbot certonly --webroot -w /var/www/certbot \
-  -d ufazhub.xyz -d www.ufazhub.xyz \
-  --email you@example.com --agree-tos --no-eff-email`
-
-3. Reload nginx:
-   - `docker compose -f docker-compose.yml -f docker-compose.prod.yml restart nginx`
-
-4. Verify:
-   - `curl -I http://ufazhub.xyz` (should be 301 -> https)
-   - `curl -Ik https://ufazhub.xyz` (should be 200/301 with valid cert)
-
-### Auto-renewal
-
-The `certbot` service runs `certbot renew` every 12 hours. After renewal, Nginx needs a reload.
-The simplest approach is a periodic restart of the nginx container (e.g. daily via cron), or you
-can change the renew loop to run `nginx -s reload` if you switch to a combined image.
-
-Minimal manual check:
-
-- `docker compose -f docker-compose.yml -f docker-compose.prod.yml logs -f certbot`
-
-## Notes
-
-- Docker builds use BuildKit cache mounts in `backend/Dockerfile` and `frontend/Dockerfile` (faster rebuilds when only app code changes). BuildKit is on by default in Docker 23+; if builds fail on an older host, run `export DOCKER_BUILDKIT=1` before `docker compose build`.
-- On EC2, always include `docker-compose.prod.yml` so the backend runs code baked into the image (`./backend:/app` in the base file is for local dev only) and the backend port is **published on `127.0.0.1` only** — nginx (80/443) is the public entrypoint; SSH in and curl `localhost:8000` for direct debugging.
-- Locally, `docker compose up` serves plain HTTP on port 80 through `nginx.dev.conf` (no certificates needed); `next dev` still talks to the published `localhost:8000` backend.
-- The app is exposed on ports `80`/`443` through Nginx in production.
-- API requests from the browser go to `/api` and are proxied to FastAPI.
-- The backend runs Alembic migrations automatically before Uvicorn starts.
-- **Redis** holds rate-limit counters and the arq job queue. Compose sets `REDIS_URL=redis://redis:6379/0` for the backend and worker services.
-- The `worker` service runs `arq app.worker.WorkerSettings` (emails, link checks, previews, digests, retention).
-- Backend Python dependencies are installed with **uv** (`uv sync --frozen` into `/usr/local` via `UV_PROJECT_ENVIRONMENT`), not `pip install -r requirements.txt`.
+The `certbot` service runs `certbot renew --webroot` every 12 hours. Nginx does not reload certificates automatically; restart Nginx after a successful renewal (`make restart S=nginx` with `PROD=1`, or the equivalent Compose command). Check `docker compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=100 certbot` and the served certificate expiry regularly.
