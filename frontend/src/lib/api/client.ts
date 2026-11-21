@@ -23,8 +23,16 @@ export const api = createClient<paths>({
 });
 api.use(authMiddleware);
 
-/** The `{code, message, fields?}` envelope's message and per-field errors from an openapi-fetch error. */
-export function errorInfo(error: unknown): { message: string; fields: Record<string, string> } {
-  const e = (error ?? {}) as { message?: string; fields?: Record<string, string> };
-  return { message: e.message ?? "Something went wrong. Try again.", fields: e.fields ?? {} };
+/** The `{code, message, fields?}` envelope's parts from an openapi-fetch error. */
+export function errorInfo(error: unknown): {
+  message: string;
+  fields: Record<string, string>;
+  code?: string;
+} {
+  const e = (error ?? {}) as { message?: string; fields?: Record<string, string>; code?: string };
+  return {
+    message: e.message ?? "Something went wrong. Try again.",
+    fields: e.fields ?? {},
+    code: e.code,
+  };
 }

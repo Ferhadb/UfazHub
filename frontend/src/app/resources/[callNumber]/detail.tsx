@@ -137,7 +137,11 @@ export function ResourceDetail({ callNumber }: { callNumber: string }) {
             ))}
           </ul>
         )}
-        <ResourceActions resource={r} className="border-rule mt-4 border-t pt-4" />
+        <ResourceActions
+          resource={r}
+          reportAuthor={r.author.id}
+          className="border-rule mt-4 border-t pt-4"
+        />
       </article>
       <Comments itemId={r.id} count={r.comment_count} />
     </main>

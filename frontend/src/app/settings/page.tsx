@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ModerationHistory } from "@/components/moderation/history";
 import { Callout } from "@/components/ui/callout";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
@@ -63,6 +64,12 @@ export default function SettingsPage() {
           </div>
         </Callout>
       )}
+      {user.status !== "active" && (
+        <Callout tone="danger" title={`Your account is ${user.status}`}>
+          You cannot post, vote or comment. The history below says why and how to appeal.
+        </Callout>
+      )}
+      <ModerationHistory />
       <section aria-labelledby="sessions" className="flex flex-wrap gap-3">
         <h2 id="sessions" className="sr-only">
           Sessions

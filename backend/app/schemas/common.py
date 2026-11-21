@@ -30,3 +30,19 @@ def decode_cursor(cursor: str) -> dict[str, Any]:
     if not isinstance(data, dict):
         raise AppError("Invalid cursor", code="invalid_cursor")
     return data
+
+
+def ts_cursor(row_ts, row_id) -> str:
+    """Cursor for a (timestamp, id) keyset; pair with `parse_ts_cursor`."""
+    return encode_cursor({"k": [row_ts.isoformat(), str(row_id)]})
+
+
+def parse_ts_cursor(cursor: str):
+    import uuid
+    from datetime import datetime
+
+    try:
+        raw = decode_cursor(cursor)["k"]
+        return datetime.fromisoformat(raw[0]), uuid.UUID(raw[1])
+    except (KeyError, TypeError, ValueError, IndexError) as exc:
+        raise AppError("Invalid cursor", code="invalid_cursor") from exc

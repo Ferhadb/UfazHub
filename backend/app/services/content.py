@@ -38,7 +38,6 @@ from app.schemas.content import (
     TagOut,
     VoteOut,
 )
-from app.models.qa import NotificationKind
 from app.services import audit, notifications, reputation
 from app.services.uploads import owned_attachment
 
@@ -262,43 +261,6 @@ async def list_resources(
         stmt = stmt.where(Resource.is_research.is_(research))
     rows, nxt = await keyset_page(db, stmt, Resource, sort, cursor, limit)
     return Page(items=await present(db, viewer, rows), next_cursor=nxt)
-
-
-# --- moderation (hide / publish) ------------------------------------------------------
-
-
-async def set_status(
-    db: AsyncSession,
-    actor: User,
-    item_id: uuid.UUID,
-    status: ContentStatus,
-    reason: str | None,
-) -> None:
-    item = await db.get(ContentItem, item_id)
-    if item is None:
-        raise NotFound("Not found.")
-    before = {"status": item.status, "hidden_reason": item.hidden_reason}
-    item.status = status.value
-    item.hidden_reason = reason
-    await audit.record(
-        db,
-        actor_id=actor.id,
-        action=f"content.{'hide' if reason else 'publish'}",
-        target_type="content_item",
-        target_id=item.id,
-        before=before,
-        after={"status": item.status, "hidden_reason": reason},
-        reason=reason,
-    )
-    await notifications.notify(
-        db,
-        item.author_id,
-        NotificationKind.moderation,
-        item.id,
-        actor=actor,
-        message=reason or "approved and visible again",
-    )
-    await db.flush()
 
 
 # --- votes and bookmarks -----------------------------------------------------------------

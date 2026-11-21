@@ -30,6 +30,7 @@ from app.schemas.content import (
     VoteOut,
 )
 from app.services import content as svc
+from app.services import content_admin
 from app.services import search as search_svc
 
 router = APIRouter(tags=["content"])
@@ -185,7 +186,7 @@ async def remove_bookmark(item_id: uuid.UUID, db: DB, user: ActiveUser):
     "/content/{item_id}/hide", status_code=204, dependencies=[Depends(limit_write)]
 )
 async def hide(item_id: uuid.UUID, body: HideIn, db: DB, admin: AdminUser):
-    await svc.set_status(db, admin, item_id, ContentStatus.hidden, body.reason)
+    await content_admin.apply(db, admin, "hide", item_id, body.reason)
     await db.commit()
 
 
@@ -194,5 +195,5 @@ async def hide(item_id: uuid.UUID, body: HideIn, db: DB, admin: AdminUser):
 )
 async def publish(item_id: uuid.UUID, db: DB, admin: AdminUser):
     """Approve a pending item or restore a hidden one."""
-    await svc.set_status(db, admin, item_id, ContentStatus.published, None)
+    await content_admin.restore(db, admin, item_id)
     await db.commit()

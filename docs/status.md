@@ -125,3 +125,26 @@ Decisions to review
 - Point values (resource/article/question +5, collection +3, answer +10, any downvote -2, accepted +15 / accepting +2) and thresholds are placeholders to tune.
 - The margin score is shown twice (circled mark and the vote control); the mark is decorative and hidden from screen readers.
 - Answers by users who are not verified students go to `pending_review` like other content.
+
+## Slice 6: moderation, reports, admin panel
+
+Built
+- Migration `0006`: `reports` (reason VARCHAR+CHECK: spam, offensive, copyright, inaccurate, broken_link, off_topic, other; free-text note; open/actioned/dismissed; one report per user per item) and `appeals` (content or ban; partial unique indexes allow one open appeal per subject).
+- Backend split into `services/moderation` (reports, queue, user-visible history), `content_admin` (hide, unhide, approve, dismiss; bulk with per-item savepoints), `users_admin` (list, mute/unmute, ban/unban, role), `appeals`, and `audit` (now also the log query). Routers: `api/moderation.py` (report, appeal, `/me/moderation`, `/me/appeals`, `/auth/appeal`) and `api/admin.py` (queue with type/reason/view filters and cursor, bulk actions, users, appeals, audit viewer), all admin routes behind `admin_user`.
+- Every action writes `audit_log` with a before/after diff and reason (`content.hide|unhide|approve`, `report.dismiss`, `user.mute|unmute|ban|unban|role`, `appeal.accept|reject`). Ban revokes all refresh tokens; banned users already fail login, refresh and every bearer call; muted users fail every write (existing `ActiveUser`).
+- Old `/content/{id}/hide` and `/publish` routes kept as thin wrappers over `content_admin`.
+- Backend tests: 330 passing (22 new: reports, queue filters, each admin action with audit assertions, permission matrix for admin endpoints, mute/ban/unban end to end, appeals both kinds, history, audit filters); services coverage 97%.
+- Frontend: report button (flag icon) on resource, article, collection, question and answer pages; `/admin` (queue with filters and bulk actions, users, appeals, audit log) guarded by middleware plus a role check; moderation history and appeals section in settings; `/appeal` page for suspended users linked from the sign-in error; Admin link in the header for admins. Frontend tests: 164 passing.
+
+Deferred
+- Reporting comments and users (reports target content items only); comment hiding.
+- Notification to a banned user's appeal outcome (ban appeals have no item to point a notification at); email on mute/ban.
+- Auto-hide on N reports, report-abuse penalties, moderator notes on reports, Playwright e2e + axe for the admin panel.
+
+Decisions to review
+- "Server check" for `/admin`: the access token lives only in memory, so Next middleware sees only the session hint cookie. The page checks the role the API reported and every admin endpoint re-checks on the server (403).
+- Admins cannot change their own role or status, and cannot mute or ban another admin (remove the role first); status changes require a reason; role changes too.
+- A muted user may still appeal (appeals are not content writes); a banned user appeals with email and password at `/auth/appeal` since they cannot hold a session.
+- Unhide always restores to `published`, even for an item hidden while pending review.
+- Users see the reason and date of moderation actions but never which moderator acted.
+- With a report-reason filter the queue's report count and reasons only cover matching reports.

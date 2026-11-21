@@ -4,12 +4,14 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import (
+    admin,
     articles,
     auth,
     collections,
     comments,
     content,
     health,
+    moderation,
     notifications,
     questions,
     uploads,
@@ -66,3 +68,5 @@ app.include_router(comments.router, prefix=settings.API_PREFIX)
 app.include_router(uploads.router, prefix=settings.API_PREFIX)
 app.include_router(questions.router, prefix=settings.API_PREFIX)
 app.include_router(notifications.router, prefix=settings.API_PREFIX)
+app.include_router(moderation.router, prefix=settings.API_PREFIX)
+app.include_router(admin.router, prefix=settings.API_PREFIX)

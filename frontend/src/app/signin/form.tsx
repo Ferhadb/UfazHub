@@ -25,6 +25,7 @@ export function SignInForm() {
   const next = safeNext(useSearchParams().get("next"));
   const { status, login } = useSession();
   const [problem, setProblem] = useState<string | null>(null);
+  const [banned, setBanned] = useState(false);
   const {
     register,
     handleSubmit,
@@ -37,17 +38,32 @@ export function SignInForm() {
 
   const onSubmit = handleSubmit(async (values) => {
     setProblem(null);
+    setBanned(false);
     try {
       await login(values);
     } catch (e) {
-      setProblem(errorInfo(e).message);
+      const info = errorInfo(e);
+      setProblem(info.message);
+      setBanned(info.code === "account_banned");
     }
   });
 
   return (
     <AuthShell title="Sign in" intro="Welcome back. Your shelf kept your place.">
       <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
-        {problem && <Callout tone="danger">{problem}</Callout>}
+        {problem && (
+          <Callout tone="danger">
+            {problem}
+            {banned && (
+              <>
+                {" "}
+                <Link href="/appeal" className="underline underline-offset-4">
+                  Appeal this decision
+                </Link>
+              </>
+            )}
+          </Callout>
+        )}
         <Input
           label="Email"
           type="email"

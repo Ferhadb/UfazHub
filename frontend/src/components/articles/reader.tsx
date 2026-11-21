@@ -159,7 +159,11 @@ function Reader({ a }: { a: Article }) {
             </li>
           ))}
         </ul>
-        <ResourceActions resource={a} className="no-print border-rule mt-2 border-t pt-4" />
+        <ResourceActions
+          resource={a}
+          reportAuthor={a.author.id}
+          className="no-print border-rule mt-2 border-t pt-4"
+        />
         <Comments itemId={a.id} count={a.comment_count} />
       </div>
     </main>

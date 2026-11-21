@@ -84,7 +84,11 @@ function Sheet({
           <span className="font-mono tabular-nums">· {answer.author.reputation ?? 0} rep</span>
         </p>
         <div className="mt-2 flex flex-wrap items-center gap-2">
-          <ResourceActions resource={{ ...answer, bookmark_count: 0 }} bookmarks={false} />
+          <ResourceActions
+            resource={{ ...answer, bookmark_count: 0 }}
+            bookmarks={false}
+            reportAuthor={answer.author.id}
+          />
           {isAsker && answer.status === "published" && (
             <Button
               variant="secondary"
@@ -290,7 +294,11 @@ export function QuestionThread({ callNumber }: { callNumber: string }) {
           Asked by {question.author.display_name}
           {question.tags.length > 0 && <> · {question.tags.join(", ")}</>}
         </p>
-        <ResourceActions resource={question} className="border-rule mt-4 border-t pt-2" />
+        <ResourceActions
+          resource={question}
+          reportAuthor={question.author.id}
+          className="border-rule mt-4 border-t pt-2"
+        />
         {canMerge && <MergeBox actions={actions} />}
       </article>
 

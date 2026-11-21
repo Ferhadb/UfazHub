@@ -31,6 +31,11 @@ export function SiteHeader() {
           <Link href="/questions" className={buttonClass("ghost")}>
             Questions
           </Link>
+          {user?.role === "admin" && (
+            <Link href="/admin" className={buttonClass("ghost")}>
+              Admin
+            </Link>
+          )}
           <SearchPalette />
           <Link href="/design" className={buttonClass("ghost")}>
             Design

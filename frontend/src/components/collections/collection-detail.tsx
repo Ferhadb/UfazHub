@@ -50,7 +50,11 @@ export function CollectionDetail({ callNumber }: { callNumber: string }) {
         Curated by {c.author.display_name} · {c.items.length} items
       </p>
       <p className="mt-4">{c.description}</p>
-      <ResourceActions resource={c} className="border-rule mt-4 border-t pt-2" />
+      <ResourceActions
+        resource={c}
+        reportAuthor={c.author.id}
+        className="border-rule mt-4 border-t pt-2"
+      />
       <ol className="mt-8 flex flex-col gap-8">
         {c.items.map((it, i) => (
           <li key={it.item.id} className="grid gap-3 sm:grid-cols-[1fr_14rem]">
