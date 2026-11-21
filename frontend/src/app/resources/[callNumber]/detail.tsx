@@ -16,6 +16,7 @@ import { useResource } from "@/lib/api/content";
 import { useReportBroken } from "@/lib/api/lists";
 import { useSession } from "@/lib/auth/use-session";
 import { useToast } from "@/components/ui/toast";
+import { ViewTracker } from "@/components/view-tracker";
 
 const Field = ({ label, children }: { label: string; children: string }) =>
   children ? (
@@ -65,6 +66,7 @@ export function ResourceDetail({ callNumber }: { callNumber: string }) {
   const time = formatMinutes(r.time_commitment_minutes);
   return (
     <main id="main" className="relative z-10 mx-auto max-w-5xl px-4 py-8 sm:px-8 sm:py-12 lg:pr-72">
+      <ViewTracker itemId={r.id} published={r.status === "published"} />
       <Link
         href="/resources"
         className="text-step--1 inline-flex min-h-11 items-center gap-1 underline-offset-4 hover:underline"

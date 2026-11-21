@@ -48,8 +48,13 @@ export function SearchPalette() {
         setOpen((o) => !o);
       }
     };
+    const onOpen = () => setOpen(true);
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener("open-catalogue-search", onOpen);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("open-catalogue-search", onOpen);
+    };
   }, []);
 
   const groups = useMemo(() => {
@@ -91,7 +96,7 @@ export function SearchPalette() {
       }}
     >
       <D.Trigger asChild>
-        <Button variant="secondary" aria-keyshortcuts="Control+K Meta+K">
+        <Button variant="secondary" aria-label="Search" aria-keyshortcuts="Control+K Meta+K">
           <Icon name="search" size={18} />
           <span className="hidden sm:inline">Search</span>
           <kbd className="text-step--1 text-muted hidden font-mono sm:inline">Ctrl K</kbd>
@@ -178,14 +183,14 @@ export function SearchPalette() {
                           )}
                         >
                           {groups.map((g) => (
-                            <div key={g.type} role="group" aria-labelledby={`${uid}-${g.type}`}>
+                            <div key={g.type} role="group" aria-label={`${g.type}s`}>
                               <h2
-                                id={`${uid}-${g.type}`}
+                                role="presentation"
                                 className="text-step--1 text-muted mb-3 font-mono tracking-widest uppercase"
                               >
                                 {g.type}s
                               </h2>
-                              <div className="grid gap-4 sm:grid-cols-2">
+                              <div role="presentation" className="grid gap-4 sm:grid-cols-2">
                                 {g.hits.map((h) => (
                                   <Result
                                     key={h.id}

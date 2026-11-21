@@ -11,6 +11,7 @@ from app.models.content import (  # noqa: F401
     Comment,
     ContentItem,
     ContentTag,
+    ContentView,
     Resource,
     ResourceLink,
     Tag,

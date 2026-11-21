@@ -1,0 +1,21 @@
+{
+  "Navigation": {
+    "main": "Əsas",
+    "resources": "Resurslar",
+    "articles": "Məqalələr",
+    "collections": "Kolleksiyalar",
+    "questions": "Suallar",
+    "courses": "Kurslar",
+    "research": "Tədqiqat",
+    "people": "İnsanlar",
+    "admin": "İdarəetmə",
+    "design": "Dizayn",
+    "forYou": "Sizin üçün",
+    "shelf": "Rəf",
+    "profile": "Profil",
+    "settings": "Ayarlar",
+    "signIn": "Daxil ol",
+    "skip": "Məzmuna keç",
+    "language": "Dil"
+  }
+}

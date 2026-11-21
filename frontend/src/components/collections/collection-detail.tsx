@@ -11,6 +11,7 @@ import { Marginalia } from "@/components/ui/marginalia";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCollection } from "@/lib/api/library";
 import { useSession } from "@/lib/auth/use-session";
+import { ViewTracker } from "@/components/view-tracker";
 
 export function CollectionDetail({ callNumber }: { callNumber: string }) {
   const q = useCollection(callNumber);
@@ -47,6 +48,7 @@ export function CollectionDetail({ callNumber }: { callNumber: string }) {
   const c = q.data;
   return (
     <main id="main" className={shell}>
+      <ViewTracker itemId={c.id} published={c.status === "published"} />
       <p className="text-step--1 text-collection font-mono tracking-widest">{c.call_number}</p>
       <h1 className="font-display text-step-4 mt-1">{c.title}</h1>
       <p className="text-muted mt-2">

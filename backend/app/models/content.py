@@ -217,6 +217,19 @@ class ContentTag(Base):
     )
 
 
+class ContentView(Base):
+    """Short-lived, per-item pseudonymous receipt for a counted view."""
+
+    __tablename__ = "content_views"
+    __table_args__ = (Index("ix_content_views_viewed_at", "viewed_at"),)
+
+    item_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("content_items.id", ondelete="CASCADE"), primary_key=True
+    )
+    visitor_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
+    viewed_at: Mapped[datetime] = _now()
+
+
 class Vote(Base):
     __tablename__ = "votes"
     __table_args__ = (

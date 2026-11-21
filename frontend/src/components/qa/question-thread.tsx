@@ -23,6 +23,7 @@ import {
   type Question,
 } from "@/lib/api/qa";
 import { useSession } from "@/lib/auth/use-session";
+import { ViewTracker } from "@/components/view-tracker";
 
 const shell = "relative z-10 mx-auto max-w-3xl px-4 py-8 sm:py-12";
 
@@ -267,6 +268,7 @@ export function QuestionThread({ callNumber }: { callNumber: string }) {
   const canMerge = user && (user.id === question.author.id || user.role === "admin");
   return (
     <main id="main" className={shell}>
+      <ViewTracker itemId={question.id} published={question.status === "published"} />
       {mergedFrom && (
         <Callout tone="info" title="Merged" className="mb-6">
           {mergedFrom} was a duplicate of this question.

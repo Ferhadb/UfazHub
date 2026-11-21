@@ -12,6 +12,7 @@ from app.db.session import SessionLocal
 from app.services.linkhealth import check_links
 from app.services.notifications import send_digests
 from app.services.previews import refresh_link_preview
+from app.services.views import cleanup_retention
 
 
 async def ping(ctx) -> str:
@@ -38,11 +39,24 @@ async def link_health(ctx) -> int:
         return await check_links(db)
 
 
+async def retention_cleanup(ctx) -> int:
+    async with SessionLocal() as db:
+        return await cleanup_retention(db)
+
+
 class WorkerSettings:
-    functions = [ping, send_email, fetch_link_preview, email_digest, link_health]
+    functions = [
+        ping,
+        send_email,
+        fetch_link_preview,
+        email_digest,
+        link_health,
+        retention_cleanup,
+    ]
     cron_jobs = [
         cron(email_digest, hour=7, minute=0),
         cron(link_health, minute=17),
+        cron(retention_cleanup, hour=3, minute=23),
     ]
     redis_settings = RedisSettings.from_dsn(settings.REDIS_URL)
     max_jobs = 10

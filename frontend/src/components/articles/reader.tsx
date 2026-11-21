@@ -14,6 +14,7 @@ import { Marginalia } from "@/components/ui/marginalia";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useArticle, useComments, type Article } from "@/lib/api/library";
 import { useSession } from "@/lib/auth/use-session";
+import { ViewTracker } from "@/components/view-tracker";
 import { ArticleBody } from "./article-body";
 import { Ribbon } from "./ribbon";
 import { useReading } from "./use-reading";
@@ -57,6 +58,7 @@ function Reader({ a }: { a: Article }) {
 
   return (
     <main id="main" className="relative z-10 mx-auto max-w-7xl px-4 py-8 sm:px-8 sm:py-12">
+      <ViewTracker itemId={a.id} published={a.status === "published"} />
       <Ribbon progress={progress} />
       <header className="mx-auto max-w-3xl xl:ms-[calc(12rem+2.5rem)] xl:max-w-[40rem]">
         <Link

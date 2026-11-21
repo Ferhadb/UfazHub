@@ -1,0 +1,21 @@
+{
+  "Navigation": {
+    "main": "Principal",
+    "resources": "Ressources",
+    "articles": "Articles",
+    "collections": "Collections",
+    "questions": "Questions",
+    "courses": "Cours",
+    "research": "Recherche",
+    "people": "Personnes",
+    "admin": "Administration",
+    "design": "Design",
+    "forYou": "Pour vous",
+    "shelf": "Étagère",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "signIn": "Connexion",
+    "skip": "Aller au contenu",
+    "language": "Langue"
+  }
+}

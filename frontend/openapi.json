@@ -7129,6 +7129,54 @@
         ]
       }
     },
+    "/api/content/{item_id}/view": {
+      "post": {
+        "description": "A public read signal; repeat visits within 24 hours do not raise the count.",
+        "operationId": "record_view_api_content__item_id__view_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "integer"
+                  },
+                  "title": "Response Record View Api Content  Item Id  View Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "summary": "Record View",
+        "tags": [
+          "content"
+        ]
+      }
+    },
     "/api/content/{item_id}/vote": {
       "put": {
         "operationId": "vote_api_content__item_id__vote_put",
@@ -7489,6 +7537,144 @@
         "summary": "For You",
         "tags": [
           "library"
+        ]
+      }
+    },
+    "/api/feeds/articles.atom": {
+      "get": {
+        "operationId": "articles_atom_api_feeds_articles_atom_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "summary": "Articles Atom",
+        "tags": [
+          "feeds"
+        ]
+      }
+    },
+    "/api/feeds/articles.rss": {
+      "get": {
+        "operationId": "articles_rss_api_feeds_articles_rss_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "summary": "Articles Rss",
+        "tags": [
+          "feeds"
+        ]
+      }
+    },
+    "/api/feeds/tags/{slug}.atom": {
+      "get": {
+        "operationId": "tag_atom_api_feeds_tags__slug__atom_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "summary": "Tag Atom",
+        "tags": [
+          "feeds"
+        ]
+      }
+    },
+    "/api/feeds/tags/{slug}.rss": {
+      "get": {
+        "operationId": "tag_rss_api_feeds_tags__slug__rss_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "summary": "Tag Rss",
+        "tags": [
+          "feeds"
         ]
       }
     },

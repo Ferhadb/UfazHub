@@ -11,6 +11,7 @@ from app.api import (
     comments,
     content,
     courses,
+    feeds,
     health,
     library,
     moderation,
@@ -66,6 +67,7 @@ app.include_router(health.router, prefix=settings.API_PREFIX)
 app.include_router(auth.router, prefix=settings.API_PREFIX)
 app.include_router(content.router, prefix=settings.API_PREFIX)
 app.include_router(articles.router, prefix=settings.API_PREFIX)
+app.include_router(feeds.router, prefix=settings.API_PREFIX)
 app.include_router(collections.router, prefix=settings.API_PREFIX)
 app.include_router(comments.router, prefix=settings.API_PREFIX)
 app.include_router(uploads.router, prefix=settings.API_PREFIX)

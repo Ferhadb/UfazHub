@@ -1,0 +1,21 @@
+{
+  "Navigation": {
+    "main": "Главная",
+    "resources": "Ресурсы",
+    "articles": "Статьи",
+    "collections": "Подборки",
+    "questions": "Вопросы",
+    "courses": "Курсы",
+    "research": "Исследования",
+    "people": "Участники",
+    "admin": "Администрирование",
+    "design": "Дизайн",
+    "forYou": "Для вас",
+    "shelf": "Полка",
+    "profile": "Профиль",
+    "settings": "Настройки",
+    "signIn": "Войти",
+    "skip": "К содержимому",
+    "language": "Язык"
+  }
+}

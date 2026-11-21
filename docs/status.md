@@ -174,3 +174,25 @@ Decisions to review
 - Shared lists are read-only via the token (noindex, no-referrer).
 - Caps: 50 followed tags, 30 lists, 200 items per list.
 - Semantic errors raised as AppError return 400, not 422.
+
+## Slice 8: languages, discovery, privacy, and accessibility
+
+Built
+- Locale-aware shell with `next-intl`: English messages for navigation, the homepage, and privacy; AZ/FR/RU message scaffolds with English fallback and a persistent locale switcher. The existing Piazzolla, Commissioner, JetBrains Mono, and Caveat faces continue to cover AZ/FR/RU glyphs; the rendered glyph specimen is tested.
+- A magazine homepage with catalogue search, quick topic links, a research feature, featured article, question prompt, collection shelf, trending tags, Latest/Top/For you tabs, contributor spotlight, fresh-tag strip, and resource shuffle. The live `ufazhub.xyz` homepage informed the section order and compact mobile header.
+- Light/dark toggle, mobile navigation drawer, shortcut guide (`?`), Konami easter egg, desktop pen cursor in article text, illustrated 404/error pages, and an accessible search trigger. Avatar text contrast was corrected in both themes.
+- Page metadata, generated Open Graph image, dynamic sitemap and robots, article JSON-LD, RSS and Atom feeds for published articles and per tag, and feed discovery links. A privacy page explains retained account and activity data.
+- Per-item views use an opaque visitor cookie and item-specific HMAC receipts for 24-hour deduplication, with no IP stored in the view table. Migration `0008` adds receipts; a daily arq cron removes expired receipts and old auth tokens. Published detail pages post a view receipt.
+- Three Playwright smoke flows (browse/search, sign in/vote, submit) run at mobile and desktop sizes with axe checks. Twelve light/dark screenshots of home, article and profile are saved in `frontend/e2e/screenshots`.
+- Production build completed; Next reports 103 kB shared first-load JavaScript, 166 kB for home, 185 kB for the article reader, and 150 kB for profiles. These are bundle sizes, not LCP measurements.
+
+Deferred
+- Translating the remaining feature pages and components: EN is complete for the new shell, homepage and privacy page; AZ/FR/RU remain scaffolds. The site-wide copy is still largely English.
+- Real campus events and exam dates are not available from the current data model. The campus strip is an editorial prompt; an automatic exam-week accent needs an authoritative calendar source.
+- The For you tab links to the existing personalized feed rather than embedding it in the homepage. The homepage's Latest/Top tabs merge the first page of each content API in the browser; server-side unified pagination and measured mobile LCP remain future performance work.
+- The three required Playwright flows cover the principal journeys; older page-specific e2e cases deferred in slices 3–7 remain outstanding.
+
+Decisions to review
+- The view cookie is valid for 30 days, while item-specific deduplication receipts expire after 24 hours. Counts remain aggregate after cleanup.
+- RSS and Atom expose up to 50 latest published articles per feed. A missing tag returns 404.
+- No production deploy was performed. Docker is unavailable locally.

@@ -2,11 +2,11 @@ import { cn, tintText, type Tint } from "./cn";
 
 const tints = Object.keys(tintText) as Tint[];
 const bg: Record<Tint, string> = {
-  resource: "bg-resource/15",
-  article: "bg-article/15",
-  collection: "bg-collection/15",
-  question: "bg-question/15",
-  research: "bg-research/15",
+  resource: "bg-card border-resource",
+  article: "bg-card border-article",
+  collection: "bg-card border-collection",
+  question: "bg-card border-question",
+  research: "bg-card border-research",
 };
 
 const initials = (name: string) =>
@@ -36,7 +36,7 @@ export function Avatar({
       aria-label={name}
       style={{ width: size, height: size, fontSize: size * 0.4 }}
       className={cn(
-        "border-ink/40 inline-grid shrink-0 place-items-center overflow-hidden rounded-full border font-mono font-bold",
+        "inline-grid shrink-0 place-items-center overflow-hidden rounded-full border font-mono font-bold",
         bg[tint],
         tintText[tint],
         className,

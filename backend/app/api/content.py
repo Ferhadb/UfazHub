@@ -1,7 +1,7 @@
 import uuid
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Request, Response
 
 from app.api.deps import DB
 from app.api.permissions import (
@@ -32,11 +32,32 @@ from app.schemas.content import (
 from app.services import content as svc
 from app.services import content_admin
 from app.services import search as search_svc
+from app.services import views as views_svc
+from app.core.config import settings
 
 router = APIRouter(tags=["content"])
 
 Limit = Annotated[int, Query(ge=1, le=50)]
 Difficulty = Literal["beginner", "intermediate", "advanced"]
+
+
+@router.post("/content/{item_id}/view", response_model=dict[str, int])
+async def record_view(item_id: uuid.UUID, request: Request, response: Response, db: DB):
+    """A public read signal; repeat visits within 24 hours do not raise the count."""
+    token, fresh = views_svc.visitor_token(
+        request.cookies.get(views_svc.VISITOR_COOKIE)
+    )
+    count = await views_svc.record_view(db, item_id, token)
+    if fresh:
+        response.set_cookie(
+            views_svc.VISITOR_COOKIE,
+            token,
+            max_age=views_svc.COOKIE_AGE,
+            httponly=True,
+            secure=settings.COOKIE_SECURE,
+            samesite="lax",
+        )
+    return {"view_count": count}
 
 
 # --- reading (public) --------------------------------------------------------------------
