@@ -123,6 +123,7 @@ async def search(
 async def create_resource(body: ResourceIn, db: DB, user: VerifiedUser):
     item = await svc.create_resource(db, user, body, initial_status(user))
     await db.commit()
+    await svc.queue_previews(item)
     return (await svc.present(db, user, [item]))[0]
 
 
@@ -143,6 +144,7 @@ async def update_resource(
         raise Forbidden("Only the author or an admin can edit this.")
     item = await svc.update_resource(db, user, item, body)
     await db.commit()
+    await svc.queue_previews(item)
     return (await svc.present(db, user, [item]))[0]
 
 

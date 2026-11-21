@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
-import { SubmitForm } from "./form";
+import { Suspense } from "react";
+import { Composer } from "./composer";
 
-export const metadata: Metadata = { title: "Submit a resource" };
+export const metadata: Metadata = { title: "Add to the library" };
 
 export default function Page() {
-  return <SubmitForm />;
+  return (
+    <Suspense>
+      <Composer />
+    </Suspense>
+  );
 }

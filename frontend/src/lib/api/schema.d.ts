@@ -4,6 +4,78 @@
  */
 
 export interface paths {
+  "/api/articles": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List Articles */
+    get: operations["list_articles_api_articles_get"];
+    put?: never;
+    /** Create Article */
+    post: operations["create_article_api_articles_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/articles/preview": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Preview
+     * @description Render Markdown exactly as it will be published (same sanitizer), for the editor.
+     */
+    post: operations["preview_api_articles_preview_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/articles/{item_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Update Article */
+    patch: operations["update_article_api_articles__item_id__patch"];
+    trace?: never;
+  };
+  "/api/articles/{ref}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get Article */
+    get: operations["get_article_api_articles__ref__get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/auth/dev/login-as": {
     parameters: {
       query?: never;
@@ -194,6 +266,75 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/collections": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List Collections */
+    get: operations["list_collections_api_collections_get"];
+    put?: never;
+    /** Create Collection */
+    post: operations["create_collection_api_collections_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/collections/{call_number}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get Collection */
+    get: operations["get_collection_api_collections__call_number__get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/collections/{item_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Update Collection */
+    patch: operations["update_collection_api_collections__item_id__patch"];
+    trace?: never;
+  };
+  "/api/comments/{comment_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Delete Comment */
+    delete: operations["delete_comment_api_comments__comment_id__delete"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/content/{item_id}/bookmark": {
     parameters: {
       query?: never;
@@ -207,6 +348,24 @@ export interface paths {
     post?: never;
     /** Remove Bookmark */
     delete: operations["remove_bookmark_api_content__item_id__bookmark_delete"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/content/{item_id}/comments": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List Comments */
+    get: operations["list_comments_api_content__item_id__comments_get"];
+    put?: never;
+    /** Create Comment */
+    post: operations["create_comment_api_content__item_id__comments_post"];
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -278,6 +437,26 @@ export interface paths {
      * @description Liveness: the process is up.
      */
     get: operations["health_api_health_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/me/articles": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * My Articles
+     * @description Your own articles in every state, drafts included.
+     */
+    get: operations["my_articles_api_me_articles_get"];
     put?: never;
     post?: never;
     delete?: never;
@@ -412,12 +591,235 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/uploads": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Upload */
+    post: operations["upload_api_uploads_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    /** ArticleCard */
+    ArticleCard: {
+      author: components["schemas"]["AuthorOut"];
+      /** Bookmark Count */
+      bookmark_count: number;
+      /**
+       * Bookmarked
+       * @default false
+       */
+      bookmarked: boolean;
+      /** Call Number */
+      call_number: string;
+      /** Comment Count */
+      comment_count: number;
+      cover?: components["schemas"]["AttachmentOut"] | null;
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+      /** Excerpt */
+      excerpt: string;
+      /** Hidden Reason */
+      hidden_reason?: string | null;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /** Is Research */
+      is_research: boolean;
+      /**
+       * My Vote
+       * @default 0
+       * @enum {integer}
+       */
+      my_vote: -1 | 0 | 1;
+      /** Published At */
+      published_at: string | null;
+      /** Reading Minutes */
+      reading_minutes: number;
+      /** Slug */
+      slug: string;
+      /** Status */
+      status: string;
+      /** Tags */
+      tags: string[];
+      /** Title */
+      title: string;
+      /**
+       * Type
+       * @constant
+       */
+      type: "article";
+      /**
+       * Updated At
+       * Format: date-time
+       */
+      updated_at: string;
+      /** View Count */
+      view_count: number;
+      /** Vote Score */
+      vote_score: number;
+    };
+    /** ArticleIn */
+    ArticleIn: {
+      /** Body Md */
+      body_md: string;
+      /** Cover Attachment Id */
+      cover_attachment_id?: string | null;
+      /**
+       * Excerpt
+       * @default
+       */
+      excerpt: string;
+      /**
+       * Is Research
+       * @default false
+       */
+      is_research: boolean;
+      /**
+       * Publish
+       * @default false
+       */
+      publish: boolean;
+      /** Tags */
+      tags?: string[];
+      /** Title */
+      title: string;
+    };
+    /** ArticleOut */
+    ArticleOut: {
+      author: components["schemas"]["AuthorOut"];
+      /** Body Html */
+      body_html: string;
+      /** Body Md */
+      body_md?: string | null;
+      /** Bookmark Count */
+      bookmark_count: number;
+      /**
+       * Bookmarked
+       * @default false
+       */
+      bookmarked: boolean;
+      /** Call Number */
+      call_number: string;
+      /** Comment Count */
+      comment_count: number;
+      cover?: components["schemas"]["AttachmentOut"] | null;
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+      /** Excerpt */
+      excerpt: string;
+      /** Hidden Reason */
+      hidden_reason?: string | null;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /** Is Research */
+      is_research: boolean;
+      /**
+       * My Vote
+       * @default 0
+       * @enum {integer}
+       */
+      my_vote: -1 | 0 | 1;
+      /** Published At */
+      published_at: string | null;
+      /** Reading Minutes */
+      reading_minutes: number;
+      /** Slug */
+      slug: string;
+      /** Status */
+      status: string;
+      /** Tags */
+      tags: string[];
+      /** Title */
+      title: string;
+      /** Toc */
+      toc: components["schemas"]["TocEntry"][];
+      /**
+       * Type
+       * @constant
+       */
+      type: "article";
+      /**
+       * Updated At
+       * Format: date-time
+       */
+      updated_at: string;
+      /** View Count */
+      view_count: number;
+      /** Vote Score */
+      vote_score: number;
+    };
+    /** ArticlePatch */
+    ArticlePatch: {
+      /** Body Md */
+      body_md?: string | null;
+      /** Cover Attachment Id */
+      cover_attachment_id?: string | null;
+      /** Excerpt */
+      excerpt?: string | null;
+      /** Is Research */
+      is_research?: boolean | null;
+      /** Publish */
+      publish?: boolean | null;
+      /** Tags */
+      tags?: string[] | null;
+      /** Title */
+      title?: string | null;
+    };
+    /** AttachmentOut */
+    AttachmentOut: {
+      /** Height */
+      height?: number | null;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /**
+       * Kind
+       * @enum {string}
+       */
+      kind: "image" | "file";
+      /** Mime */
+      mime: string;
+      /** Name */
+      name: string;
+      /** Size */
+      size: number;
+      /** Urls */
+      urls: {
+        [key: string]: string;
+      };
+      /** Width */
+      width?: number | null;
+    };
     /** AuthorOut */
     AuthorOut: {
+      /** Avatar Url */
+      avatar_url?: string | null;
       /** Display Name */
       display_name: string;
       /**
@@ -426,12 +828,165 @@ export interface components {
        */
       id: string;
     };
+    /** Body_upload_api_uploads_post */
+    Body_upload_api_uploads_post: {
+      /** File */
+      file: string;
+      /**
+       * Purpose
+       * @default attachment
+       * @enum {string}
+       */
+      purpose: "avatar" | "cover" | "attachment";
+    };
     /** BookmarkOut */
     BookmarkOut: {
       /** Bookmark Count */
       bookmark_count: number;
       /** Bookmarked */
       bookmarked: boolean;
+    };
+    /** CollectionIn */
+    CollectionIn: {
+      /**
+       * Description
+       * @default
+       */
+      description: string;
+      /**
+       * Is Research
+       * @default false
+       */
+      is_research: boolean;
+      /** Items */
+      items: components["schemas"]["CollectionItemIn"][];
+      /** Tags */
+      tags?: string[];
+      /** Title */
+      title: string;
+    };
+    /** CollectionItemIn */
+    CollectionItemIn: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string;
+      /**
+       * Note
+       * @default
+       */
+      note: string;
+    };
+    /** CollectionItemOut */
+    CollectionItemOut: {
+      item: components["schemas"]["ItemRef"];
+      /** Note */
+      note: string;
+      /** Position */
+      position: number;
+    };
+    /** CollectionOut */
+    CollectionOut: {
+      author: components["schemas"]["AuthorOut"];
+      /** Bookmark Count */
+      bookmark_count: number;
+      /**
+       * Bookmarked
+       * @default false
+       */
+      bookmarked: boolean;
+      /** Call Number */
+      call_number: string;
+      /** Comment Count */
+      comment_count: number;
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+      /** Description */
+      description: string;
+      /** Hidden Reason */
+      hidden_reason?: string | null;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /** Is Research */
+      is_research: boolean;
+      /** Items */
+      items: components["schemas"]["CollectionItemOut"][];
+      /**
+       * My Vote
+       * @default 0
+       * @enum {integer}
+       */
+      my_vote: -1 | 0 | 1;
+      /** Status */
+      status: string;
+      /** Tags */
+      tags: string[];
+      /** Title */
+      title: string;
+      /**
+       * Type
+       * @constant
+       */
+      type: "collection";
+      /** View Count */
+      view_count: number;
+      /** Vote Score */
+      vote_score: number;
+    };
+    /** CollectionPatch */
+    CollectionPatch: {
+      /** Description */
+      description?: string | null;
+      /** Is Research */
+      is_research?: boolean | null;
+      /** Items */
+      items?: components["schemas"]["CollectionItemIn"][] | null;
+      /** Tags */
+      tags?: string[] | null;
+      /** Title */
+      title?: string | null;
+    };
+    /** CommentIn */
+    CommentIn: {
+      /** Body */
+      body: string;
+      /** Parent Id */
+      parent_id?: string | null;
+    };
+    /** CommentOut */
+    CommentOut: {
+      author: components["schemas"]["AuthorOut"];
+      /** Body */
+      body: string;
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string;
+      /** Parent Id */
+      parent_id: string | null;
+      /**
+       * Replies
+       * @default []
+       */
+      replies: components["schemas"]["CommentOut"][];
     };
     /**
      * ContentType
@@ -489,6 +1044,25 @@ export interface components {
       /** Reason */
       reason: string;
     };
+    /** ItemRef */
+    ItemRef: {
+      /** Call Number */
+      call_number: string;
+      /** Description */
+      description: string;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /** Is Research */
+      is_research: boolean;
+      /** Title */
+      title: string;
+      type: components["schemas"]["ContentType"];
+      /** Vote Score */
+      vote_score: number;
+    };
     /** LinkIn */
     LinkIn: {
       /**
@@ -508,6 +1082,12 @@ export interface components {
       id: string;
       /** Label */
       label: string;
+      /** Preview Favicon */
+      preview_favicon?: string | null;
+      /** Preview Image */
+      preview_image?: string | null;
+      /** Preview Title */
+      preview_title?: string | null;
       /** Url */
       url: string;
     };
@@ -520,6 +1100,27 @@ export interface components {
       email: string;
       /** Password */
       password: string;
+    };
+    /** Page[ArticleCard] */
+    Page_ArticleCard_: {
+      /** Items */
+      items: components["schemas"]["ArticleCard"][];
+      /** Next Cursor */
+      next_cursor?: string | null;
+    };
+    /** Page[CollectionOut] */
+    Page_CollectionOut_: {
+      /** Items */
+      items: components["schemas"]["CollectionOut"][];
+      /** Next Cursor */
+      next_cursor?: string | null;
+    };
+    /** Page[CommentOut] */
+    Page_CommentOut_: {
+      /** Items */
+      items: components["schemas"]["CommentOut"][];
+      /** Next Cursor */
+      next_cursor?: string | null;
     };
     /** Page[ResourceOut] */
     Page_ResourceOut_: {
@@ -541,6 +1142,20 @@ export interface components {
       items: components["schemas"]["TagOut"][];
       /** Next Cursor */
       next_cursor?: string | null;
+    };
+    /** PreviewIn */
+    PreviewIn: {
+      /** Body Md */
+      body_md: string;
+    };
+    /** PreviewOut */
+    PreviewOut: {
+      /** Body Html */
+      body_html: string;
+      /** Reading Minutes */
+      reading_minutes: number;
+      /** Toc */
+      toc: components["schemas"]["TocEntry"][];
     };
     /** ResetIn */
     ResetIn: {
@@ -576,6 +1191,8 @@ export interface components {
        * @default
        */
       prerequisites: string;
+      /** Primary Attachment Id */
+      primary_attachment_id?: string | null;
       resource_type: components["schemas"]["ResourceType"];
       /**
        * Student Note
@@ -596,6 +1213,7 @@ export interface components {
     };
     /** ResourceOut */
     ResourceOut: {
+      attachment?: components["schemas"]["AttachmentOut"] | null;
       author: components["schemas"]["AuthorOut"];
       /** Best Part */
       best_part: string;
@@ -680,6 +1298,8 @@ export interface components {
       links?: components["schemas"]["LinkIn"][] | null;
       /** Prerequisites */
       prerequisites?: string | null;
+      /** Primary Attachment Id */
+      primary_attachment_id?: string | null;
       resource_type?: components["schemas"]["ResourceType"] | null;
       /** Student Note */
       student_note?: string | null;
@@ -754,6 +1374,16 @@ export interface components {
       /** Slug */
       slug: string;
     };
+    /** TocEntry */
+    TocEntry: {
+      /**
+       * Level
+       * @enum {integer}
+       */
+      level: 2 | 3;
+      /** Text */
+      text: string;
+    };
     /** TokenIn */
     TokenIn: {
       /** Token */
@@ -774,6 +1404,8 @@ export interface components {
     };
     /** UserOut */
     UserOut: {
+      /** Avatar Url */
+      avatar_url?: string | null;
       /**
        * Created At
        * Format: date-time
@@ -822,6 +1454,173 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  list_articles_api_articles_get: {
+    parameters: {
+      query?: {
+        sort?: "latest" | "top";
+        tag?: string | null;
+        research?: boolean | null;
+        cursor?: string | null;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Page_ArticleCard_"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  create_article_api_articles_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ArticleIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ArticleOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  preview_api_articles_preview_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PreviewIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PreviewOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  update_article_api_articles__item_id__patch: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ArticlePatch"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ArticleOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  get_article_api_articles__ref__get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        ref: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ArticleOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
   dev_login_as_api_auth_dev_login_as_post: {
     parameters: {
       query?: never;
@@ -1163,6 +1962,169 @@ export interface operations {
       };
     };
   };
+  list_collections_api_collections_get: {
+    parameters: {
+      query?: {
+        sort?: "latest" | "top";
+        tag?: string | null;
+        research?: boolean | null;
+        cursor?: string | null;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Page_CollectionOut_"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  create_collection_api_collections_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CollectionIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CollectionOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  get_collection_api_collections__call_number__get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        call_number: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CollectionOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  update_collection_api_collections__item_id__patch: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CollectionPatch"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CollectionOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  delete_comment_api_comments__comment_id__delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        comment_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
   add_bookmark_api_content__item_id__bookmark_put: {
     parameters: {
       query?: never;
@@ -1212,6 +2174,75 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["BookmarkOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  list_comments_api_content__item_id__comments_get: {
+    parameters: {
+      query?: {
+        cursor?: string | null;
+        limit?: number;
+      };
+      header?: never;
+      path: {
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Page_CommentOut_"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  create_comment_api_content__item_id__comments_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CommentIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CommentOut"];
         };
       };
       /** @description Error envelope */
@@ -1340,6 +2371,38 @@ export interface operations {
           "application/json": {
             [key: string]: string;
           };
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  my_articles_api_me_articles_get: {
+    parameters: {
+      query?: {
+        cursor?: string | null;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Page_ArticleCard_"];
         };
       };
       /** @description Error envelope */
@@ -1605,6 +2668,39 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["Page_TagOut_"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  upload_api_uploads_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "multipart/form-data": components["schemas"]["Body_upload_api_uploads_post"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttachmentOut"];
         };
       };
       /** @description Error envelope */

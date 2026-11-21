@@ -44,10 +44,23 @@ class User(Base):
         String(10), server_default=UserStatus.active.value
     )
     email_verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    avatar_attachment_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("attachments.id", ondelete="SET NULL", use_alter=True)
+    )
     created_at: Mapped[datetime] = _now()
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
+
+    @property
+    def avatar_url(self) -> str | None:
+        from app.core.signing import sign_media
+
+        return (
+            sign_media(self.avatar_attachment_id, "sm")
+            if self.avatar_attachment_id
+            else None
+        )
 
     @property
     def email_verified(self) -> bool:

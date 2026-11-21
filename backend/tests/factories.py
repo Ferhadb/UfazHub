@@ -50,3 +50,32 @@ async def make_resource(client, headers, **over) -> dict:
     )
     assert r.status_code == 201, r.text
     return r.json()
+
+
+def article_payload(**over) -> dict:
+    base = {
+        "title": "How I survived the Algorithms exam",
+        "body_md": "## Start early\n\nSolve one problem a day. " * 3
+        + "\n\n### Tools\n\nA pencil.",
+        "tags": ["algorithms"],
+        "publish": True,
+    }
+    return {**base, **over}
+
+
+async def make_article(client, headers, **over) -> dict:
+    r = await client.post(
+        "/api/articles", json=article_payload(**over), headers=headers
+    )
+    assert r.status_code == 201, r.text
+    return r.json()
+
+
+def png_bytes(size=(40, 30), color=(200, 30, 30)) -> bytes:
+    import io
+
+    from PIL import Image
+
+    buf = io.BytesIO()
+    Image.new("RGB", size, color).save(buf, "PNG")
+    return buf.getvalue()

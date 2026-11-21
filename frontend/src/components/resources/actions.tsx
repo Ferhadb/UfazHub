@@ -2,14 +2,14 @@
 
 import { IconButton } from "@/components/ui/button";
 import { cn } from "@/components/ui/cn";
-import { useResourceActions, type Resource } from "@/lib/api/content";
+import { useResourceActions, type Votable } from "@/lib/api/content";
 
 /** Vote arrows with the score between them, plus the bookmark ribbon. All optimistic. */
 export function ResourceActions({
   resource,
   className,
 }: {
-  resource: Resource;
+  resource: Votable;
   className?: string;
 }) {
   const { vote, toggleBookmark } = useResourceActions(resource);

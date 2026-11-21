@@ -35,6 +35,13 @@ class Settings(BaseSettings):
     RATE_LIMIT_ENABLED: bool = True
     VOTE_DAILY_CAP: int = 200  # vote changes per user per rolling 24h
 
+    # Uploads (local disk now; `Storage` in app/core/storage.py is the seam for S3)
+    MEDIA_ROOT: str = "media"
+    MEDIA_SIGNING_KEY: str = ""  # empty derives one from JWT_SECRET_KEY
+    MEDIA_URL_TTL_SECONDS: int = 3600
+    UPLOAD_MAX_BYTES: int = 10 * 1024 * 1024  # PDFs
+    IMAGE_MAX_BYTES: int = 5 * 1024 * 1024
+
     # Email (sent by the arq worker; logged instead when SMTP_USERNAME is empty)
     SMTP_HOST: str = "localhost"
     SMTP_PORT: int = 587
@@ -72,6 +79,10 @@ class Settings(BaseSettings):
             for d in self.SIGNUP_ALLOWED_DOMAINS.split(",")
             if d.strip()
         ]
+
+    @property
+    def media_key(self) -> bytes:
+        return (self.MEDIA_SIGNING_KEY or "media:" + self.JWT_SECRET_KEY).encode()
 
     @property
     def is_dev(self) -> bool:

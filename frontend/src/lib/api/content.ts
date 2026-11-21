@@ -5,7 +5,6 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
-  type InfiniteData,
   type QueryClient,
 } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
@@ -23,6 +22,14 @@ export type ResourceFilters = NonNullable<
 
 const RESOURCES = "resources"; // infinite lists
 const RESOURCE = "resource"; // single detail
+/** Every cache that can hold a votable item: lists ("...s") and details of each content type. */
+const CONTENT_KEYS = [RESOURCES, RESOURCE, "articles", "article", "collections", "collection"];
+
+/** The fields votes and bookmarks touch; resources, articles and collections all have them. */
+export type Votable = Pick<
+  Resource,
+  "id" | "my_vote" | "vote_score" | "bookmarked" | "bookmark_count"
+>;
 
 export function useResources(filters: ResourceFilters) {
   return useInfiniteQuery({
@@ -68,23 +75,26 @@ export function useTopTags(limit = 12) {
 
 type Snapshot = [readonly unknown[], unknown][];
 
-/** Apply `fn` to one resource everywhere it is cached (every list and its detail page). */
-function patchResource(qc: QueryClient, id: string, fn: (r: Resource) => Resource) {
-  qc.setQueriesData<InfiniteData<ResourcePage>>(
-    { queryKey: [RESOURCES] },
-    (d) =>
-      d && {
-        ...d,
-        pages: d.pages.map((p) => ({ ...p, items: p.items.map((r) => (r.id === id ? fn(r) : r)) })),
-      },
-  );
-  qc.setQueriesData<Resource>({ queryKey: [RESOURCE] }, (d) => (d?.id === id ? fn(d) : d));
+/** Apply `fn` to one item everywhere it is cached (every list and its detail page). */
+function patchItem(qc: QueryClient, id: string, fn: <T extends Votable>(r: T) => T) {
+  for (const key of CONTENT_KEYS) {
+    qc.setQueriesData({ queryKey: [key] }, (d: unknown) => {
+      const data = d as { pages?: { items: Votable[] }[]; id?: string } | undefined;
+      if (data?.pages)
+        return {
+          ...data,
+          pages: data.pages.map((p) => ({
+            ...p,
+            items: p.items.map((r) => (r.id === id ? fn(r) : r)),
+          })),
+        };
+      return data?.id === id ? fn(data as Votable) : d;
+    });
+  }
 }
 
-const snapshot = (qc: QueryClient): Snapshot => [
-  ...qc.getQueriesData({ queryKey: [RESOURCES] }),
-  ...qc.getQueriesData({ queryKey: [RESOURCE] }),
-];
+const snapshot = (qc: QueryClient): Snapshot =>
+  CONTENT_KEYS.flatMap((key) => qc.getQueriesData({ queryKey: [key] }));
 
 /** Sign-in gate for guests: sends them to sign in and brings them back. */
 function useGuard() {
@@ -101,7 +111,7 @@ function useGuard() {
 }
 
 /** Optimistic votes and bookmarks: the UI moves first, the server's numbers win, errors roll back. */
-export function useResourceActions(resource: Resource) {
+export function useResourceActions(resource: Votable) {
   const qc = useQueryClient();
   const toast = useToast();
   const guard = useGuard();
@@ -126,10 +136,9 @@ export function useResourceActions(resource: Resource) {
       return data;
     },
     onMutate: async (value) => {
-      await qc.cancelQueries({ queryKey: [RESOURCES] });
-      await qc.cancelQueries({ queryKey: [RESOURCE] });
+      await Promise.all(CONTENT_KEYS.map((key) => qc.cancelQueries({ queryKey: [key] })));
       const snap = snapshot(qc);
-      patchResource(qc, id, (r) => ({
+      patchItem(qc, id, (r) => ({
         ...r,
         my_vote: value,
         vote_score: r.vote_score + value - r.my_vote,
@@ -138,7 +147,7 @@ export function useResourceActions(resource: Resource) {
     },
     onError: (e, _v, snap) => rollback(snap, e),
     onSuccess: (data) =>
-      patchResource(qc, id, (r) => ({ ...r, vote_score: data.vote_score, my_vote: data.my_vote })),
+      patchItem(qc, id, (r) => ({ ...r, vote_score: data.vote_score, my_vote: data.my_vote })),
   });
 
   const bookmarkMutation = useMutation({
@@ -151,10 +160,9 @@ export function useResourceActions(resource: Resource) {
       return data;
     },
     onMutate: async (on) => {
-      await qc.cancelQueries({ queryKey: [RESOURCES] });
-      await qc.cancelQueries({ queryKey: [RESOURCE] });
+      await Promise.all(CONTENT_KEYS.map((key) => qc.cancelQueries({ queryKey: [key] })));
       const snap = snapshot(qc);
-      patchResource(qc, id, (r) => ({
+      patchItem(qc, id, (r) => ({
         ...r,
         bookmarked: on,
         bookmark_count: r.bookmark_count + (on ? 1 : -1),
@@ -163,7 +171,7 @@ export function useResourceActions(resource: Resource) {
     },
     onError: (e, _v, snap) => rollback(snap, e),
     onSuccess: (data) =>
-      patchResource(qc, id, (r) => ({
+      patchItem(qc, id, (r) => ({
         ...r,
         bookmarked: data.bookmarked,
         bookmark_count: data.bookmark_count,

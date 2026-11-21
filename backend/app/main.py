@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import auth, content, health
+from app.api import articles, auth, collections, comments, content, health, uploads
 from app.core.config import settings
 from app.core.errors import ErrorBody, install_error_handlers
 from app.core.logging import configure_logging
@@ -50,3 +50,7 @@ install_error_handlers(app)
 app.include_router(health.router, prefix=settings.API_PREFIX)
 app.include_router(auth.router, prefix=settings.API_PREFIX)
 app.include_router(content.router, prefix=settings.API_PREFIX)
+app.include_router(articles.router, prefix=settings.API_PREFIX)
+app.include_router(collections.router, prefix=settings.API_PREFIX)
+app.include_router(comments.router, prefix=settings.API_PREFIX)
+app.include_router(uploads.router, prefix=settings.API_PREFIX)

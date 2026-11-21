@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Comments } from "@/components/comments/comments";
 import { ResourceActions } from "@/components/resources/actions";
 import { formatMinutes, slug } from "@/components/resources/resource-card";
 import { Badge, Stamp } from "@/components/ui/badge";
@@ -138,6 +139,7 @@ export function ResourceDetail({ callNumber }: { callNumber: string }) {
         )}
         <ResourceActions resource={r} className="border-rule mt-4 border-t pt-4" />
       </article>
+      <Comments itemId={r.id} count={r.comment_count} />
     </main>
   );
 }

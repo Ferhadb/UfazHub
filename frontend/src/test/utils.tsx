@@ -64,3 +64,15 @@ export function stubApi(routes: Record<string, Handler>) {
 
 export const page = (items: unknown[], next: string | null = null) =>
   Response.json({ items, next_cursor: next });
+
+export const comment = (over: Record<string, unknown> = {}) => ({
+  id: "c1",
+  item_id: "11111111-1111-1111-1111-111111111111",
+  parent_id: null,
+  body: "Great find",
+  author: { id: "u2", display_name: "Leyla" },
+  created_at: "2026-01-02T00:00:00Z",
+  replies: [],
+  reply_count: 0,
+  ...over,
+});

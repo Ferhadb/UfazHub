@@ -81,3 +81,21 @@ Decisions to review
 - One global `call_seq_<type>` sequence per type: numbers are never reused, but gaps appear when a create rolls back.
 - `/api/tags` is a bounded top-N (limit <= 50) returned as a `Page` with no next cursor.
 - Added `concurrency = ["greenlet", "thread"]` to coverage config; without it async SQLAlchemy lines were reported as missed.
+
+## Slice 4: articles, collections, comments, uploads
+
+Built
+- Backend: articles (markdown via markdown-it-py `html=False`, nh3 allow-list, `rel="noopener nofollow ugc"`, slug, excerpt, reading time, TOC, cover, draft/published), collections with ordered items and per-item notes, one-level threaded comments (rate limited, counters), storage interface (`LocalStorage` at MEDIA_ROOT, S3-ready), uploads (size limits, signature-sniffed MIME, Pillow WEBP variants, no-op virus-scan hook, HMAC signed URLs with expiry, avatars via storage), link-preview arq job behind a tested SSRF guard (connect-time IP validation, per-hop redirect checks). Migration 0004; search triggers now index article bodies. Backend tests: 271 passing.
+- Frontend: article reader (distraction-free, bookmark-ribbon progress, scroll-tracking TOC, margin notes via Marginalia, drop cap, continue-reading memory, print stylesheet, DOMPurify second pass), `/articles` list, article editor (write/server preview, cover upload, draft/publish, `/articles/[ref]/edit`), `/collections` shelf of spines that pull out plus detail with notes, comments UI (also on resources), notebook-style `/submit` composer (type picker, ruling changes per type, live index-card preview), header links. Frontend tests: 137 passing.
+
+Deferred
+- Comment editing; avatar upload UI (endpoint and `avatar_url` exist); collection editing UI (PATCH exists); article/collection seed data; Playwright e2e + axe for the new pages.
+- Real virus scanner and S3 backend (interfaces only); stale-image cleanup job for orphaned attachments.
+
+Decisions to review
+- Article detail resolves by call number or slug; slug collisions get a call-number suffix. Drafts and pending articles are visible only to the author and admins.
+- Collections accept only published resources/articles (1 to 50); items hidden later silently drop off.
+- Comments are plain text, one level deep, at most 50 replies per thread; the counter updates under an item row lock.
+- Signed media URLs expire on a ttl-snapped boundary so cached pages keep stable URLs.
+- SSRF guard allows only http/https on ports 80/443 and rejects private, loopback, link-local, NAT64 and IPv4-mapped addresses at connect time.
+- Margin notes show up to three short top-level comments; the editor preview is rendered by the server so it matches what is published.

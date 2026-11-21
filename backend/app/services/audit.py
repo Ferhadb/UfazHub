@@ -1,6 +1,7 @@
 import uuid
 from typing import Any
 
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.logging import request_id_var
@@ -11,7 +12,11 @@ def diff(before: dict[str, Any] | None, after: dict[str, Any] | None):
     """Keep only the keys whose value changed, so rows stay small."""
     b, a = before or {}, after or {}
     keys = {k for k in b.keys() | a.keys() if b.get(k) != a.get(k)}
-    return {k: b.get(k) for k in keys} or None, {k: a.get(k) for k in keys} or None
+    # jsonable_encoder: values may be UUIDs or datetimes, which JSONB cannot store as-is.
+    return (
+        jsonable_encoder({k: b.get(k) for k in keys}) or None,
+        jsonable_encoder({k: a.get(k) for k in keys}) or None,
+    )
 
 
 async def record(

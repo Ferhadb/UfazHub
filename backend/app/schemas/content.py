@@ -7,6 +7,8 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.core.urls import canonical_url
 from app.models.content import ContentType, Difficulty, ResourceType
+from app.models.media import Attachment
+from app.schemas.media import AttachmentOut
 
 Text = Field(default="", max_length=2000)
 # C0 controls would collide with the highlight markers (U+0002/U+0003) and are never legitimate text.
@@ -21,6 +23,7 @@ class AuthorOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: uuid.UUID
     display_name: str
+    avatar_url: str | None = None  # signed, expiring
 
 
 class LinkIn(BaseModel):
@@ -40,6 +43,9 @@ class LinkOut(BaseModel):
     id: uuid.UUID
     url: str
     label: str
+    preview_title: str | None = None
+    preview_image: str | None = None  # remote URL from the page's og:image
+    preview_favicon: str | None = None
 
 
 class ResourceIn(BaseModel):
@@ -56,6 +62,7 @@ class ResourceIn(BaseModel):
     is_research: bool = False
     links: list[LinkIn] = Field(min_length=1, max_length=5)
     tags: list[str] = Field(default_factory=list, max_length=8)
+    primary_attachment_id: uuid.UUID | None = None
 
     _clean_text = field_validator(
         "title",
@@ -84,6 +91,7 @@ class ResourcePatch(BaseModel):
     is_research: bool | None = None
     links: list[LinkIn] | None = Field(default=None, min_length=1, max_length=5)
     tags: list[str] | None = Field(default=None, max_length=8)
+    primary_attachment_id: uuid.UUID | None = None
 
     _clean_text = field_validator(
         "title",
@@ -121,6 +129,7 @@ class ResourceOut(BaseModel):
     warning: str
     student_note: str
     links: list[LinkOut]
+    attachment: AttachmentOut | None = None
     created_at: datetime
     my_vote: Literal[-1, 0, 1] = 0
     bookmarked: bool = False
@@ -129,6 +138,11 @@ class ResourceOut(BaseModel):
     @classmethod
     def _tag_names(cls, v):
         return [getattr(t, "name", t) for t in v]
+
+    @field_validator("attachment", mode="before")
+    @classmethod
+    def _attachment(cls, v):
+        return AttachmentOut.of(v) if isinstance(v, Attachment) else v
 
 
 class VoteIn(BaseModel):

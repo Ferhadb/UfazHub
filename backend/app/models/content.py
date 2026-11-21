@@ -25,10 +25,11 @@ from sqlalchemy import (
     Uuid,
     func,
 )
-from sqlalchemy.dialects.postgresql import TSVECTOR
+from sqlalchemy.dialects.postgresql import JSONB, TSVECTOR
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
+from app.models.media import Attachment
 from app.models.user import User, _in, _now
 
 
@@ -149,8 +150,10 @@ class Resource(ContentItem):
     best_part: Mapped[str] = mapped_column(Text, server_default="")
     warning: Mapped[str] = mapped_column(Text, server_default="")
     student_note: Mapped[str] = mapped_column(Text, server_default="")
-    # Slice 4 (uploads) turns this into a foreign key to the attachments table.
-    primary_attachment_id: Mapped[uuid.UUID | None] = mapped_column(Uuid)
+    primary_attachment_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("attachments.id", ondelete="SET NULL")
+    )
+    attachment: Mapped[Attachment | None] = relationship(lazy="joined")
 
     links: Mapped[list["ResourceLink"]] = relationship(
         order_by="ResourceLink.position",
@@ -174,6 +177,11 @@ class ResourceLink(Base):
     canonical_url: Mapped[str] = mapped_column(String(2048))
     label: Mapped[str] = mapped_column(String(120), server_default="")
     position: Mapped[int] = mapped_column(SmallInteger, server_default="0")
+    # Filled by the `fetch_link_preview` job; `preview_fetched_at` is set even when the fetch failed.
+    preview_title: Mapped[str | None] = mapped_column(String(200))
+    preview_image: Mapped[str | None] = mapped_column(String(2048))
+    preview_favicon: Mapped[str | None] = mapped_column(String(2048))
+    preview_fetched_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class Tag(Base):
@@ -225,3 +233,81 @@ class Bookmark(Base):
         ForeignKey("content_items.id", ondelete="CASCADE"), primary_key=True, index=True
     )
     created_at: Mapped[datetime] = _now()
+
+
+class Article(ContentItem):
+    """`description` on the base row holds the excerpt, so search and cards need no special case."""
+
+    __tablename__ = "articles"
+    __table_args__ = (CheckConstraint("reading_minutes >= 1", name="reading_minutes"),)
+    __mapper_args__ = {"polymorphic_identity": ContentType.article.value}
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("content_items.id", ondelete="CASCADE"), primary_key=True
+    )
+    slug: Mapped[str] = mapped_column(String(80), unique=True)
+    body_md: Mapped[str] = mapped_column(Text)
+    body_html: Mapped[str] = mapped_column(Text)  # sanitized at write time (nh3)
+    toc: Mapped[list] = mapped_column(JSONB, server_default="[]")  # [{level, text}]
+    reading_minutes: Mapped[int] = mapped_column(SmallInteger, server_default="1")
+    cover_attachment_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("attachments.id", ondelete="SET NULL")
+    )
+    cover: Mapped[Attachment | None] = relationship(lazy="joined")
+    published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+    @property
+    def excerpt(self) -> str:
+        return self.description
+
+
+class Collection(ContentItem):
+    __tablename__ = "collections"
+    __mapper_args__ = {"polymorphic_identity": ContentType.collection.value}
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("content_items.id", ondelete="CASCADE"), primary_key=True
+    )
+    items: Mapped[list["CollectionItem"]] = relationship(
+        order_by="CollectionItem.position",
+        lazy="selectin",
+        cascade="all, delete-orphan",
+    )
+
+
+class CollectionItem(Base):
+    __tablename__ = "collection_items"
+    __table_args__ = (UniqueConstraint("collection_id", "item_id"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    collection_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("collections.id", ondelete="CASCADE"), index=True
+    )
+    item_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("content_items.id", ondelete="CASCADE"), index=True
+    )
+    position: Mapped[int] = mapped_column(SmallInteger)
+    note: Mapped[str] = mapped_column(Text, server_default="")
+    item: Mapped[ContentItem] = relationship(lazy="joined", innerjoin=True)
+
+
+class Comment(Base):
+    """Threaded one level: `parent_id` always points at a top-level comment."""
+
+    __tablename__ = "comments"
+    __table_args__ = (Index("ix_comments_item_created", "item_id", "created_at", "id"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    item_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("content_items.id", ondelete="CASCADE")
+    )
+    parent_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("comments.id", ondelete="CASCADE"), index=True
+    )
+    author_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+    body: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[datetime] = _now()
+
+    author: Mapped[User] = relationship(lazy="joined")

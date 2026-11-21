@@ -12,6 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.errors import AppError, Forbidden, NotFound
+from app.core.jobs import enqueue
 from app.core.urls import canonical_url
 from app.models.content import (
     CALL_PREFIX,
@@ -38,6 +39,7 @@ from app.schemas.content import (
     VoteOut,
 )
 from app.services import audit
+from app.services.uploads import owned_attachment
 
 # --- helpers -----------------------------------------------------------------------
 
@@ -88,11 +90,17 @@ def _links(existing: list[ResourceLink], new: list[LinkIn]) -> list[ResourceLink
     return list(out.values())
 
 
-async def load_resource(db: AsyncSession, **where: Any) -> Resource | None:
-    stmt = select(Resource).execution_options(populate_existing=True)
+async def load_item[T: ContentItem](
+    db: AsyncSession, model: type[T], **where: Any
+) -> T | None:
+    stmt = select(model).execution_options(populate_existing=True)
     for col, val in where.items():
-        stmt = stmt.where(getattr(Resource, col) == val)
+        stmt = stmt.where(getattr(model, col) == val)
     return (await db.execute(stmt)).scalar_one_or_none()
+
+
+async def load_resource(db: AsyncSession, **where: Any) -> Resource | None:
+    return await load_item(db, Resource, **where)
 
 
 async def viewer_state(
@@ -113,6 +121,22 @@ async def viewer_state(
     return {i: v for i, v in votes.all()}, {i for (i,) in marks.all()}
 
 
+def decorate[T](
+    out: T,
+    item: ContentItem,
+    viewer: User | None,
+    votes: dict[uuid.UUID, int],
+    marks: set[uuid.UUID],
+) -> T:
+    """Fill the per-viewer fields of any content `*Out` (vote, bookmark, moderation reason)."""
+    # The moderation reason is for the author and admins only.
+    if viewer is None or (viewer.id != item.author_id and viewer.role != "admin"):
+        out.hidden_reason = None  # type: ignore[attr-defined]
+    out.my_vote = votes.get(item.id, 0)  # type: ignore[attr-defined]
+    out.bookmarked = item.id in marks  # type: ignore[attr-defined]
+    return out
+
+
 def to_out(
     item: Resource,
     viewer: User | None,
@@ -120,12 +144,7 @@ def to_out(
     marks: set[uuid.UUID],
 ) -> ResourceOut:
     out = ResourceOut.model_validate(item, from_attributes=True)
-    # The moderation reason is for the author and admins only.
-    if viewer is None or (viewer.id != item.author_id and viewer.role != "admin"):
-        out.hidden_reason = None
-    out.my_vote = votes.get(item.id, 0)  # type: ignore[assignment]
-    out.bookmarked = item.id in marks
-    return out
+    return decorate(out, item, viewer, votes, marks)
 
 
 async def present(
@@ -141,8 +160,11 @@ async def present(
 async def create_resource(
     db: AsyncSession, user: User, data: ResourceIn, status: str
 ) -> Resource:
-    fields = data.model_dump(exclude={"links", "tags"})
+    fields = data.model_dump(exclude={"links", "tags", "primary_attachment_id"})
+    if data.primary_attachment_id:
+        await owned_attachment(db, user, data.primary_attachment_id, None)
     item = Resource(
+        primary_attachment_id=data.primary_attachment_id,
         **fields,
         id=uuid.uuid4(),
         author_id=user.id,
@@ -161,9 +183,11 @@ async def update_resource(
     db: AsyncSession, actor: User, item: Resource, data: ResourcePatch
 ) -> Resource:
     changes = data.model_dump(exclude_unset=True, exclude={"links", "tags"})
+    if changes.get("primary_attachment_id"):
+        await owned_attachment(db, actor, changes["primary_attachment_id"], None)
     before = {k: getattr(item, k) for k in changes}
     for k, v in changes.items():
-        if v is None and k != "time_commitment_minutes":
+        if v is None and k not in ("time_commitment_minutes", "primary_attachment_id"):
             raise AppError(f"{k} cannot be empty", fields={k: "Required"})
         setattr(item, k, v)
     if data.links is not None:
@@ -185,27 +209,13 @@ async def update_resource(
     return await load_resource(db, id=item.id)  # type: ignore[return-value]
 
 
-async def list_resources(
-    db: AsyncSession,
-    viewer: User | None,
-    *,
-    sort: str,
-    tag: str | None,
-    difficulty: str | None,
-    research: bool | None,
-    cursor: str | None,
-    limit: int,
-) -> Page[ResourceOut]:
-    stmt = select(Resource).where(Resource.status == ContentStatus.published.value)
-    if tag:
-        stmt = stmt.where(Resource.tags.any(Tag.slug == tag))
-    if difficulty:
-        stmt = stmt.where(Resource.difficulty == difficulty)
-    if research is not None:
-        stmt = stmt.where(Resource.is_research.is_(research))
-    keys = [Resource.created_at, Resource.id]
+async def keyset_page[T: ContentItem](
+    db: AsyncSession, stmt, model: type[T], sort: str, cursor: str | None, limit: int
+) -> tuple[list[T], str | None]:
+    """Newest-first (or top-first) keyset pagination over any content subtype."""
+    keys = [model.created_at, model.id]
     if sort == "top":
-        keys.insert(0, Resource.vote_score)
+        keys.insert(0, model.vote_score)
     if cursor:
         raw = decode_cursor(cursor).get("k")
         try:
@@ -228,6 +238,28 @@ async def list_resources(
         last = rows[-1]
         k = [last.created_at.isoformat(), str(last.id)]
         nxt = encode_cursor({"k": [last.vote_score, *k] if sort == "top" else k})
+    return rows, nxt
+
+
+async def list_resources(
+    db: AsyncSession,
+    viewer: User | None,
+    *,
+    sort: str,
+    tag: str | None,
+    difficulty: str | None,
+    research: bool | None,
+    cursor: str | None,
+    limit: int,
+) -> Page[ResourceOut]:
+    stmt = select(Resource).where(Resource.status == ContentStatus.published.value)
+    if tag:
+        stmt = stmt.where(Resource.tags.any(Tag.slug == tag))
+    if difficulty:
+        stmt = stmt.where(Resource.difficulty == difficulty)
+    if research is not None:
+        stmt = stmt.where(Resource.is_research.is_(research))
+    rows, nxt = await keyset_page(db, stmt, Resource, sort, cursor, limit)
     return Page(items=await present(db, viewer, rows), next_cursor=nxt)
 
 
@@ -442,3 +474,10 @@ async def find_duplicates(
                 ),
             )
     return list(hits.values())
+
+
+async def queue_previews(item: Resource) -> None:
+    """Ask the worker for previews of links that have none yet (call after the commit)."""
+    for link in item.links:
+        if link.preview_fetched_at is None:
+            await enqueue("fetch_link_preview", str(link.id))

@@ -6,12 +6,14 @@ Local: `make test-db` starts one on :5433. CI: a postgres:16 service container.
 import os
 import subprocess
 import sys
+import tempfile
 
 TEST_DB = os.environ.get(
     "TEST_DATABASE_URL", "postgresql+asyncpg://postgres@localhost:5433/ufazhub_test"
 )
 os.environ["DATABASE_URL"] = TEST_DB
 os.environ.setdefault("APP_ENV", "test")
+os.environ.setdefault("MEDIA_ROOT", tempfile.mkdtemp(prefix="ufazhub-media-"))
 os.environ.setdefault("JWT_SECRET_KEY", "test-secret-" + "x" * 40)
 os.environ.setdefault("REDIS_URL", "redis://localhost:6379/15")
 

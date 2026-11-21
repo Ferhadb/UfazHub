@@ -62,3 +62,5 @@ limit_auth = rate_limit(
 limit_write = rate_limit("write", 30, 60, per="user")
 limit_vote = rate_limit("vote", 60, 60, per="user")
 limit_search = rate_limit("search", 30, 60, per="user")
+limit_comment = rate_limit("comment", 10, 60, per="user")
+limit_upload = rate_limit("upload", 10, 60, per="user")

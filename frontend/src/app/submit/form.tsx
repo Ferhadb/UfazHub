@@ -4,12 +4,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import type { Draft } from "./draft";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Callout } from "@/components/ui/callout";
 import { Input, Select, Textarea } from "@/components/ui/field";
 import { Icon } from "@/components/ui/icons";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/toggles";
 import { useToast } from "@/components/ui/toast";
 import { api, errorInfo } from "@/lib/api/client";
@@ -19,10 +19,22 @@ import { DIFFICULTIES, RESOURCE_TYPES, submitSchema, type SubmitValues } from ".
 
 type Duplicate = components["schemas"]["DuplicateHit"];
 
-export function SubmitForm() {
+export function VerifyNotice() {
+  return (
+    <Callout tone="warning" title="Verify your email first" className="mt-4">
+      Posting opens once your email is confirmed. Check your inbox, or{" "}
+      <Link href="/settings" className="underline">
+        resend the link in settings
+      </Link>
+      .
+    </Callout>
+  );
+}
+
+export function SubmitForm({ onDraft }: { onDraft?: (d: Draft) => void }) {
   const router = useRouter();
   const toast = useToast();
-  const { user, status } = useSession();
+  const { user } = useSession();
   const [problem, setProblem] = useState<string | null>(null);
   const [dupes, setDupes] = useState<Duplicate[]>([]);
   const {
@@ -30,6 +42,7 @@ export function SubmitForm() {
     control,
     handleSubmit,
     getValues,
+    watch,
     setError,
     formState: { errors, isSubmitting },
   } = useForm<SubmitValues>({
@@ -53,8 +66,17 @@ export function SubmitForm() {
   const links = useFieldArray({ control, name: "links" });
 
   useEffect(() => {
-    if (status === "anonymous") router.replace("/signin?next=/submit");
-  }, [status, router]);
+    const emit = (v: Partial<SubmitValues>) =>
+      onDraft?.({
+        kind: "resource",
+        title: v.title ?? "",
+        blurb: v.description ?? "",
+        chips: [v.resource_type, v.difficulty].filter(Boolean) as string[],
+      });
+    emit(getValues());
+    const sub = watch((v) => emit(v as Partial<SubmitValues>));
+    return () => sub.unsubscribe();
+  }, [watch, getValues, onDraft]);
 
   // Advisory only: warn about the same link or a similar title, never block.
   const checkDuplicates = async () => {
@@ -111,32 +133,9 @@ export function SubmitForm() {
     router.push(`/resources/${data.call_number}`);
   });
 
-  if (!user)
-    return (
-      <main id="main" className="relative z-10 mx-auto max-w-2xl p-4">
-        <Skeleton />
-      </main>
-    );
-
   return (
-    <main id="main" className="relative z-10 mx-auto max-w-2xl px-4 py-8 sm:py-12">
-      <p className="text-step--1 text-resource font-mono tracking-widest uppercase">
-        New catalogue card
-      </p>
-      <h1 className="font-display text-step-4 mt-1">Submit a resource</h1>
-      <p className="text-muted mt-2">
-        Share something that actually helped you. New accounts are reviewed before cards go on the
-        shelf.
-      </p>
-      {!user.email_verified && (
-        <Callout tone="warning" title="Verify your email first" className="mt-4">
-          Posting opens once your email is confirmed. Check your inbox, or{" "}
-          <Link href="/settings" className="underline">
-            resend the link in settings
-          </Link>
-          .
-        </Callout>
-      )}
+    <>
+      {user && !user.email_verified && <VerifyNotice />}
       <form onSubmit={onSubmit} noValidate className="mt-8 flex flex-col gap-5">
         {problem && <Callout tone="danger">{problem}</Callout>}
         <Input
@@ -276,10 +275,10 @@ export function SubmitForm() {
             />
           )}
         />
-        <Button type="submit" loading={isSubmitting} disabled={!user.email_verified}>
+        <Button type="submit" loading={isSubmitting} disabled={!user?.email_verified}>
           Submit for the shelf
         </Button>
       </form>
-    </main>
+    </>
   );
 }

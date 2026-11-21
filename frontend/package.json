@@ -28,6 +28,7 @@
     "@radix-ui/react-tooltip": "^1.4.1",
     "@tanstack/react-query": "^5.108.2",
     "clsx": "^2.1.1",
+    "dompurify": "^3.4.18",
     "lucide-react": "^1.77.0",
     "next": "^15.5.29",
     "next-intl": "^4.15.3",

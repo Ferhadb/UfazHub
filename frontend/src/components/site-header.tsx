@@ -12,14 +12,20 @@ export function SiteHeader() {
     <header className="border-rule relative z-10 border-b">
       <nav
         aria-label="Main"
-        className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-2 sm:px-8"
+        className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-4 px-4 py-2 sm:px-8"
       >
         <Link href="/" className="font-display text-step-1 inline-flex min-h-11 items-center">
           UFAZ <span className="text-flame-text ml-1">Hub</span>
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-x-2">
           <Link href="/resources" className={buttonClass("ghost")}>
             Resources
+          </Link>
+          <Link href="/articles" className={buttonClass("ghost")}>
+            Articles
+          </Link>
+          <Link href="/collections" className={buttonClass("ghost")}>
+            Collections
           </Link>
           <SearchPalette />
           <Link href="/design" className={buttonClass("ghost")}>

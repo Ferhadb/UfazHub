@@ -2,8 +2,13 @@
 
 from app.models.audit import AuditLog  # noqa: F401
 from app.models.user import AuthToken, RefreshToken, User  # noqa: F401
+from app.models.media import Attachment  # noqa: F401
 from app.models.content import (  # noqa: F401
+    Article,
     Bookmark,
+    Collection,
+    CollectionItem,
+    Comment,
     ContentItem,
     ContentTag,
     Resource,
