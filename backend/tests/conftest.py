@@ -12,6 +12,7 @@ TEST_DB = os.environ.get(
 )
 os.environ["DATABASE_URL"] = TEST_DB
 os.environ.setdefault("APP_ENV", "test")
+os.environ.setdefault("JWT_SECRET_KEY", "test-secret-" + "x" * 40)
 os.environ.setdefault("REDIS_URL", "redis://localhost:6379/15")
 
 import pytest  # noqa: E402
@@ -42,3 +43,22 @@ async def client():
         transport=ASGITransport(app=app), base_url="http://test"
     ) as c:
         yield c
+
+
+@pytest.fixture(autouse=True)
+async def clean_redis():
+    """Each test starts with empty rate-limit counters (redis db 15). No Redis: limiter fails open."""
+    from app.core.redis import get_redis
+
+    try:
+        await get_redis().flushdb()
+    except Exception:
+        pass
+
+
+@pytest.fixture
+def outbox():
+    from app.core import mail
+
+    mail.outbox.clear()
+    return mail.outbox

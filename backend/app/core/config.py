@@ -1,8 +1,10 @@
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import field_validator
+from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+DEFAULT_JWT_SECRET = "replace-with-64-random-chars"
 
 
 class Settings(BaseSettings):
@@ -20,6 +22,25 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = "INFO"
     SENTRY_DSN: str = ""
 
+    # Auth
+    JWT_SECRET_KEY: str = DEFAULT_JWT_SECRET
+    ACCESS_TOKEN_MINUTES: int = 15
+    REFRESH_TOKEN_DAYS: int = 30
+    COOKIE_SECURE: bool = False
+    SIGNUP_ALLOWED_DOMAINS: str = (
+        ""  # comma-separated, e.g. "ufaz.az"; empty allows any
+    )
+    VERIFY_TOKEN_HOURS: int = 48
+    RESET_TOKEN_MINUTES: int = 60
+    RATE_LIMIT_ENABLED: bool = True
+
+    # Email (sent by the arq worker; logged instead when SMTP_USERNAME is empty)
+    SMTP_HOST: str = "localhost"
+    SMTP_PORT: int = 587
+    SMTP_USERNAME: str = ""
+    SMTP_PASSWORD: str = ""
+    MAIL_FROM: str = "UFAZ Hub <noreply@ufazhub.xyz>"
+
     @field_validator("DATABASE_URL")
     @classmethod
     def _force_asyncpg(cls, v: str) -> str:
@@ -28,6 +49,28 @@ class Settings(BaseSettings):
             if v.startswith(prefix):
                 return "postgresql+asyncpg://" + v[len(prefix) :]
         return v
+
+    @model_validator(mode="after")
+    def _prod_safety(self):
+        if self.APP_ENV == "production":
+            if (
+                self.JWT_SECRET_KEY == DEFAULT_JWT_SECRET
+                or len(self.JWT_SECRET_KEY) < 32
+            ):
+                raise ValueError(
+                    "JWT_SECRET_KEY must be set to 32+ random chars in production"
+                )
+            if not self.COOKIE_SECURE:
+                raise ValueError("COOKIE_SECURE must be true in production")
+        return self
+
+    @property
+    def signup_domains(self) -> list[str]:
+        return [
+            d.strip().lower().lstrip("@")
+            for d in self.SIGNUP_ALLOWED_DOMAINS.split(",")
+            if d.strip()
+        ]
 
     @property
     def is_dev(self) -> bool:

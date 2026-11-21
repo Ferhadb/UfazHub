@@ -2,11 +2,13 @@
  * THE single token file: colour, type, spacing, radii, elevation, z-index, motion.
  * Theme: no data-theme = follow the OS; data-theme="light"|"dark" = explicit choice
  * (set before paint by the inline script in app/layout.tsx).
+ * [data-theme-preview] scopes a theme to one subtree (the /design page shows both at once).
  * The OS-dark block and the [data-theme="dark"] block MUST stay identical
  * (tokens.test.ts enforces it and checks WCAG AA contrast in both themes).
  */
 @import "tailwindcss";
 
+[data-theme-preview="light"],
 :root {
   color-scheme: light dark;
 
@@ -87,6 +89,7 @@
   }
 }
 
+[data-theme-preview="dark"],
 :root[data-theme="dark"] {
   --paper: #0f1420;
   --card: #171d2c;

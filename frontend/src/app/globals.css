@@ -56,3 +56,87 @@
     animation-iteration-count: 1 !important;
   }
 }
+
+/* Component motion: transform/opacity only. Reduced motion swaps movement for plain fades. */
+@keyframes ui-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes ui-pop {
+  from {
+    opacity: 0;
+    transform: translateY(var(--motion-shift)) scale(0.97);
+  }
+}
+@keyframes ui-slide-right {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+@keyframes ui-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+@keyframes ui-thunk {
+  0% {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(0.94);
+  }
+}
+@keyframes ui-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes ui-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.anim-fade {
+  animation: ui-fade var(--duration-base) var(--ease-out);
+}
+.anim-pop {
+  animation: ui-pop var(--duration-base) var(--ease-spring);
+}
+.anim-slide-right {
+  animation: ui-slide-right var(--duration-slow) var(--ease-spring);
+}
+.anim-slide-up {
+  animation: ui-slide-up var(--duration-slow) var(--ease-spring);
+}
+.anim-thunk {
+  animation: ui-thunk var(--duration-slow) var(--ease-spring) backwards;
+}
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--ink) 7%, transparent),
+    transparent
+  );
+  animation: ui-shimmer 1.6s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .anim-pop,
+  .anim-slide-right,
+  .anim-slide-up,
+  .anim-thunk {
+    animation-name: ui-fade;
+  }
+  .shimmer::after {
+    animation: none;
+  }
+}

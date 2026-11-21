@@ -47,3 +47,4 @@ backups/
 
 # Uploads in local dev (production keeps them in the `media` Docker volume)
 backend/media/
+dump.rdb

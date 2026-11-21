@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Caveat, Commissioner, JetBrains_Mono, Piazzolla } from "next/font/google";
+import { Providers } from "@/components/providers";
+import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
 
 // Every face ships latin + latin-ext + cyrillic: EN, AZ, FR and RU all render in the real fonts.
@@ -52,7 +54,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script dangerouslySetInnerHTML={{ __html: noFlash }} />
       </head>
-      <body>{children}</body>
+      <body>
+        <a
+          href="#main"
+          className="bg-ink text-paper sr-only rounded-md px-4 py-2 focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-(--z-toast)"
+        >
+          Skip to content
+        </a>
+        <Providers>
+          <SiteHeader />
+          {children}
+        </Providers>
+      </body>
     </html>
   );
 }
