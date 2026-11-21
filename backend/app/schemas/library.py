@@ -122,6 +122,7 @@ class PersonCard(BaseModel):
     display_name: str
     avatar_url: str | None = None
     reputation: int
+    cosmetics: dict[str, str] = {}
     role: str
     faculty: str
     graduation_year: int | None
@@ -142,6 +143,8 @@ class DayCount(BaseModel):
 class Profile(PersonCard):
     bio: str
     socials: dict[str, str]
+    supporter_tier: int = 0
+    gpa_url: str | None = None  # the student's UFAZ GPA profile, when linked
     joined_at: datetime
     counts: dict[
         str, int

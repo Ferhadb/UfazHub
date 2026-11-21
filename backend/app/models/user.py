@@ -18,6 +18,7 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
+from app.core.config import settings
 from app.db.base import Base
 
 
@@ -56,7 +57,9 @@ class User(Base):
     id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
     email: Mapped[str] = mapped_column(String(320), unique=True)  # stored lower-case
     display_name: Mapped[str] = mapped_column(String(80))
-    password_hash: Mapped[str] = mapped_column(String(255))
+    # NULL for GPA sign-in accounts until they choose to set one via "forgot password".
+    password_hash: Mapped[str | None] = mapped_column(String(255))
+    gpa_id: Mapped[str | None] = mapped_column(String(32), unique=True)  # Unistra id
     role: Mapped[str] = mapped_column(String(20), server_default=Role.user.value)
     status: Mapped[str] = mapped_column(
         String(10), server_default=UserStatus.active.value
@@ -74,6 +77,8 @@ class User(Base):
         String(120), server_default=""
     )  # "current role"
     socials: Mapped[dict] = mapped_column(JSONB, server_default="{}")
+    # Look and links pulled from UFAZ GPA (see services/gpa_link.py); NULL until linked.
+    gpa_profile: Mapped[dict | None] = mapped_column(JSONB)
     email_digest: Mapped[bool] = mapped_column(Boolean, server_default="false")
     created_at: Mapped[datetime] = _now()
     updated_at: Mapped[datetime] = mapped_column(
@@ -84,11 +89,17 @@ class User(Base):
     def avatar_url(self) -> str | None:
         from app.core.signing import sign_media
 
-        return (
-            sign_media(self.avatar_attachment_id, "sm")
-            if self.avatar_attachment_id
-            else None
-        )
+        if self.avatar_attachment_id:
+            return sign_media(self.avatar_attachment_id, "sm")
+        key = ((self.gpa_profile or {}).get("equipped") or {}).get("avatar")
+        return f"{settings.GPA_URL.rstrip('/')}/api/avatars/{key}" if key else None
+
+    @property
+    def cosmetics(self) -> dict[str, str]:
+        """GPA cosmetics Hub can draw: banner, frame and name effect (plus upgrade flags)."""
+        eq = (self.gpa_profile or {}).get("equipped") or {}
+        keep = ("banner", "banner_up", "frame", "frame_up", "name_effect")
+        return {k: str(eq[k]) for k in keep if eq.get(k)}
 
     @property
     def email_verified(self) -> bool:

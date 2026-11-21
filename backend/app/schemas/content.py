@@ -25,6 +25,7 @@ class AuthorOut(BaseModel):
     display_name: str
     avatar_url: str | None = None  # signed, expiring
     reputation: int = 0
+    cosmetics: dict[str, str] = {}
 
 
 class LinkIn(BaseModel):

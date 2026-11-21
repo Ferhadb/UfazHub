@@ -2,6 +2,7 @@
 
 import type { InfiniteData, UseInfiniteQueryResult } from "@tanstack/react-query";
 import type { ReactNode } from "react";
+import { NameFx } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Callout } from "@/components/ui/callout";
@@ -46,7 +47,8 @@ export function ItemCardView({
         <Badge tone={item.type}>{item.type}</Badge>
         {item.is_research && <Badge tone="research">research</Badge>}
         <span className="text-step--1 font-mono tabular-nums">
-          {item.vote_score} votes · {item.author.display_name}
+          {item.vote_score} votes ·{" "}
+          <NameFx name={item.author.display_name} cosmetics={item.author.cosmetics} />
         </span>
       </p>
       {item.tags.length > 0 && (

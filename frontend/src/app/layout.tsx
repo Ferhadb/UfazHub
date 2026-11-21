@@ -3,10 +3,14 @@ import { cookies } from "next/headers";
 import { Caveat, Commissioner, JetBrains_Mono, Piazzolla } from "next/font/google";
 import Link from "next/link";
 import { NextIntlClientProvider } from "next-intl";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 import { Providers } from "@/components/providers";
+import { ShortcutHelp } from "@/components/shortcut-help";
 import { SiteHeader } from "@/components/site-header";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { localeCookie, resolveLocale } from "@/i18n/config";
 import { messagesFor } from "@/i18n/messages";
+import { GPA_URL } from "@/lib/gpa";
 import { siteUrl } from "@/lib/seo";
 import "./globals.css";
 
@@ -70,6 +74,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       className={`${piazzolla.variable} ${commissioner.variable} ${jetbrains.variable} ${caveat.variable}`}
     >
       <head>
+        <link rel="stylesheet" href={`${GPA_URL}/cosmetics.css`} />
         <script dangerouslySetInnerHTML={{ __html: noFlash }} />
         <link
           rel="alternate"
@@ -97,7 +102,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {children}
             <footer className="border-rule text-step--1 text-muted border-t px-4 py-6 sm:px-8">
               <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-8 gap-y-2">
-                <p>{footer.about}</p>
+                <p>
+                  {footer.about}{" "}
+                  <a href={GPA_URL} className="underline underline-offset-4">
+                    UFAZ GPA ↗
+                  </a>
+                </p>
                 <nav aria-label={footer.siteInformation} className="flex flex-wrap gap-x-5">
                   <Link
                     href="/privacy"
@@ -118,6 +128,20 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                     {footer.atom}
                   </a>
                 </nav>
+                <div className="flex items-center gap-2">
+                  <Link href="/articles" className="hover:underline">
+                    {messagesFor(locale).Navigation.articles}
+                  </Link>
+                  <Link href="/courses" className="hover:underline">
+                    {messagesFor(locale).Navigation.courses}
+                  </Link>
+                  <Link href="/design" className="hover:underline">
+                    {messagesFor(locale).Navigation.design}
+                  </Link>
+                  <LocaleSwitcher />
+                  <ThemeToggle />
+                  <ShortcutHelp />
+                </div>
               </div>
             </footer>
           </Providers>

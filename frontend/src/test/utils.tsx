@@ -27,7 +27,7 @@ export const resource = (over: Partial<Resource> = {}): Resource => ({
   description: "A proof-first textbook that pairs well with the L2 algebra course.",
   status: "published",
   is_research: false,
-  author: { id: "u1", display_name: "Aygün", reputation: 0 },
+  author: { id: "u1", display_name: "Aygün", reputation: 0, cosmetics: {} },
   tags: ["algebra"],
   vote_score: 3,
   bookmark_count: 1,

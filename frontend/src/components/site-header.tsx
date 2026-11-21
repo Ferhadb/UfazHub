@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { NotificationBell } from "@/components/notifications/bell";
@@ -17,6 +18,7 @@ import { useSession } from "@/lib/auth/use-session";
 export function SiteHeader() {
   const t = useTranslations("Navigation");
   const { user, status } = useSession();
+  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const links = [
     { href: "/resources", label: t("resources") },
@@ -34,27 +36,44 @@ export function SiteHeader() {
       : []),
     ...(user?.role === "admin" ? [{ href: "/admin", label: t("admin") }] : []),
   ];
+  const hidden = ["/articles", "/courses"];
+  const desktop = links.filter((l) => !hidden.includes(l.href));
+  const authed = status === "authenticated" && user;
   return (
     <header className="border-rule relative z-10 border-b">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2 sm:px-8">
+      <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-2 sm:px-8">
         <Link
           href="/"
-          className="font-display text-step-1 inline-flex min-h-11 shrink-0 items-center"
+          className="inline-flex min-h-11 shrink-0 flex-col justify-center leading-none"
         >
-          UFAZ <span className="text-flame-text ml-1">Hub</span>
+          <span className="font-display text-step-1">
+            UFAZ <span className="text-flame-text">Hub</span>
+          </span>
+          <span className="text-muted mt-1 hidden font-mono text-[0.625rem] tracking-widest uppercase sm:block">
+            Community knowledge
+          </span>
         </Link>
-        <div className="flex items-center gap-1 sm:gap-2">
-          <SearchPalette />
-          <div className="hidden items-center gap-2 lg:flex">
-            <Link href="/design" className={buttonClass("ghost")}>
-              {t("design")}
+        <nav
+          aria-label={t("main")}
+          className="ml-2 hidden items-center gap-1 whitespace-nowrap xl:flex"
+        >
+          {desktop.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              aria-current={pathname.startsWith(link.href) ? "page" : undefined}
+              className="hover:text-flame-text aria-[current=page]:border-flame-text inline-flex min-h-11 items-center border-b-2 border-transparent px-3 text-sm font-medium"
+            >
+              {link.label}
             </Link>
-            {status === "authenticated" && user ? (
+          ))}
+        </nav>
+        <div className="ml-auto flex items-center gap-1 sm:gap-2">
+          <SearchPalette />
+          <div className="hidden items-center gap-2 whitespace-nowrap xl:flex">
+            {authed ? (
               <>
                 <NotificationBell />
-                <Link href={`/people/${user.id}`} className={buttonClass("ghost")}>
-                  {t("profile")}
-                </Link>
                 <Link
                   href="/settings"
                   aria-label={`${t("settings")} for ${user.display_name}`}
@@ -64,15 +83,20 @@ export function SiteHeader() {
                 </Link>
               </>
             ) : status === "anonymous" ? (
-              <Link href="/signin" className={buttonClass("primary")}>
-                {t("signIn")}
-              </Link>
+              <>
+                <Link href="/signin" className={buttonClass("ghost")}>
+                  {t("signIn")}
+                </Link>
+                <Link href="/signup" className={buttonClass("secondary")}>
+                  {t("signUp")}
+                </Link>
+              </>
             ) : null}
-            <LocaleSwitcher />
-            <ThemeToggle />
-            <ShortcutHelp />
+            <Link href="/submit" className={buttonClass("primary")}>
+              + {t("share")}
+            </Link>
           </div>
-          <div className="lg:hidden">
+          <div className="xl:hidden">
             <Drawer
               open={menuOpen}
               onOpenChange={setMenuOpen}
@@ -101,13 +125,13 @@ export function SiteHeader() {
               </nav>
               <div className="border-rule mt-2 flex flex-wrap items-center gap-2 border-t pt-3">
                 <Link
-                  href="/design"
+                  href="/submit"
                   onClick={() => setMenuOpen(false)}
-                  className={buttonClass("ghost")}
+                  className={buttonClass("primary")}
                 >
-                  {t("design")}
+                  + {t("share")}
                 </Link>
-                {status === "authenticated" && user ? (
+                {authed ? (
                   <>
                     <NotificationBell />
                     <Link
@@ -126,13 +150,22 @@ export function SiteHeader() {
                     </Link>
                   </>
                 ) : status === "anonymous" ? (
-                  <Link
-                    href="/signin"
-                    onClick={() => setMenuOpen(false)}
-                    className={buttonClass("primary")}
-                  >
-                    {t("signIn")}
-                  </Link>
+                  <>
+                    <Link
+                      href="/signin"
+                      onClick={() => setMenuOpen(false)}
+                      className={buttonClass("ghost")}
+                    >
+                      {t("signIn")}
+                    </Link>
+                    <Link
+                      href="/signup"
+                      onClick={() => setMenuOpen(false)}
+                      className={buttonClass("secondary")}
+                    >
+                      {t("signUp")}
+                    </Link>
+                  </>
                 ) : null}
               </div>
               <div className="flex flex-wrap items-center gap-3">
@@ -144,16 +177,6 @@ export function SiteHeader() {
           </div>
         </div>
       </div>
-      <nav
-        aria-label={t("main")}
-        className="border-rule mx-auto hidden max-w-6xl gap-1 overflow-x-auto border-t px-4 lg:flex lg:px-8"
-      >
-        {links.map((link) => (
-          <Link key={link.href} href={link.href} className={buttonClass("ghost", "shrink-0 px-3")}>
-            {link.label}
-          </Link>
-        ))}
-      </nav>
     </header>
   );
 }

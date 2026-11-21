@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { AuthShell } from "@/components/auth-shell";
+import { GpaButton } from "@/components/gpa-button";
 import { Button } from "@/components/ui/button";
 import { Callout } from "@/components/ui/callout";
 import { Input } from "@/components/ui/field";
@@ -50,6 +51,13 @@ export function SignInForm() {
 
   return (
     <AuthShell title="Sign in" intro="Welcome back. Your shelf kept your place.">
+      <GpaButton next={next} label="Continue with UFAZ GPA" />
+      <p className="text-muted text-step--1 mt-2">
+        The fastest way in for UFAZ students: no new password, and you are verified instantly.
+      </p>
+      <p className="text-muted text-step--1 before:border-rule after:border-rule my-5 flex items-center gap-3 before:flex-1 before:border-t after:flex-1 after:border-t">
+        or use an email
+      </p>
       <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
         {problem && (
           <Callout tone="danger">
@@ -78,7 +86,7 @@ export function SignInForm() {
           error={errors.password?.message}
           {...register("password")}
         />
-        <Button type="submit" loading={isSubmitting}>
+        <Button type="submit" variant="secondary" loading={isSubmitting}>
           Sign in
         </Button>
       </form>

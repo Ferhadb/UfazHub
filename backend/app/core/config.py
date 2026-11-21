@@ -32,6 +32,9 @@ class Settings(BaseSettings):
         ""  # comma-separated, e.g. "ufaz.az"; empty allows any
     )
     VERIFY_TOKEN_HOURS: int = 48
+    # UFAZ GPA is the identity provider for students (empty secret disables it).
+    GPA_SSO_SECRET: str = ""
+    GPA_URL: str = "https://ufazgpa.xyz"
     RESET_TOKEN_MINUTES: int = 60
     RATE_LIMIT_ENABLED: bool = True
     VOTE_DAILY_CAP: int = 200  # vote changes per user per rolling 24h

@@ -25,7 +25,7 @@ export function Shelf({ resources }: { resources: Resource[] }) {
               aria-label={`${r.title}, ${r.call_number}, ${r.difficulty}`}
               style={{ height: `${h}rem` }}
               className={cn(
-                "shadow-paper flex min-h-11 w-11 flex-col items-center justify-between rounded-t-sm px-1 py-2",
+                "shadow-paper flex min-h-11 w-12 flex-col items-center justify-between gap-2 rounded-t-sm px-1 py-3",
                 "transition-transform duration-(--duration-base) ease-(--ease-out) hover:-translate-y-3 focus-visible:-translate-y-3",
                 r.is_research ? "bg-research text-paper" : spine[r.difficulty],
               )}
@@ -33,7 +33,7 @@ export function Shelf({ resources }: { resources: Resource[] }) {
               <span className="text-step--1 font-mono tracking-widest [writing-mode:vertical-rl]">
                 {r.call_number.slice(-4)}
               </span>
-              <span className="font-display text-step-0 line-clamp-1 max-h-[80%] [writing-mode:vertical-rl]">
+              <span className="font-display text-step-0 max-h-[75%] overflow-hidden text-ellipsis whitespace-nowrap [writing-mode:vertical-rl]">
                 {r.title}
               </span>
             </Link>

@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { ArticleForm } from "@/components/articles/article-form";
+import { GpaButton } from "@/components/gpa-button";
 import { CollectionForm } from "@/components/collections/collection-form";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -50,7 +51,21 @@ export function Composer() {
         New catalogue card
       </p>
       <h1 className="font-display text-step-4 mt-1">Add to the library</h1>
-      <p className="text-muted mt-2">New accounts are reviewed before cards go on the shelf.</p>
+      {user.role === "user" ? (
+        <div className="bg-card border-rule mt-4 flex max-w-xl flex-col gap-3 rounded-md border p-4 sm:flex-row sm:items-center">
+          <p className="text-muted text-step--1 flex-1">
+            Your cards are reviewed before they go on the shelf. Verified UFAZ students publish
+            instantly.
+          </p>
+          <GpaButton
+            next="/submit"
+            label="Verify with UFAZ GPA"
+            className="sm:w-auto sm:shrink-0"
+          />
+        </div>
+      ) : (
+        <p className="text-muted mt-2">You are verified: your cards go straight onto the shelf.</p>
+      )}
       <div role="group" aria-label="What are you adding?" className="mt-6 flex flex-wrap gap-2">
         {KINDS.map((x) => (
           <button

@@ -2,10 +2,12 @@
 
 import uuid
 from collections.abc import Callable
+from urllib.parse import quote
 
 from sqlalchemy import func, select, text, tuple_
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import settings
 from app.core.errors import AppError, NotFound
 from app.models.content import ContentItem, ContentStatus
 from app.models.qa import Answer, ReputationEvent
@@ -139,10 +141,20 @@ async def visible_user(
 
 async def profile(db: AsyncSession, user: User) -> Profile:
     c = await counts(db, user.id)
+    gpa = user.gpa_profile or {}
     return Profile(
         **PersonCard.model_validate(user, from_attributes=True).model_dump(),
-        bio=user.bio,
-        socials=user.socials,
+        bio=user.bio or (gpa.get("bio") or "")[:500],
+        socials={
+            **{x["platform"]: x["url"] for x in gpa.get("socials", []) if x.get("url")},
+            **user.socials,
+        },
+        supporter_tier=int(gpa.get("supporter_tier") or 0),
+        gpa_url=(
+            f"{settings.GPA_URL.rstrip('/')}/u/{quote(user.gpa_id)}"
+            if user.gpa_id
+            else None
+        ),
         joined_at=user.created_at,
         counts=c,
         badges=[
@@ -255,3 +267,13 @@ async def leaderboard(db: AsyncSession, period: str, limit: int) -> list[LeaderR
         )
         for i, r in enumerate(rows, 1)
     ]
+
+
+async def id_by_gpa(db: AsyncSession, gpa_id: str) -> uuid.UUID:
+    """Hub profile id for a GPA student, so GPA can deep-link to /people/{id}."""
+    found = await db.scalar(
+        select(User.id).where(User.gpa_id == gpa_id, User.status != UserStatus.banned)
+    )
+    if found is None:
+        raise NotFound("This student has not joined UFAZ Hub yet.")
+    return found

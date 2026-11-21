@@ -27,6 +27,9 @@ const profile = (over: Record<string, unknown> = {}) => ({
   ...person(),
   bio: "Writes things down.",
   socials: { github: "https://github.com/aygun" },
+  cosmetics: { banner: "banner-c-red", frame: "frame-ring" },
+  supporter_tier: 0,
+  gpa_url: "https://ufazgpa.xyz/u/22423010",
   joined_at: "2025-09-01T00:00:00Z",
   counts: { resource: 2, article: 1, collection: 0, question: 0, answer: 0, research: 0 },
   badges: [{ slug: "verified", name: "Verified Ufazian", description: "Confirmed as a student." }],
@@ -132,6 +135,10 @@ describe("ProfileView", () => {
     expect(await screen.findByRole("heading", { name: "Aygün Məmmədova" })).toBeInTheDocument();
     expect(screen.getByText("UFAZ Hub library card · UFZ-U1")).toBeInTheDocument();
     expect(screen.getByText("Teaching assistant")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /View on/ })).toHaveAttribute(
+      "href",
+      "https://ufazgpa.xyz/u/22423010",
+    );
     const stamps = screen.getByRole("heading", { name: "Stamps" }).closest("section")!;
     expect(within(stamps).getByText("Verified Ufazian")).toBeInTheDocument();
     const gh = screen.getByRole("link", { name: /GitHub/ });

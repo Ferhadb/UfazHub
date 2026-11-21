@@ -50,6 +50,15 @@ export function useSession() {
     onSuccess: (s) => qc.setQueryData(KEY, s),
   });
 
+  const gpa = useMutation({
+    mutationFn: async (body: { token: string; state: string }) => {
+      const { data, error } = await api.POST("/api/auth/gpa", { body });
+      if (!data) throw error;
+      return toSession(data);
+    },
+    onSuccess: (s) => qc.setQueryData(KEY, s),
+  });
+
   const end = (path: "/api/auth/logout" | "/api/auth/logout-all") => async () => {
     await api.POST(path);
     setAccessToken(null);
@@ -68,6 +77,7 @@ export function useSession() {
         ? ("authenticated" as const)
         : ("anonymous" as const),
     login: login.mutateAsync,
+    loginWithGpa: gpa.mutateAsync,
     logout: logout.mutateAsync,
     logoutAll: logoutAll.mutateAsync,
   };

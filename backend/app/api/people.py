@@ -1,7 +1,7 @@
 import uuid
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Path, Query
 
 from app.api.deps import DB
 from app.api.permissions import ActiveUser, OptionalUser
@@ -35,6 +35,11 @@ async def directory(
         cursor=cursor,
         limit=limit,
     )
+
+
+@router.get("/people/by-gpa/{gpa_id}")
+async def person_by_gpa(gpa_id: Annotated[str, Path(max_length=32)], db: DB):
+    return {"id": await svc.id_by_gpa(db, gpa_id)}
 
 
 @router.get("/people/{user_id}", response_model=Profile)

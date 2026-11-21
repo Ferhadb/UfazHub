@@ -11,6 +11,7 @@ from app.core.security import create_access_token, new_token
 from app.models.user import User
 from app.schemas.auth import (
     DevLoginIn,
+    GpaIn,
     ForgotIn,
     LoginIn,
     ResetIn,
@@ -21,6 +22,7 @@ from app.schemas.auth import (
 )
 from app.services import audit
 from app.services import auth as svc
+from app.services import gpa_link
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -77,6 +79,29 @@ async def login(body: LoginIn, response: Response, db: DB):
     _set_cookies(response, await svc.issue_refresh(db, user.id))
     await db.commit()
     return _token_out(user)
+
+
+@router.post("/gpa", response_model=TokenOut, dependencies=[Depends(limit_auth)])
+async def gpa_sign_in(body: GpaIn, response: Response, db: DB):
+    user = await gpa_link.sign_in(db, body.token, body.state)
+    await audit.record(
+        db,
+        actor_id=user.id,
+        action="auth.gpa_sign_in",
+        target_type="user",
+        target_id=user.id,
+    )
+    _set_cookies(response, await svc.issue_refresh(db, user.id))
+    await db.commit()
+    return _token_out(user)
+
+
+@router.post("/gpa/refresh", response_model=UserOut, dependencies=[Depends(limit_auth)])
+async def gpa_refresh(db: DB, user: CurrentUser):
+    """Re-copy the signed-in student's avatar and cosmetics from UFAZ GPA."""
+    await gpa_link.pull_profile(user)
+    await db.commit()
+    return user
 
 
 @router.post("/refresh", response_model=TokenOut, dependencies=[Depends(csrf_protect)])

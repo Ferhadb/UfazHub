@@ -2,14 +2,17 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { AuthShell } from "@/components/auth-shell";
+import { GpaButton } from "@/components/gpa-button";
 import { Button, buttonClass } from "@/components/ui/button";
 import { Callout } from "@/components/ui/callout";
 import { Input } from "@/components/ui/field";
 import { api, errorInfo } from "@/lib/api/client";
+import { safeNext } from "@/lib/auth/token";
 
 const schema = z.object({
   display_name: z.string().trim().min(1, "Tell us what to call you").max(80),
@@ -19,6 +22,7 @@ const schema = z.object({
 type Values = z.infer<typeof schema>;
 
 export function SignUpForm() {
+  const next = safeNext(useSearchParams().get("next"));
   const [done, setDone] = useState<string | null>(null);
   const [problem, setProblem] = useState<string | null>(null);
   const {
@@ -52,7 +56,18 @@ export function SignUpForm() {
 
   return (
     <AuthShell title="Join the archive" intro="Free for students and alumni. It takes a minute.">
-      <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
+      <GpaButton next={next} label="Join with UFAZ GPA" />
+      <p className="text-muted text-step--1 mt-2">
+        Already on UFAZ GPA? You are verified as a UFAZ student straight away. New to both? GPA
+        walks you through registering.
+      </p>
+      <p className="text-muted text-step--1 before:border-rule after:border-rule my-5 flex items-center gap-3 before:flex-1 before:border-t after:flex-1 after:border-t">
+        or sign up with an email
+      </p>
+      <Callout tone="info">
+        Accounts made this way are checked by an admin before they get the verified student badge.
+      </Callout>
+      <form onSubmit={onSubmit} noValidate className="mt-4 flex flex-col gap-4">
         {problem && <Callout tone="danger">{problem}</Callout>}
         <Input
           label="Name"
@@ -75,7 +90,7 @@ export function SignUpForm() {
           error={errors.password?.message}
           {...register("password")}
         />
-        <Button type="submit" loading={isSubmitting}>
+        <Button type="submit" variant="secondary" loading={isSubmitting}>
           Create account
         </Button>
       </form>

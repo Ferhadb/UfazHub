@@ -1,0 +1,11 @@
+/* GPA's cosmetic rules (banners, frames, name effects) are loaded live from
+ * ${GPA_URL}/cosmetics.css (see app/layout.tsx), so new GPA cosmetics need no change here.
+ * That sheet reads these GPA theme variables; map them onto Hub tokens. */
+:root {
+  --accent-solid: var(--accent);
+  --accent-strong: var(--accent);
+  --border: var(--rule);
+  --border-strong: var(--ink);
+  --surface-raised: var(--card);
+  --text-secondary: var(--muted);
+}

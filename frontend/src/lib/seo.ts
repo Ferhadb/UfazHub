@@ -6,7 +6,7 @@ export type PublicArticle = components["schemas"]["ArticleOut"];
 export type PublicArticleCard = components["schemas"]["ArticleCard"];
 type PublicContent = { call_number: string; status: string; created_at: string };
 
-function apiUrl(path: string): string {
+export function apiUrl(path: string): string {
   return new URL(path, process.env.INTERNAL_API_URL ?? "http://127.0.0.1:8000").toString();
 }
 

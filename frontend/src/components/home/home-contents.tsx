@@ -4,12 +4,14 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { GpaButton } from "@/components/gpa-button";
+import { Button, buttonClass } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api } from "@/lib/api/client";
 import { useSession } from "@/lib/auth/use-session";
+import { GPA_URL } from "@/lib/gpa";
 
 type FeedItem = {
   id: string;
@@ -28,14 +30,16 @@ function useHome() {
     queryKey: ["home", "editorial", locale],
     staleTime: 60_000,
     queryFn: async () => {
-      const [resources, articles, collections, questions, tags, contributor] = await Promise.all([
-        api.GET("/api/resources", { params: { query: { limit: 8 } } }),
-        api.GET("/api/articles", { params: { query: { limit: 8 } } }),
-        api.GET("/api/collections", { params: { query: { limit: 5 } } }),
-        api.GET("/api/questions", { params: { query: { limit: 5 } } }),
-        api.GET("/api/tags", { params: { query: { limit: 12 } } }),
-        api.GET("/api/leaderboard/contributor-of-the-month"),
-      ]);
+      const [resources, articles, collections, questions, tags, contributor, board] =
+        await Promise.all([
+          api.GET("/api/resources", { params: { query: { limit: 8 } } }),
+          api.GET("/api/articles", { params: { query: { limit: 8 } } }),
+          api.GET("/api/collections", { params: { query: { limit: 5 } } }),
+          api.GET("/api/questions", { params: { query: { limit: 5 } } }),
+          api.GET("/api/tags", { params: { query: { limit: 12 } } }),
+          api.GET("/api/leaderboard/contributor-of-the-month"),
+          api.GET("/api/leaderboard", { params: { query: { period: "all", limit: 6 } } }),
+        ]);
       if (!resources.data || !articles.data || !collections.data || !questions.data || !tags.data)
         throw new Error(t("catalogueUnavailable"));
       const items: FeedItem[] = [
@@ -83,6 +87,7 @@ function useHome() {
         question: questions.data.items[0],
         tags: tags.data.items,
         contributor: contributor.data,
+        board: board.data ?? [],
       };
     },
   });
@@ -109,24 +114,24 @@ export function HomeContents() {
   return (
     <main id="main" className="relative z-10 mx-auto max-w-6xl px-4 pb-20 sm:px-8">
       <section
-        className="border-rule grid gap-8 border-b py-12 lg:grid-cols-[1fr_17rem] lg:py-20"
         aria-labelledby="home-title"
+        className="grid gap-10 pt-12 pb-10 lg:grid-cols-[1fr_20rem]"
       >
         <div>
-          <p className="text-step--1 text-muted font-mono tracking-widest uppercase">
+          <p className="text-step--1 text-accent font-mono tracking-widest uppercase">
             {t("eyebrow")}
           </p>
-          <h1 id="home-title" className="font-display text-step-5 mt-5 max-w-4xl">
+          <h1 id="home-title" className="font-display text-step-5 mt-4 max-w-3xl">
             {t("headlineBefore")} <em className="text-accent">{t("headlineEmphasis")}</em>{" "}
             {t("headlineAfter")}
           </h1>
-          <p className="text-step-1 text-muted mt-7 max-w-2xl">{t("intro")}</p>
+          <p className="text-step-1 text-muted mt-6 max-w-2xl">{t("intro")}</p>
           <button
             type="button"
             onClick={() => window.dispatchEvent(new Event("open-catalogue-search"))}
-            className="bg-card shadow-paper border-rule text-muted text-step-1 mt-8 flex min-h-16 w-full max-w-2xl items-center justify-between rounded-md border px-5 text-left"
+            className="border-rule bg-card text-muted hover:border-ink mt-8 flex min-h-14 w-full max-w-2xl items-center justify-between rounded-md border px-5 text-left"
           >
-            <span>{t("searchPlaceholder")}…</span>
+            <span>{t("searchPlaceholder")}</span>
             <span className="text-step--1 font-mono">⌘ K</span>
           </button>
           {home.data && home.data.tags.length > 0 && (
@@ -144,20 +149,14 @@ export function HomeContents() {
             </div>
           )}
         </div>
-        <aside
-          aria-label={t("marginsLabel")}
-          className="bg-card shadow-paper border-rule self-start rounded-md border p-5 lg:mt-10"
-        >
-          <p className="text-step--1 text-flame-text font-mono tracking-widest uppercase">
-            {t("marginsTitle")}
-          </p>
-          <p className="font-display text-step-2 mt-4">{t("marginsHeadline")}</p>
-          <p className="text-muted mt-3">{t("marginsBody")}</p>
+        <aside className="border-rule self-center lg:border-l lg:pl-8">
+          <h2 className="font-display text-step-2">{t("shareAsideTitle")}</h2>
+          <p className="text-muted mt-3">{t("shareAsideBody")}</p>
           <Link
             href="/submit"
-            className="text-accent mt-5 inline-flex min-h-11 items-center font-semibold underline"
+            className="text-accent mt-4 inline-flex min-h-11 items-center font-semibold underline-offset-4 hover:underline"
           >
-            {t("addToArchive")}
+            {t("shareAsideCta")} →
           </Link>
         </aside>
       </section>
@@ -332,62 +331,93 @@ export function HomeContents() {
               <p className="text-muted mt-4">{t("noTags")}</p>
             )}
           </section>
-          <section className="border-rule border-t py-12" aria-labelledby="feed-heading">
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <div>
-                <p className="text-step--1 text-flame-text font-mono tracking-widest uppercase">
-                  {t("arrivalsLabel")}
-                </p>
-                <h2 id="feed-heading" className="font-display text-step-3 mt-3">
-                  {t("arrivalsTitle")}
-                </h2>
+          <div className="grid gap-10 lg:grid-cols-[1fr_17rem]">
+            <section className="py-12" aria-labelledby="feed-heading">
+              <div className="flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <p className="text-step--1 text-flame-text font-mono tracking-widest uppercase">
+                    {t("arrivalsLabel")}
+                  </p>
+                  <h2 id="feed-heading" className="font-display text-step-3 mt-3">
+                    {t("arrivalsTitle")}
+                  </h2>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button variant="secondary" onClick={shuffle}>
+                    {t("shuffleResource")}
+                  </Button>
+                  {pick && (
+                    <Link href={pick} className="text-accent underline">
+                      {t("openPick")}
+                    </Link>
+                  )}
+                </div>
               </div>
-              <div className="flex flex-wrap items-center gap-2">
-                <Button variant="secondary" onClick={shuffle}>
-                  {t("shuffleResource")}
-                </Button>
-                {pick && (
-                  <Link href={pick} className="text-accent underline">
-                    {t("openPick")}
+              <Tabs value={tab} onValueChange={setTab} className="mt-7">
+                <TabsList aria-label={t("feedSort")}>
+                  <TabsTrigger value="latest">{t("latest")}</TabsTrigger>
+                  <TabsTrigger value="top" tint="article">
+                    {t("top")}
+                  </TabsTrigger>
+                  <TabsTrigger value="for-you" tint="research">
+                    {t("forYou")}
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="latest">
+                  {feed.length ? (
+                    <FeedCards items={feed} />
+                  ) : (
+                    <EmptyState title={t("emptyFeedTitle")}>{t("emptyFeedBody")}</EmptyState>
+                  )}
+                </TabsContent>
+                <TabsContent value="top">
+                  {feed.length ? (
+                    <FeedCards items={feed} />
+                  ) : (
+                    <EmptyState title={t("emptyTopTitle")}>{t("emptyTopBody")}</EmptyState>
+                  )}
+                </TabsContent>
+                <TabsContent value="for-you">
+                  <p className="text-muted mb-4">{t("forYouBody")}</p>
+                  <Link
+                    href={status === "authenticated" ? "/for-you" : "/signin?next=/for-you"}
+                    className="text-accent inline-flex min-h-11 items-center underline"
+                  >
+                    {status === "authenticated" ? t("openYourFeed") : t("signInForFeed")}
                   </Link>
-                )}
-              </div>
-            </div>
-            <Tabs value={tab} onValueChange={setTab} className="mt-7">
-              <TabsList aria-label={t("feedSort")}>
-                <TabsTrigger value="latest">{t("latest")}</TabsTrigger>
-                <TabsTrigger value="top" tint="article">
-                  {t("top")}
-                </TabsTrigger>
-                <TabsTrigger value="for-you" tint="research">
-                  {t("forYou")}
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="latest">
-                {feed.length ? (
-                  <FeedCards items={feed} />
-                ) : (
-                  <EmptyState title={t("emptyFeedTitle")}>{t("emptyFeedBody")}</EmptyState>
-                )}
-              </TabsContent>
-              <TabsContent value="top">
-                {feed.length ? (
-                  <FeedCards items={feed} />
-                ) : (
-                  <EmptyState title={t("emptyTopTitle")}>{t("emptyTopBody")}</EmptyState>
-                )}
-              </TabsContent>
-              <TabsContent value="for-you">
-                <p className="text-muted mb-4">{t("forYouBody")}</p>
+                </TabsContent>
+              </Tabs>
+            </section>
+            <aside
+              className="lg:border-rule py-12 lg:border-l lg:pl-8"
+              aria-labelledby="board-heading"
+            >
+              <div className="flex items-baseline justify-between">
+                <h2 id="board-heading" className="font-display text-step-2">
+                  {t("contributors")}
+                </h2>
                 <Link
-                  href={status === "authenticated" ? "/for-you" : "/signin?next=/for-you"}
-                  className="text-accent inline-flex min-h-11 items-center underline"
+                  href="/people"
+                  className="text-accent text-step--1 underline-offset-4 hover:underline"
                 >
-                  {status === "authenticated" ? t("openYourFeed") : t("signInForFeed")}
+                  {t("allPeople")}
                 </Link>
-              </TabsContent>
-            </Tabs>
-          </section>
+              </div>
+              <ol className="divide-rule mt-4 divide-y">
+                {home.data.board.map((row) => (
+                  <li key={row.person.id}>
+                    <Link
+                      href={`/people/${row.person.id}`}
+                      className="hover:bg-ink/5 flex min-h-11 items-center justify-between gap-3 py-2"
+                    >
+                      <span className="truncate">{row.person.display_name}</span>
+                      <span className="text-muted text-step--1 font-mono">{row.points}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ol>
+            </aside>
+          </div>
           <section className="border-rule border-t py-12" aria-labelledby="contributors-heading">
             <p className="text-step--1 text-research font-mono tracking-widest uppercase">
               {t("peopleLabel")}
@@ -422,6 +452,24 @@ export function HomeContents() {
         </>
       )}
       <section
+        aria-labelledby="suite-heading"
+        className="bg-card border-rule shadow-paper mt-12 flex flex-wrap items-center justify-between gap-5 rounded-md border p-6 sm:p-8"
+      >
+        <div className="max-w-2xl">
+          <h2 id="suite-heading" className="font-display text-step-2">
+            {t("suiteTitle")}
+          </h2>
+          <p className="text-muted mt-2">{t("suiteBody")}</p>
+        </div>
+        {status === "authenticated" ? (
+          <a href={GPA_URL} className={buttonClass("secondary")}>
+            {t("suiteOpen")} <span aria-hidden>↗</span>
+          </a>
+        ) : (
+          <GpaButton next="/" label={t("suiteJoin")} className="sm:w-auto" />
+        )}
+      </section>
+      <section
         aria-label={t("typeSpecimens")}
         className="text-step--1 text-muted border-rule mt-16 border-t pt-6"
       >
@@ -436,18 +484,15 @@ export function HomeContents() {
 
 function FeedCards({ items }: { items: FeedItem[] }) {
   return (
-    <ul className="grid gap-5 md:grid-cols-2">
+    <ul className="border-rule divide-rule divide-y rounded-md border">
       {items.map((item) => (
         <li key={item.id}>
-          <Link
-            href={item.href}
-            className="bg-card shadow-paper border-rule hover:shadow-lift border-t-accent block min-h-44 rounded-md border border-t-4 p-5 transition-transform duration-(--duration-base) hover:-translate-y-1"
-          >
+          <Link href={item.href} className="hover:bg-ink/5 block px-5 py-4">
             <span className="text-step--1 text-muted font-mono tracking-widest uppercase">
-              {item.type}
+              {item.type} · {item.score}
             </span>
-            <h3 className="font-display text-step-2 mt-3">{item.title}</h3>
-            <p className="text-muted mt-3 line-clamp-2">{item.description}</p>
+            <h3 className="font-display text-step-1 mt-1">{item.title}</h3>
+            <p className="text-muted mt-1 line-clamp-2">{item.description}</p>
           </Link>
         </li>
       ))}

@@ -302,6 +302,43 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/auth/gpa": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Gpa Sign In */
+    post: operations["gpa_sign_in_api_auth_gpa_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/auth/gpa/refresh": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Gpa Refresh
+     * @description Re-copy the signed-in student's avatar and cosmetics from UFAZ GPA.
+     */
+    post: operations["gpa_refresh_api_auth_gpa_refresh_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/auth/login": {
     parameters: {
       query?: never;
@@ -1179,6 +1216,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/people/by-gpa/{gpa_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Person By Gpa */
+    get: operations["person_by_gpa_api_people_by_gpa__gpa_id__get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/people/{user_id}": {
     parameters: {
       query?: never;
@@ -1997,6 +2051,13 @@ export interface components {
     AuthorOut: {
       /** Avatar Url */
       avatar_url?: string | null;
+      /**
+       * Cosmetics
+       * @default {}
+       */
+      cosmetics: {
+        [key: string]: string;
+      };
       /** Display Name */
       display_name: string;
       /**
@@ -2328,6 +2389,13 @@ export interface components {
        */
       email: string;
     };
+    /** GpaIn */
+    GpaIn: {
+      /** State */
+      state: string;
+      /** Token */
+      token: string;
+    };
     /** HideIn */
     HideIn: {
       /** Reason */
@@ -2611,6 +2679,13 @@ export interface components {
     PersonCard: {
       /** Avatar Url */
       avatar_url?: string | null;
+      /**
+       * Cosmetics
+       * @default {}
+       */
+      cosmetics: {
+        [key: string]: string;
+      };
       /** Display Name */
       display_name: string;
       /** Faculty */
@@ -2671,6 +2746,13 @@ export interface components {
       badges: components["schemas"]["Badge"][];
       /** Bio */
       bio: string;
+      /**
+       * Cosmetics
+       * @default {}
+       */
+      cosmetics: {
+        [key: string]: string;
+      };
       /** Counts */
       counts: {
         [key: string]: number;
@@ -2679,6 +2761,8 @@ export interface components {
       display_name: string;
       /** Faculty */
       faculty: string;
+      /** Gpa Url */
+      gpa_url?: string | null;
       /** Graduation Year */
       graduation_year: number | null;
       /**
@@ -2701,6 +2785,11 @@ export interface components {
       socials: {
         [key: string]: string;
       };
+      /**
+       * Supporter Tier
+       * @default 0
+       */
+      supporter_tier: number;
     };
     /**
      * ProfilePatch
@@ -4021,6 +4110,68 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["TokenOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  gpa_sign_in_api_auth_gpa_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GpaIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TokenOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  gpa_refresh_api_auth_gpa_refresh_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserOut"];
         };
       };
       /** @description Error envelope */
@@ -5797,6 +5948,37 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["Page_PersonCard_"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  person_by_gpa_api_people_by_gpa__gpa_id__get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        gpa_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": unknown;
         };
       };
       /** @description Error envelope */

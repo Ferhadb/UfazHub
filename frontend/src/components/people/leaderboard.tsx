@@ -39,14 +39,14 @@ export function Leaderboard() {
         aria-labelledby="cotm"
         className="bg-card shadow-paper border-rule border-t-collection relative rounded-md border border-t-4 p-4"
       >
-        <div className="absolute -top-3 right-3">
+        <div className="flex flex-wrap items-start justify-between gap-2">
+          <h2 id="cotm" className="font-display text-step-1">
+            Contributor of the month
+          </h2>
           <Stamp tone="collection" tilt={3}>
             This month
           </Stamp>
         </div>
-        <h2 id="cotm" className="font-display text-step-1">
-          Contributor of the month
-        </h2>
         {top.isPending ? (
           <Skeleton lines={1} />
         ) : top.isError ? (

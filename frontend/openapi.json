@@ -945,6 +945,14 @@
             ],
             "title": "Avatar Url"
           },
+          "cosmetics": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "default": {},
+            "title": "Cosmetics",
+            "type": "object"
+          },
           "display_name": {
             "title": "Display Name",
             "type": "string"
@@ -1766,6 +1774,28 @@
           "email"
         ],
         "title": "ForgotIn",
+        "type": "object"
+      },
+      "GpaIn": {
+        "properties": {
+          "state": {
+            "maxLength": 128,
+            "minLength": 16,
+            "title": "State",
+            "type": "string"
+          },
+          "token": {
+            "maxLength": 2000,
+            "minLength": 20,
+            "title": "Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "state"
+        ],
+        "title": "GpaIn",
         "type": "object"
       },
       "HideIn": {
@@ -2637,6 +2667,14 @@
             ],
             "title": "Avatar Url"
           },
+          "cosmetics": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "default": {},
+            "title": "Cosmetics",
+            "type": "object"
+          },
           "display_name": {
             "title": "Display Name",
             "type": "string"
@@ -2803,6 +2841,14 @@
             "title": "Bio",
             "type": "string"
           },
+          "cosmetics": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "default": {},
+            "title": "Cosmetics",
+            "type": "object"
+          },
           "counts": {
             "additionalProperties": {
               "type": "integer"
@@ -2817,6 +2863,17 @@
           "faculty": {
             "title": "Faculty",
             "type": "string"
+          },
+          "gpa_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gpa Url"
           },
           "graduation_year": {
             "anyOf": [
@@ -2857,6 +2914,11 @@
             },
             "title": "Socials",
             "type": "object"
+          },
+          "supporter_tier": {
+            "default": 0,
+            "title": "Supporter Tier",
+            "type": "integer"
           }
         },
         "required": [
@@ -5910,6 +5972,84 @@
         ]
       }
     },
+    "/api/auth/gpa": {
+      "post": {
+        "operationId": "gpa_sign_in_api_auth_gpa_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GpaIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "summary": "Gpa Sign In",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/gpa/refresh": {
+      "post": {
+        "description": "Re-copy the signed-in student's avatar and cosmetics from UFAZ GPA.",
+        "operationId": "gpa_refresh_api_auth_gpa_refresh_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Gpa Refresh",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
     "/api/auth/login": {
       "post": {
         "operationId": "login_api_auth_login_post",
@@ -8746,6 +8886,47 @@
           }
         },
         "summary": "Directory",
+        "tags": [
+          "people"
+        ]
+      }
+    },
+    "/api/people/by-gpa/{gpa_id}": {
+      "get": {
+        "operationId": "person_by_gpa_api_people_by_gpa__gpa_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "gpa_id",
+            "required": true,
+            "schema": {
+              "maxLength": 32,
+              "title": "Gpa Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "summary": "Person By Gpa",
         "tags": [
           "people"
         ]

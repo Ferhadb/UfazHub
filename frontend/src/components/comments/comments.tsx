@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useId, useState } from "react";
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar, NameFx } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Callout } from "@/components/ui/callout";
 import { Textarea } from "@/components/ui/field";
@@ -75,11 +75,18 @@ function Entry({ c, itemId, canReply }: { c: Comment; itemId: string; canReply: 
     });
   return (
     <li className="flex gap-3">
-      <Avatar name={c.author.display_name} src={c.author.avatar_url ?? undefined} size={36} />
+      <Avatar
+        name={c.author.display_name}
+        src={c.author.avatar_url ?? undefined}
+        size={36}
+        cosmetics={c.author.cosmetics}
+      />
       <div className="min-w-0 flex-1">
         <p className="text-step--1 text-muted">
-          <span className="text-ink font-semibold">{c.author.display_name}</span> ·{" "}
-          <time dateTime={c.created_at}>{when(c.created_at)}</time>
+          <span className="text-ink font-semibold">
+            <NameFx name={c.author.display_name} cosmetics={c.author.cosmetics} />
+          </span>{" "}
+          · <time dateTime={c.created_at}>{when(c.created_at)}</time>
         </p>
         {/* Plain text on purpose: comments are never rendered as HTML. */}
         <p className="mt-1 break-words whitespace-pre-line">{c.body}</p>

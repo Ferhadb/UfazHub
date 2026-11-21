@@ -96,10 +96,10 @@ export function SearchPalette() {
       }}
     >
       <D.Trigger asChild>
-        <Button variant="secondary" aria-label="Search" aria-keyshortcuts="Control+K Meta+K">
+        <Button variant="ghost" aria-label="Search" aria-keyshortcuts="Control+K Meta+K">
           <Icon name="search" size={18} />
           <span className="hidden sm:inline">Search</span>
-          <kbd className="text-step--1 text-muted hidden font-mono sm:inline">Ctrl K</kbd>
+          <kbd className="text-step--1 text-muted hidden font-mono xl:inline">Ctrl K</kbd>
         </Button>
       </D.Trigger>
       <D.Portal>

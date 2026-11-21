@@ -23,14 +23,17 @@ export function Avatar({
   src,
   size = 40,
   className,
+  cosmetics,
 }: {
   name: string;
   src?: string;
   size?: number;
   className?: string;
+  /** GPA cosmetics: a frame class wraps the avatar. */
+  cosmetics?: Record<string, string | undefined>;
 }) {
   const tint = tints[[...name].reduce((n, c) => n + c.charCodeAt(0), 0) % tints.length]!;
-  return (
+  const avatar = (
     <span
       role="img"
       aria-label={name}
@@ -48,6 +51,35 @@ export function Avatar({
       ) : (
         <span aria-hidden="true">{initials(name)}</span>
       )}
+    </span>
+  );
+  const frame = cosmetics?.frame;
+  return frame ? (
+    <span
+      className={cn(
+        "cos-frame inline-block h-fit",
+        `cos-${frame}`,
+        cosmetics?.frame_up && "cos-up",
+      )}
+    >
+      {avatar}
+    </span>
+  ) : (
+    avatar
+  );
+}
+
+/** A display name that wears its GPA name effect, if any. */
+export function NameFx({
+  name,
+  cosmetics,
+}: {
+  name: string;
+  cosmetics?: Record<string, string | undefined>;
+}) {
+  return (
+    <span className={cosmetics?.name_effect ? `cos-${cosmetics.name_effect}` : undefined}>
+      {name}
     </span>
   );
 }

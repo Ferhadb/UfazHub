@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar, NameFx } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Callout } from "@/components/ui/callout";
@@ -16,23 +16,30 @@ import { Leaderboard } from "./leaderboard";
 
 export function PersonRow({ p }: { p: Person }) {
   return (
-    <li className="bg-card shadow-paper border-rule flex items-center gap-4 rounded-md border p-4">
-      <Avatar name={p.display_name} src={p.avatar_url ?? undefined} size={48} />
+    <li className="border-rule flex items-start gap-4 rounded-md border p-4">
+      <Avatar
+        name={p.display_name}
+        src={p.avatar_url ?? undefined}
+        size={48}
+        cosmetics={p.cosmetics}
+      />
       <div className="min-w-0 flex-1">
         <Link
           href={`/people/${p.id}`}
           className="font-display text-step-1 inline-flex min-h-11 items-center underline-offset-4 hover:underline"
         >
-          {p.display_name}
+          <NameFx name={p.display_name} cosmetics={p.cosmetics} />
         </Link>
         <p className="text-step--1 text-muted">
           {[p.faculty, p.graduation_year ? `class of ${p.graduation_year}` : "", p.job_title]
             .filter(Boolean)
             .join(" · ") || "No details filed yet"}
         </p>
+        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+          {p.role !== "user" && <Badge tone="collection">{p.role.replace("_", " ")}</Badge>}
+          <span className="text-step--1 font-mono tabular-nums">{p.reputation} rep</span>
+        </div>
       </div>
-      {p.role !== "user" && <Badge tone="collection">{p.role.replace("_", " ")}</Badge>}
-      <span className="text-step--1 font-mono tabular-nums">{p.reputation} rep</span>
     </li>
   );
 }
@@ -54,16 +61,16 @@ export function PeopleView() {
   return (
     <main id="main" className="relative z-10 mx-auto max-w-6xl px-4 py-8 sm:px-8 sm:py-12">
       <p className="text-step--1 text-collection font-mono tracking-widest uppercase">
-        Catalogue · People
+        Community directory
       </p>
-      <h1 className="font-display text-step-4 mt-1">Who is who</h1>
+      <h1 className="font-display text-step-4 mt-1">Find people worth following.</h1>
       <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_20rem]">
         <div>
           <form
             role="search"
             aria-label="Find people"
             onSubmit={(e) => e.preventDefault()}
-            className="grid gap-4 sm:grid-cols-3"
+            className="border-rule bg-card grid gap-4 rounded-md border p-4 sm:grid-cols-3"
           >
             <Input label="Name" value={name} onChange={(e) => setName(e.target.value)} />
             <Input label="Faculty" value={faculty} onChange={(e) => setFaculty(e.target.value)} />
@@ -75,7 +82,8 @@ export function PeopleView() {
               onChange={(e) => setYear(e.target.value)}
             />
           </form>
-          <div className="mt-6" aria-live="polite">
+          <h2 className="font-display text-step-2 mt-8">Featured people</h2>
+          <div className="mt-4" aria-live="polite">
             {q.isPending ? (
               <Skeleton lines={5} />
             ) : q.isError ? (
@@ -90,7 +98,7 @@ export function PeopleView() {
                 Try fewer filters, or leave a footprint of your own and be found.
               </EmptyState>
             ) : (
-              <ul className="flex flex-col gap-3">
+              <ul className="grid gap-4 sm:grid-cols-2">
                 {people.map((p) => (
                   <PersonRow key={p.id} p={p} />
                 ))}

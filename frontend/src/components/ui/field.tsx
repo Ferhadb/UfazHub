@@ -1,5 +1,6 @@
 import { useId, type ComponentProps, type ReactNode } from "react";
 import { cn } from "./cn";
+import { Icon } from "./icons";
 
 type FieldProps = { label: string; hint?: string; error?: string };
 
@@ -87,9 +88,20 @@ export function Select({
   const id = useId();
   return (
     <Shell id={id} label={label} hint={hint} error={error}>
-      <select {...aria(id, { label, hint, error })} className={cn(control, className)} {...rest}>
-        {children}
-      </select>
+      <div className="relative">
+        <select
+          {...aria(id, { label, hint, error })}
+          className={cn(control, "appearance-none pr-10", className)}
+          {...rest}
+        >
+          {children}
+        </select>
+        <Icon
+          name="arrow-down"
+          size={16}
+          className="text-muted pointer-events-none absolute top-1/2 right-3 -translate-y-1/2"
+        />
+      </div>
     </Shell>
   );
 }

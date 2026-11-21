@@ -38,6 +38,19 @@ export default function SettingsPage() {
     );
   };
 
+  const refreshGpa = async () => {
+    const { response, error } = await api.POST("/api/auth/gpa/refresh");
+    toast(
+      response.ok
+        ? {
+            title: "Refreshed",
+            description: "Avatar and cosmetics copied from UFAZ GPA.",
+            tone: "success",
+          }
+        : { title: "Could not refresh", description: errorInfo(error).message, tone: "danger" },
+    );
+  };
+
   return (
     <main
       id="main"
@@ -54,6 +67,14 @@ export default function SettingsPage() {
         <p className="mt-2">{user.display_name}</p>
         <p className="text-muted">{user.email}</p>
         <Badge className="mt-2">{user.role.replace("_", " ")}</Badge>
+        <div className="border-rule mt-4 border-t pt-4">
+          <p className="text-muted text-step--1">
+            Avatar, bio and cosmetics come from your UFAZ GPA profile.
+          </p>
+          <Button className="mt-2" variant="secondary" onClick={refreshGpa}>
+            Refresh from GPA
+          </Button>
+        </div>
       </section>
       {!user.email_verified && (
         <Callout tone="warning" title="Confirm your email">

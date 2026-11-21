@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { CardList, NothingYet } from "@/components/cards/item-card";
 import { Avatar } from "@/components/ui/avatar";
+import { SuiteMark } from "@/components/gpa-button";
 import { Stamp, type BadgeTone } from "@/components/ui/badge";
 import { Button, buttonClass } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -38,6 +39,7 @@ const Line = ({ label, children }: { label: string; children: string }) =>
 function Passport({ p, mine }: { p: Profile; mine: boolean }) {
   const memberNo = `UFZ-${p.id.slice(0, 8).toUpperCase()}`;
   const socials = Object.entries(p.socials);
+  const cos = p.cosmetics as Record<string, string | undefined>;
   return (
     <section
       aria-labelledby="who"
@@ -51,11 +53,25 @@ function Passport({ p, mine }: { p: Profile; mine: boolean }) {
       <p className="text-step--1 text-collection relative font-mono tracking-widest uppercase">
         UFAZ Hub library card · {memberNo}
       </p>
-      <div className="relative mt-4 flex flex-col gap-6 sm:flex-row">
-        <Avatar name={p.display_name} src={p.avatar_url ?? undefined} size={112} />
-        <div className="min-w-0 flex-1">
+      {cos.banner && (
+        <div
+          aria-hidden="true"
+          className={`cos-banner cos-${cos.banner} relative -mx-6 mt-4 h-28 sm:-mx-8 sm:h-40`}
+        >
+          {cos.banner_up && <span className="cos-up-shine" />}
+        </div>
+      )}
+      <div className={`relative flex flex-col gap-6 sm:flex-row ${cos.banner ? "-mt-12" : "mt-4"}`}>
+        <span
+          className={`cos-frame h-fit shrink-0 ${cos.frame ? `cos-${cos.frame}` : ""} ${cos.frame && cos.frame_up ? "cos-up" : ""}`}
+        >
+          <Avatar name={p.display_name} src={p.avatar_url ?? undefined} size={112} />
+        </span>
+        <div className={`min-w-0 flex-1 ${cos.banner ? "sm:pt-14" : ""}`}>
           <h1 id="who" className="font-display text-step-4">
-            {p.display_name}
+            <span className={cos.name_effect ? `cos-${cos.name_effect}` : undefined}>
+              {p.display_name}
+            </span>
           </h1>
           <dl className="mt-3 grid gap-x-8 sm:grid-cols-2">
             <Line label="Faculty">{p.faculty}</Line>
@@ -87,11 +103,18 @@ function Passport({ p, mine }: { p: Profile; mine: boolean }) {
               ))}
             </ul>
           )}
-          {mine && (
-            <Link href="/settings" className={buttonClass("secondary", "mt-3")}>
-              Edit profile
-            </Link>
-          )}
+          <div className="mt-4 flex flex-wrap gap-3">
+            {p.gpa_url && (
+              <a href={p.gpa_url} className={buttonClass("secondary")}>
+                View on <SuiteMark product="GPA" /> <span aria-hidden>↗</span>
+              </a>
+            )}
+            {mine && (
+              <Link href="/settings" className={buttonClass("secondary")}>
+                Edit profile
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </section>
