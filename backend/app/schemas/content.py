@@ -47,6 +47,7 @@ class LinkOut(BaseModel):
     preview_title: str | None = None
     preview_image: str | None = None  # remote URL from the page's og:image
     preview_favicon: str | None = None
+    health: Literal["ok", "reported", "dead"] = "ok"
 
 
 class ResourceIn(BaseModel):

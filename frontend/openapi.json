@@ -751,6 +751,23 @@
         "title": "ArticlePatch",
         "type": "object"
       },
+      "AttachIn": {
+        "properties": {
+          "course_slugs": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 5,
+            "title": "Course Slugs",
+            "type": "array"
+          }
+        },
+        "required": [
+          "course_slugs"
+        ],
+        "title": "AttachIn",
+        "type": "object"
+      },
       "AttachmentOut": {
         "properties": {
           "height": {
@@ -948,6 +965,29 @@
           "display_name"
         ],
         "title": "AuthorOut",
+        "type": "object"
+      },
+      "Badge": {
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "name",
+          "description"
+        ],
+        "title": "Badge",
         "type": "object"
       },
       "BanAppealIn": {
@@ -1433,6 +1473,148 @@
         "title": "ContentType",
         "type": "string"
       },
+      "CourseDetail": {
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "item_count": {
+            "title": "Item Count",
+            "type": "integer"
+          },
+          "level": {
+            "title": "Level",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "program": {
+            "$ref": "#/components/schemas/ProgramRef"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "start_here": {
+            "items": {
+              "$ref": "#/components/schemas/ItemCard"
+            },
+            "title": "Start Here",
+            "type": "array"
+          }
+        },
+        "required": [
+          "slug",
+          "name",
+          "level",
+          "description",
+          "program",
+          "item_count",
+          "start_here"
+        ],
+        "title": "CourseDetail",
+        "type": "object"
+      },
+      "CourseIn": {
+        "properties": {
+          "description": {
+            "default": "",
+            "maxLength": 1000,
+            "title": "Description",
+            "type": "string"
+          },
+          "level": {
+            "enum": [
+              "L1",
+              "L2",
+              "L3",
+              "M1",
+              "M2"
+            ],
+            "title": "Level",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 2,
+            "title": "Name",
+            "type": "string"
+          },
+          "program_slug": {
+            "maxLength": 48,
+            "title": "Program Slug",
+            "type": "string"
+          },
+          "slug": {
+            "maxLength": 64,
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "program_slug",
+          "slug",
+          "name",
+          "level"
+        ],
+        "title": "CourseIn",
+        "type": "object"
+      },
+      "CourseOut": {
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "level": {
+            "title": "Level",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "program": {
+            "$ref": "#/components/schemas/ProgramRef"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "name",
+          "level",
+          "description",
+          "program"
+        ],
+        "title": "CourseOut",
+        "type": "object"
+      },
+      "DayCount": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "day": {
+            "format": "date",
+            "title": "Day",
+            "type": "string"
+          }
+        },
+        "required": [
+          "day",
+          "count"
+        ],
+        "title": "DayCount",
+        "type": "object"
+      },
       "DevLoginIn": {
         "properties": {
           "email": {
@@ -1541,6 +1723,37 @@
         "title": "ErrorBody",
         "type": "object"
       },
+      "FollowOut": {
+        "properties": {
+          "following": {
+            "title": "Following",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "following"
+        ],
+        "title": "FollowOut",
+        "type": "object"
+      },
+      "FollowedTag": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "slug"
+        ],
+        "title": "FollowedTag",
+        "type": "object"
+      },
       "ForgotIn": {
         "properties": {
           "email": {
@@ -1570,6 +1783,102 @@
         "title": "HideIn",
         "type": "object"
       },
+      "ItemCard": {
+        "description": "A content item as a catalogue card; every cross-type list returns these.",
+        "properties": {
+          "author": {
+            "$ref": "#/components/schemas/AuthorOut"
+          },
+          "call_number": {
+            "title": "Call Number",
+            "type": "string"
+          },
+          "comment_count": {
+            "title": "Comment Count",
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_research": {
+            "title": "Is Research",
+            "type": "boolean"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tags",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "resource",
+              "article",
+              "collection",
+              "question"
+            ],
+            "title": "Type",
+            "type": "string"
+          },
+          "vote_score": {
+            "title": "Vote Score",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "call_number",
+          "title",
+          "description",
+          "is_research",
+          "author",
+          "tags",
+          "vote_score",
+          "comment_count",
+          "created_at"
+        ],
+        "title": "ItemCard",
+        "type": "object"
+      },
+      "LeaderRow": {
+        "properties": {
+          "person": {
+            "$ref": "#/components/schemas/PersonCard"
+          },
+          "points": {
+            "title": "Points",
+            "type": "integer"
+          },
+          "rank": {
+            "title": "Rank",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "rank",
+          "points",
+          "person"
+        ],
+        "title": "LeaderRow",
+        "type": "object"
+      },
       "LinkIn": {
         "properties": {
           "label": {
@@ -1593,6 +1902,16 @@
       },
       "LinkOut": {
         "properties": {
+          "health": {
+            "default": "ok",
+            "enum": [
+              "ok",
+              "reported",
+              "dead"
+            ],
+            "title": "Health",
+            "type": "string"
+          },
           "id": {
             "format": "uuid",
             "title": "Id",
@@ -1646,6 +1965,21 @@
           "label"
         ],
         "title": "LinkOut",
+        "type": "object"
+      },
+      "ListIn": {
+        "properties": {
+          "name": {
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "ListIn",
         "type": "object"
       },
       "LoginIn": {
@@ -1948,6 +2282,33 @@
         "title": "Page[CommentOut]",
         "type": "object"
       },
+      "Page_ItemCard_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ItemCard"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "Page[ItemCard]",
+        "type": "object"
+      },
       "Page_ModerationEvent_": {
         "properties": {
           "items": {
@@ -2002,6 +2363,33 @@
         "title": "Page[NotificationOut]",
         "type": "object"
       },
+      "Page_PersonCard_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PersonCard"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "Page[PersonCard]",
+        "type": "object"
+      },
       "Page_QuestionOut_": {
         "properties": {
           "items": {
@@ -2054,6 +2442,33 @@
           "items"
         ],
         "title": "Page[QueueItem]",
+        "type": "object"
+      },
+      "Page_ReadingListOut_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ReadingListOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "Page[ReadingListOut]",
         "type": "object"
       },
       "Page_ReputationEventOut_": {
@@ -2191,6 +2606,86 @@
         "title": "Page[UserAdminOut]",
         "type": "object"
       },
+      "PathIn": {
+        "properties": {
+          "item_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 20,
+            "title": "Item Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "item_ids"
+        ],
+        "title": "PathIn",
+        "type": "object"
+      },
+      "PersonCard": {
+        "properties": {
+          "avatar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar Url"
+          },
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "faculty": {
+            "title": "Faculty",
+            "type": "string"
+          },
+          "graduation_year": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Graduation Year"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "job_title": {
+            "title": "Job Title",
+            "type": "string"
+          },
+          "reputation": {
+            "title": "Reputation",
+            "type": "integer"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "display_name",
+          "reputation",
+          "role",
+          "faculty",
+          "graduation_year",
+          "job_title"
+        ],
+        "title": "PersonCard",
+        "type": "object"
+      },
       "PointRule": {
         "properties": {
           "label": {
@@ -2275,6 +2770,267 @@
           "threshold"
         ],
         "title": "PrivilegeRule",
+        "type": "object"
+      },
+      "Profile": {
+        "properties": {
+          "activity": {
+            "items": {
+              "$ref": "#/components/schemas/DayCount"
+            },
+            "title": "Activity",
+            "type": "array"
+          },
+          "avatar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar Url"
+          },
+          "badges": {
+            "items": {
+              "$ref": "#/components/schemas/Badge"
+            },
+            "title": "Badges",
+            "type": "array"
+          },
+          "bio": {
+            "title": "Bio",
+            "type": "string"
+          },
+          "counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Counts",
+            "type": "object"
+          },
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "faculty": {
+            "title": "Faculty",
+            "type": "string"
+          },
+          "graduation_year": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Graduation Year"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "job_title": {
+            "title": "Job Title",
+            "type": "string"
+          },
+          "joined_at": {
+            "format": "date-time",
+            "title": "Joined At",
+            "type": "string"
+          },
+          "reputation": {
+            "title": "Reputation",
+            "type": "integer"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          },
+          "socials": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Socials",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "display_name",
+          "reputation",
+          "role",
+          "faculty",
+          "graduation_year",
+          "job_title",
+          "bio",
+          "socials",
+          "joined_at",
+          "counts",
+          "badges",
+          "activity"
+        ],
+        "title": "Profile",
+        "type": "object"
+      },
+      "ProfilePatch": {
+        "description": "Only the fields sent change.",
+        "properties": {
+          "bio": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bio"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "faculty": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Faculty"
+          },
+          "graduation_year": {
+            "anyOf": [
+              {
+                "maximum": 2100.0,
+                "minimum": 1990.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Graduation Year"
+          },
+          "job_title": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Job Title"
+          },
+          "socials": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Socials"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "title": "ProfilePatch",
+        "type": "object"
+      },
+      "ProgramIn": {
+        "properties": {
+          "description": {
+            "default": "",
+            "maxLength": 1000,
+            "title": "Description",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 2,
+            "title": "Name",
+            "type": "string"
+          },
+          "slug": {
+            "maxLength": 48,
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "name"
+        ],
+        "title": "ProgramIn",
+        "type": "object"
+      },
+      "ProgramOut": {
+        "properties": {
+          "courses": {
+            "items": {
+              "$ref": "#/components/schemas/CourseOut"
+            },
+            "title": "Courses",
+            "type": "array"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "name",
+          "description",
+          "courses"
+        ],
+        "title": "ProgramOut",
+        "type": "object"
+      },
+      "ProgramRef": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "name"
+        ],
+        "title": "ProgramRef",
         "type": "object"
       },
       "QuestionIn": {
@@ -2559,6 +3315,48 @@
           }
         },
         "title": "ReadIn",
+        "type": "object"
+      },
+      "ReadingListOut": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "item_count": {
+            "title": "Item Count",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "share_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Share Token"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "share_token",
+          "item_count",
+          "created_at"
+        ],
+        "title": "ReadingListOut",
         "type": "object"
       },
       "ReportIn": {
@@ -3274,6 +4072,42 @@
         "title": "SearchHit",
         "type": "object"
       },
+      "SharedList": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ItemCard"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/AuthorOut"
+          }
+        },
+        "required": [
+          "name",
+          "owner",
+          "items"
+        ],
+        "title": "SharedList",
+        "type": "object"
+      },
       "SignupIn": {
         "properties": {
           "display_name": {
@@ -3328,6 +4162,61 @@
           "has_accepted"
         ],
         "title": "SimilarHit",
+        "type": "object"
+      },
+      "Socials": {
+        "additionalProperties": false,
+        "properties": {
+          "github": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Github"
+          },
+          "linkedin": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Linkedin"
+          },
+          "website": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Website"
+          },
+          "x": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "X"
+          }
+        },
+        "title": "Socials",
         "type": "object"
       },
       "TagOut": {
@@ -5984,6 +6873,118 @@
         ]
       }
     },
+    "/api/content/{item_id}/courses": {
+      "get": {
+        "operationId": "item_courses_api_content__item_id__courses_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CourseOut"
+                  },
+                  "title": "Response Item Courses Api Content  Item Id  Courses Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Item Courses",
+        "tags": [
+          "courses"
+        ]
+      },
+      "put": {
+        "operationId": "attach_api_content__item_id__courses_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AttachIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CourseOut"
+                  },
+                  "title": "Response Attach Api Content  Item Id  Courses Put",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Attach",
+        "tags": [
+          "courses"
+        ]
+      }
+    },
     "/api/content/{item_id}/hide": {
       "post": {
         "operationId": "hide_api_content__item_id__hide_post",
@@ -6186,6 +7187,311 @@
         ]
       }
     },
+    "/api/courses": {
+      "post": {
+        "operationId": "create_course_api_courses_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CourseIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Course",
+        "tags": [
+          "courses"
+        ]
+      }
+    },
+    "/api/courses/{slug}": {
+      "get": {
+        "operationId": "course_api_courses__slug__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "summary": "Course",
+        "tags": [
+          "courses"
+        ]
+      }
+    },
+    "/api/courses/{slug}/items": {
+      "get": {
+        "operationId": "course_items_api_courses__slug__items_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "resource",
+                    "article",
+                    "collection",
+                    "question"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Type"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 50,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ItemCard_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "summary": "Course Items",
+        "tags": [
+          "courses"
+        ]
+      }
+    },
+    "/api/courses/{slug}/path": {
+      "put": {
+        "operationId": "set_path_api_courses__slug__path_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PathIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Set Path",
+        "tags": [
+          "courses"
+        ]
+      }
+    },
+    "/api/feed/for-you": {
+      "get": {
+        "operationId": "for_you_api_feed_for_you_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 50,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ItemCard_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "For You",
+        "tags": [
+          "library"
+        ]
+      }
+    },
     "/api/health": {
       "get": {
         "description": "Liveness: the process is up.",
@@ -6219,6 +7525,157 @@
         "summary": "Health",
         "tags": [
           "health"
+        ]
+      }
+    },
+    "/api/leaderboard": {
+      "get": {
+        "description": "Bounded top-N, so there is no next page.",
+        "operationId": "leaderboard_api_leaderboard_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "period",
+            "required": false,
+            "schema": {
+              "default": "month",
+              "enum": [
+                "month",
+                "all"
+              ],
+              "title": "Period",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 10,
+              "maximum": 50,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/LeaderRow"
+                  },
+                  "title": "Response Leaderboard Api Leaderboard Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "summary": "Leaderboard",
+        "tags": [
+          "people"
+        ]
+      }
+    },
+    "/api/leaderboard/contributor-of-the-month": {
+      "get": {
+        "operationId": "contributor_of_the_month_api_leaderboard_contributor_of_the_month_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/LeaderRow"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Response Contributor Of The Month Api Leaderboard Contributor Of The Month Get"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "summary": "Contributor Of The Month",
+        "tags": [
+          "people"
+        ]
+      }
+    },
+    "/api/links/{link_id}/broken": {
+      "put": {
+        "operationId": "report_broken_api_links__link_id__broken_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "link_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Link Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Report Broken",
+        "tags": [
+          "library"
         ]
       }
     },
@@ -6357,6 +7814,102 @@
         ]
       }
     },
+    "/api/me/avatar": {
+      "delete": {
+        "operationId": "remove_avatar_api_me_avatar_delete",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Remove Avatar",
+        "tags": [
+          "people"
+        ]
+      }
+    },
+    "/api/me/bookmarks": {
+      "get": {
+        "operationId": "my_bookmarks_api_me_bookmarks_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 50,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ItemCard_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "My Bookmarks",
+        "tags": [
+          "library"
+        ]
+      }
+    },
     "/api/me/moderation": {
       "get": {
         "operationId": "my_history_api_me_moderation_get",
@@ -6424,6 +7977,133 @@
         ]
       }
     },
+    "/api/me/profile": {
+      "patch": {
+        "operationId": "update_profile_api_me_profile_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfilePatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Profile",
+        "tags": [
+          "people"
+        ]
+      }
+    },
+    "/api/me/reading-lists": {
+      "get": {
+        "description": "Capped at 30 per person, so there is no next page.",
+        "operationId": "my_lists_api_me_reading_lists_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ReadingListOut_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "My Lists",
+        "tags": [
+          "library"
+        ]
+      },
+      "post": {
+        "operationId": "create_list_api_me_reading_lists_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadingListOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create List",
+        "tags": [
+          "library"
+        ]
+      }
+    },
     "/api/me/reputation": {
       "get": {
         "operationId": "my_reputation_api_me_reputation_get",
@@ -6488,6 +8168,47 @@
         "summary": "My Reputation",
         "tags": [
           "notifications"
+        ]
+      }
+    },
+    "/api/me/tags": {
+      "get": {
+        "description": "Followed tags, capped at 50, so not paged.",
+        "operationId": "my_tags_api_me_tags_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/FollowedTag"
+                  },
+                  "title": "Response My Tags Api Me Tags Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "My Tags",
+        "tags": [
+          "library"
         ]
       }
     },
@@ -6727,6 +8448,325 @@
         "summary": "Unread",
         "tags": [
           "notifications"
+        ]
+      }
+    },
+    "/api/people": {
+      "get": {
+        "operationId": "directory_api_people_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 60,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "in": "query",
+            "name": "faculty",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 80,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Faculty"
+            }
+          },
+          {
+            "in": "query",
+            "name": "graduation_year",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maximum": 2100,
+                  "minimum": 1990,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Graduation Year"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 24,
+              "maximum": 50,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_PersonCard_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "summary": "Directory",
+        "tags": [
+          "people"
+        ]
+      }
+    },
+    "/api/people/{user_id}": {
+      "get": {
+        "operationId": "person_api_people__user_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "User Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Person",
+        "tags": [
+          "people"
+        ]
+      }
+    },
+    "/api/people/{user_id}/contributions": {
+      "get": {
+        "operationId": "contributions_api_people__user_id__contributions_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "User Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 12,
+              "maximum": 50,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ItemCard_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Contributions",
+        "tags": [
+          "people"
+        ]
+      }
+    },
+    "/api/programs": {
+      "get": {
+        "description": "Every program with its courses; admin-curated and capped, so not paged.",
+        "operationId": "programs_api_programs_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ProgramOut"
+                  },
+                  "title": "Response Programs Api Programs Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "summary": "Programs",
+        "tags": [
+          "courses"
+        ]
+      },
+      "post": {
+        "operationId": "create_program_api_programs_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProgramIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgramRef"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Program",
+        "tags": [
+          "courses"
         ]
       }
     },
@@ -7219,6 +9259,388 @@
         ]
       }
     },
+    "/api/reading-lists/{list_id}": {
+      "delete": {
+        "operationId": "delete_list_api_reading_lists__list_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "list_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "List Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete List",
+        "tags": [
+          "library"
+        ]
+      },
+      "patch": {
+        "operationId": "rename_list_api_reading_lists__list_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "list_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "List Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadingListOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Rename List",
+        "tags": [
+          "library"
+        ]
+      }
+    },
+    "/api/reading-lists/{list_id}/items": {
+      "get": {
+        "operationId": "list_items_api_reading_lists__list_id__items_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "list_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "List Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 50,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ItemCard_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Items",
+        "tags": [
+          "library"
+        ]
+      }
+    },
+    "/api/reading-lists/{list_id}/items/{item_id}": {
+      "delete": {
+        "operationId": "remove_from_list_api_reading_lists__list_id__items__item_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "list_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "List Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadingListOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Remove From List",
+        "tags": [
+          "library"
+        ]
+      },
+      "put": {
+        "operationId": "add_to_list_api_reading_lists__list_id__items__item_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "list_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "List Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadingListOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Add To List",
+        "tags": [
+          "library"
+        ]
+      }
+    },
+    "/api/reading-lists/{list_id}/share": {
+      "delete": {
+        "operationId": "unshare_list_api_reading_lists__list_id__share_delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "list_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "List Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadingListOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Unshare List",
+        "tags": [
+          "library"
+        ]
+      },
+      "put": {
+        "operationId": "share_list_api_reading_lists__list_id__share_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "list_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "List Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadingListOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Share List",
+        "tags": [
+          "library"
+        ]
+      }
+    },
     "/api/ready": {
       "get": {
         "description": "Readiness: dependencies answer.",
@@ -7278,6 +9700,108 @@
         "summary": "Reputation Rules",
         "tags": [
           "notifications"
+        ]
+      }
+    },
+    "/api/research": {
+      "get": {
+        "description": "Everything flagged as research, across content types.",
+        "operationId": "research_api_research_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "resource",
+                    "article",
+                    "collection",
+                    "question"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Type"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tag",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 48,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tag"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 50,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ItemCard_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "summary": "Research",
+        "tags": [
+          "library"
         ]
       }
     },
@@ -7785,6 +10309,77 @@
         ]
       }
     },
+    "/api/shared/lists/{token}": {
+      "get": {
+        "operationId": "shared_list_api_shared_lists__token__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "title": "Token",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 50,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SharedList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "summary": "Shared List",
+        "tags": [
+          "library"
+        ]
+      }
+    },
     "/api/tags": {
       "get": {
         "description": "Most used tags first; bounded top-N, so there is never a next page.",
@@ -7839,6 +10434,98 @@
         "summary": "Tags",
         "tags": [
           "content"
+        ]
+      }
+    },
+    "/api/tags/{slug}/follow": {
+      "delete": {
+        "operationId": "unfollow_api_tags__slug__follow_delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Unfollow",
+        "tags": [
+          "library"
+        ]
+      },
+      "put": {
+        "operationId": "follow_api_tags__slug__follow_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Error envelope"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Follow",
+        "tags": [
+          "library"
         ]
       }
     },

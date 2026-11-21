@@ -18,3 +18,11 @@ from app.models.content import (  # noqa: F401
 )
 from app.models.qa import Answer, Notification, Question, ReputationEvent  # noqa: F401
 from app.models.moderation import Appeal, Report  # noqa: F401
+from app.models.library import (  # noqa: F401
+    ContentCourse,
+    Course,
+    Program,
+    ReadingList,
+    ReadingListItem,
+    TagFollow,
+)

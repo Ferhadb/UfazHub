@@ -9,10 +9,13 @@ from sqlalchemy import (
     ForeignKey,
     Index,
     Integer,
+    SmallInteger,
     String,
+    Text,
     Uuid,
     func,
 )
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -43,6 +46,11 @@ class User(Base):
     __table_args__ = (
         CheckConstraint(_in("role", Role), name="role"),
         CheckConstraint(_in("status", UserStatus), name="status"),
+        CheckConstraint(
+            "graduation_year IS NULL OR graduation_year BETWEEN 1990 AND 2100",
+            name="graduation_year",
+        ),
+        Index("ix_users_reputation", "reputation", "id"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
@@ -59,6 +67,13 @@ class User(Base):
     )
     # Sum of the user's reputation_events; only app.services.reputation writes it.
     reputation: Mapped[int] = mapped_column(Integer, server_default="0")
+    bio: Mapped[str] = mapped_column(Text, server_default="")
+    faculty: Mapped[str] = mapped_column(String(80), server_default="")
+    graduation_year: Mapped[int | None] = mapped_column(SmallInteger)
+    job_title: Mapped[str] = mapped_column(
+        String(120), server_default=""
+    )  # "current role"
+    socials: Mapped[dict] = mapped_column(JSONB, server_default="{}")
     email_digest: Mapped[bool] = mapped_column(Boolean, server_default="false")
     created_at: Mapped[datetime] = _now()
     updated_at: Mapped[datetime] = mapped_column(

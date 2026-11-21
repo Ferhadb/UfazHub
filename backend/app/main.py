@@ -10,9 +10,12 @@ from app.api import (
     collections,
     comments,
     content,
+    courses,
     health,
+    library,
     moderation,
     notifications,
+    people,
     questions,
     uploads,
 )
@@ -70,3 +73,6 @@ app.include_router(questions.router, prefix=settings.API_PREFIX)
 app.include_router(notifications.router, prefix=settings.API_PREFIX)
 app.include_router(moderation.router, prefix=settings.API_PREFIX)
 app.include_router(admin.router, prefix=settings.API_PREFIX)
+app.include_router(courses.router, prefix=settings.API_PREFIX)
+app.include_router(people.router, prefix=settings.API_PREFIX)
+app.include_router(library.router, prefix=settings.API_PREFIX)

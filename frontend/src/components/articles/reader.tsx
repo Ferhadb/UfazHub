@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useRef } from "react";
 import { Comments } from "@/components/comments/comments";
+import { CourseFiling } from "@/components/courses/course-filing";
 import { ResourceActions } from "@/components/resources/actions";
 import { Badge, Stamp } from "@/components/ui/badge";
 import { Button, buttonClass } from "@/components/ui/button";
@@ -159,6 +160,9 @@ function Reader({ a }: { a: Article }) {
             </li>
           ))}
         </ul>
+        <div className="no-print">
+          <CourseFiling itemId={a.id} canEdit={Boolean(canEdit)} />
+        </div>
         <ResourceActions
           resource={a}
           reportAuthor={a.author.id}

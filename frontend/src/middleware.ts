@@ -3,7 +3,15 @@ import { NextResponse, type NextRequest } from "next/server";
 // The access token lives only in browser memory, so the server cannot verify a session here.
 // What it can see is the CSRF cookie, set at sign-in and cleared at sign-out (path "/"): a cheap
 // hint to bounce signed-out visitors before the page renders. The API still enforces real auth.
-const PROTECTED = ["/settings", "/bookmarks", "/notifications", "/submit", "/ask", "/admin"];
+const PROTECTED = [
+  "/settings",
+  "/bookmarks",
+  "/for-you",
+  "/notifications",
+  "/submit",
+  "/ask",
+  "/admin",
+];
 
 export const isProtected = (path: string) =>
   PROTECTED.some((p) => path === p || path.startsWith(p + "/"));
@@ -22,6 +30,7 @@ export const config = {
   matcher: [
     "/settings/:path*",
     "/bookmarks/:path*",
+    "/for-you/:path*",
     "/notifications/:path*",
     "/submit/:path*",
     "/ask/:path*",

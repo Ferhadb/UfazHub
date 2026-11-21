@@ -19,8 +19,11 @@ from app.core.config import settings  # noqa: E402
 from app.core.security import hash_password  # noqa: E402
 from app.db.session import SessionLocal, engine  # noqa: E402
 from app.models.user import User  # noqa: E402
+from app.models.library import ContentCourse  # noqa: E402
 from app.schemas.content import ResourceIn  # noqa: E402
+from app.schemas.library import CourseIn, PathIn, ProgramIn  # noqa: E402
 from app.services import content as svc  # noqa: E402
+from app.services import courses as course_svc  # noqa: E402
 
 DEMO_PASSWORD = (
     "playground-pass"  # development fixture only; seeding refuses production
@@ -34,6 +37,25 @@ USERS = [
     ("nigar@ufaz.az", "Nigar Qasımova", "user"),
     ("timur@ufaz.az", "Тимур Алиев", "user"),
 ]
+
+# (slug, name, description) and (program, slug, name, level, tag whose items belong on the page)
+PROGRAMS = [
+    ("computer-science", "Computer Science", "Algorithms, systems and data."),
+    ("engineering", "Engineering", "Process, petroleum and geological engineering."),
+    ("mathematics", "Mathematics", "The shared mathematical core."),
+]
+COURSES = [
+    ("computer-science", "algorithms-l2", "Algorithms", "L2", "algorithms"),
+    ("computer-science", "databases-l2", "Databases", "L2", "databases"),
+    ("computer-science", "programming-l1", "Programming", "L1", "programming"),
+    ("mathematics", "algebra-l2", "Linear Algebra", "L2", "algebra"),
+    ("engineering", "thermodynamics-l3", "Thermodynamics", "L3", "thermodynamics"),
+]
+PROFILES = {
+    "aygun": ("Computer Science", 2026, "Teaching assistant, algebra"),
+    "rashad": ("Computer Science", 2025, "Backend intern at a Baku fintech"),
+    "camille": ("Engineering", 2027, "Exchange student from Strasbourg"),
+}
 
 # (author, title, description, type, category, difficulty, minutes, tags, link, research, extras)
 R = [
@@ -332,6 +354,37 @@ async def seed() -> None:
                     )
             for voter in random.sample(voters, k=random.randint(0, 3)):
                 await svc.set_bookmark(db, voter, item.id, True)
+        for key, (faculty, year, job) in PROFILES.items():
+            u = users[key]
+            u.faculty, u.graduation_year, u.job_title = faculty, year, job
+            u.bio = "Writes things down so the next cohort does not have to."
+        admin = users["admin"]
+        for slug, name, desc in PROGRAMS:
+            await course_svc.create_program(
+                db, admin, ProgramIn(slug=slug, name=name, description=desc)
+            )
+        for program, slug, name, level, tag in COURSES:
+            await course_svc.create_course(
+                db,
+                admin,
+                CourseIn(program_slug=program, slug=slug, name=name, level=level),
+            )
+            match = [
+                i
+                for i in items
+                if i.status == "published" and tag in {t.slug for t in i.tags}
+            ]
+            if match:
+                await course_svc.set_path(
+                    db, admin, slug, PathIn(item_ids=[i.id for i in match[:3]])
+                )
+                for i in match[3:]:
+                    db.add(
+                        ContentCourse(
+                            item_id=i.id,
+                            course_id=(await course_svc.get_course(db, slug)).id,
+                        )
+                    )
         await db.commit()
     await engine.dispose()
 

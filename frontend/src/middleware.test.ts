@@ -9,6 +9,7 @@ describe("route guard", () => {
     expect(isProtected("/settings")).toBe(true);
     expect(isProtected("/admin/users")).toBe(true);
     expect(isProtected("/ask")).toBe(true);
+    expect(isProtected("/for-you")).toBe(true);
     expect(isProtected("/reputation")).toBe(false); // the rules page is public
     expect(isProtected("/settingsx")).toBe(false);
     expect(isProtected("/signin")).toBe(false);

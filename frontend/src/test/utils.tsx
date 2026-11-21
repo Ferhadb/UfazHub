@@ -41,7 +41,7 @@ export const resource = (over: Partial<Resource> = {}): Resource => ({
   best_part: "",
   warning: "",
   student_note: "",
-  links: [{ id: "l1", url: "https://example.org/a", label: "PDF" }],
+  links: [{ id: "l1", url: "https://example.org/a", label: "PDF", health: "ok" }],
   created_at: "2026-01-01T00:00:00Z",
   my_vote: 0,
   bookmarked: false,

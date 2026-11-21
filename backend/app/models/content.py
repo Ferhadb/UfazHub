@@ -184,6 +184,18 @@ class ResourceLink(Base):
     preview_image: Mapped[str | None] = mapped_column(String(2048))
     preview_favicon: Mapped[str | None] = mapped_column(String(2048))
     preview_fetched_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # Link health (hourly `link_health` job): dead after consecutive failures, or one failure
+    # on a link a reader reported broken. A passing check clears both.
+    checked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    fail_count: Mapped[int] = mapped_column(SmallInteger, server_default="0")
+    is_dead: Mapped[bool] = mapped_column(Boolean, server_default="false")
+    reported_broken_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+    @property
+    def health(self) -> str:
+        if self.is_dead:
+            return "dead"
+        return "reported" if self.reported_broken_at else "ok"
 
 
 class Tag(Base):

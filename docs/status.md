@@ -153,3 +153,24 @@ Decisions to review
 - Verifier gaps re-checked: the report button is already wired on resource, article, collection, question and answer pages (`ResourceActions` with `reportAuthor`); comments are not content items, so reporting them stays deferred above.
 - Added frontend tests for the admin audit log viewer (rows, diff, filters sent) and the users tab (ban with reason, no actions on self).
 - Decision kept: no server-component role check on `/admin`. The access token is memory-only and calling the refresh endpoint from the server would rotate the refresh cookie and sign the user out; the API's 403 is the real enforcement.
+
+## Slice 7: courses, profiles, reading lists, link health
+
+Built
+- Migration `0007`: programs, courses (level L1-M2), content-to-course filing with start-here position, tag follows, reading lists and items (optional share token); profile fields on users (bio, faculty, graduation year, job title, socials JSON) and link-health columns on resource links.
+- Backend: courses/programs API (admin creates programs, courses and start-here paths; authors file items under up to 5 courses), people directory, profiles with badges and a 365-day activity heatmap, leaderboard and contributor of the month, `/research`, tag follows and the For-you feed, bookmarks, reading lists with read-only share links, link-health worker (hourly cron) and "report broken". Backend tests: 352 passing.
+- Frontend: /courses, /courses/[slug], /research, /for-you, /people, /people/[id], /bookmarks, /lists/[token]; profile editor in settings; dead-link stamp and report-broken button on resources; course chips and filing on resources, articles and collections. Frontend tests: 193 passing.
+
+Deferred
+- Course picker in the submit composer; notifying authors of broken links; trigram index for name search.
+- Playwright e2e and axe for the new pages; home feed tabs (For you lives at /for-you).
+- Admin UI for programs, courses and paths (API and seed only); reading-list reordering; reporting users.
+
+Decisions to review
+- Badges are computed on read, so they carry no awarded date. Faculty is free text. `job_title` is shown as "Current role" (the column avoids the Postgres keyword).
+- Directory and leaderboard list only verified, non-banned users. Contributor of the month is the current UTC calendar month.
+- A link is dead after 2 consecutive failed checks, or 1 if reported; a pass clears it. 401/403/429 count as alive. Hourly run, 50 links per batch, rechecked daily.
+- A start-here path is admin-set and auto-files its items under the course.
+- Shared lists are read-only via the token (noindex, no-referrer).
+- Caps: 50 followed tags, 30 lists, 200 items per list.
+- Semantic errors raised as AppError return 400, not 422.

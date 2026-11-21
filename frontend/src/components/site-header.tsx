@@ -31,6 +31,15 @@ export function SiteHeader() {
           <Link href="/questions" className={buttonClass("ghost")}>
             Questions
           </Link>
+          <Link href="/courses" className={buttonClass("ghost")}>
+            Courses
+          </Link>
+          <Link href="/research" className={buttonClass("ghost")}>
+            Research
+          </Link>
+          <Link href="/people" className={buttonClass("ghost")}>
+            People
+          </Link>
           {user?.role === "admin" && (
             <Link href="/admin" className={buttonClass("ghost")}>
               Admin
@@ -42,7 +51,20 @@ export function SiteHeader() {
           </Link>
           {status === "authenticated" && user ? (
             <>
+              <Link href="/for-you" className={buttonClass("ghost")}>
+                For you
+              </Link>
+              <Link href="/bookmarks" className={buttonClass("ghost")}>
+                Shelf
+              </Link>
               <NotificationBell />
+              <Link
+                href={`/people/${user.id}`}
+                aria-label={`Your profile, ${user.display_name}`}
+                className={buttonClass("ghost")}
+              >
+                Profile
+              </Link>
               <Link
                 href="/settings"
                 aria-label={`Settings for ${user.display_name}`}

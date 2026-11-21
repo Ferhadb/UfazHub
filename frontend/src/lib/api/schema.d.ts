@@ -594,6 +594,24 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/content/{item_id}/courses": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Item Courses */
+    get: operations["item_courses_api_content__item_id__courses_get"];
+    /** Attach */
+    put: operations["attach_api_content__item_id__courses_put"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/content/{item_id}/hide": {
     parameters: {
       query?: never;
@@ -665,6 +683,91 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/courses": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Create Course */
+    post: operations["create_course_api_courses_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/courses/{slug}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Course */
+    get: operations["course_api_courses__slug__get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/courses/{slug}/items": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Course Items */
+    get: operations["course_items_api_courses__slug__items_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/courses/{slug}/path": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Set Path */
+    put: operations["set_path_api_courses__slug__path_put"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/feed/for-you": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** For You */
+    get: operations["for_you_api_feed_for_you_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/health": {
     parameters: {
       query?: never;
@@ -678,6 +781,60 @@ export interface paths {
      */
     get: operations["health_api_health_get"];
     put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/leaderboard": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Leaderboard
+     * @description Bounded top-N, so there is no next page.
+     */
+    get: operations["leaderboard_api_leaderboard_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/leaderboard/contributor-of-the-month": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Contributor Of The Month */
+    get: operations["contributor_of_the_month_api_leaderboard_contributor_of_the_month_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/links/{link_id}/broken": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Report Broken */
+    put: operations["report_broken_api_links__link_id__broken_put"];
     post?: never;
     delete?: never;
     options?: never;
@@ -722,6 +879,40 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/me/avatar": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Remove Avatar */
+    delete: operations["remove_avatar_api_me_avatar_delete"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/me/bookmarks": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** My Bookmarks */
+    get: operations["my_bookmarks_api_me_bookmarks_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/me/moderation": {
     parameters: {
       query?: never;
@@ -739,6 +930,44 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/me/profile": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Update Profile */
+    patch: operations["update_profile_api_me_profile_patch"];
+    trace?: never;
+  };
+  "/api/me/reading-lists": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * My Lists
+     * @description Capped at 30 per person, so there is no next page.
+     */
+    get: operations["my_lists_api_me_reading_lists_get"];
+    put?: never;
+    /** Create List */
+    post: operations["create_list_api_me_reading_lists_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/me/reputation": {
     parameters: {
       query?: never;
@@ -748,6 +977,26 @@ export interface paths {
     };
     /** My Reputation */
     get: operations["my_reputation_api_me_reputation_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/me/tags": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * My Tags
+     * @description Followed tags, capped at 50, so not paged.
+     */
+    get: operations["my_tags_api_me_tags_get"];
     put?: never;
     post?: never;
     delete?: never;
@@ -819,6 +1068,78 @@ export interface paths {
     get: operations["unread_api_notifications_unread_get"];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/people": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Directory */
+    get: operations["directory_api_people_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/people/{user_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Person */
+    get: operations["person_api_people__user_id__get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/people/{user_id}/contributions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Contributions */
+    get: operations["contributions_api_people__user_id__contributions_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/programs": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Programs
+     * @description Every program with its courses; admin-curated and capped, so not paged.
+     */
+    get: operations["programs_api_programs_get"];
+    put?: never;
+    /** Create Program */
+    post: operations["create_program_api_programs_post"];
     delete?: never;
     options?: never;
     head?: never;
@@ -932,6 +1253,77 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/reading-lists/{list_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Delete List */
+    delete: operations["delete_list_api_reading_lists__list_id__delete"];
+    options?: never;
+    head?: never;
+    /** Rename List */
+    patch: operations["rename_list_api_reading_lists__list_id__patch"];
+    trace?: never;
+  };
+  "/api/reading-lists/{list_id}/items": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List Items */
+    get: operations["list_items_api_reading_lists__list_id__items_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/reading-lists/{list_id}/items/{item_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Add To List */
+    put: operations["add_to_list_api_reading_lists__list_id__items__item_id__put"];
+    post?: never;
+    /** Remove From List */
+    delete: operations["remove_from_list_api_reading_lists__list_id__items__item_id__delete"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/reading-lists/{list_id}/share": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Share List */
+    put: operations["share_list_api_reading_lists__list_id__share_put"];
+    post?: never;
+    /** Unshare List */
+    delete: operations["unshare_list_api_reading_lists__list_id__share_delete"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/ready": {
     parameters: {
       query?: never;
@@ -964,6 +1356,26 @@ export interface paths {
      * @description Public: the points table and privilege thresholds, straight from the code that enforces them.
      */
     get: operations["reputation_rules_api_reputation_rules_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/research": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Research
+     * @description Everything flagged as research, across content types.
+     */
+    get: operations["research_api_research_get"];
     put?: never;
     post?: never;
     delete?: never;
@@ -1058,6 +1470,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/shared/lists/{token}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Shared List */
+    get: operations["shared_list_api_shared_lists__token__get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/tags": {
     parameters: {
       query?: never;
@@ -1073,6 +1502,24 @@ export interface paths {
     put?: never;
     post?: never;
     delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/tags/{slug}/follow": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Follow */
+    put: operations["follow_api_tags__slug__follow_put"];
+    post?: never;
+    /** Unfollow */
+    delete: operations["unfollow_api_tags__slug__follow_delete"];
     options?: never;
     head?: never;
     patch?: never;
@@ -1394,6 +1841,11 @@ export interface components {
       /** Title */
       title?: string | null;
     };
+    /** AttachIn */
+    AttachIn: {
+      /** Course Slugs */
+      course_slugs: string[];
+    };
     /** AttachmentOut */
     AttachmentOut: {
       /** Height */
@@ -1469,6 +1921,15 @@ export interface components {
        * @default 0
        */
       reputation: number;
+    };
+    /** Badge */
+    Badge: {
+      /** Description */
+      description: string;
+      /** Name */
+      name: string;
+      /** Slug */
+      slug: string;
     };
     /** BanAppealIn */
     BanAppealIn: {
@@ -1659,6 +2120,63 @@ export interface components {
      * @enum {string}
      */
     ContentType: "resource" | "article" | "collection" | "question" | "answer";
+    /** CourseDetail */
+    CourseDetail: {
+      /** Description */
+      description: string;
+      /** Item Count */
+      item_count: number;
+      /** Level */
+      level: string;
+      /** Name */
+      name: string;
+      program: components["schemas"]["ProgramRef"];
+      /** Slug */
+      slug: string;
+      /** Start Here */
+      start_here: components["schemas"]["ItemCard"][];
+    };
+    /** CourseIn */
+    CourseIn: {
+      /**
+       * Description
+       * @default
+       */
+      description: string;
+      /**
+       * Level
+       * @enum {string}
+       */
+      level: "L1" | "L2" | "L3" | "M1" | "M2";
+      /** Name */
+      name: string;
+      /** Program Slug */
+      program_slug: string;
+      /** Slug */
+      slug: string;
+    };
+    /** CourseOut */
+    CourseOut: {
+      /** Description */
+      description: string;
+      /** Level */
+      level: string;
+      /** Name */
+      name: string;
+      program: components["schemas"]["ProgramRef"];
+      /** Slug */
+      slug: string;
+    };
+    /** DayCount */
+    DayCount: {
+      /** Count */
+      count: number;
+      /**
+       * Day
+       * Format: date
+       */
+      day: string;
+    };
     /** DevLoginIn */
     DevLoginIn: {
       /**
@@ -1702,6 +2220,18 @@ export interface components {
       /** Request Id */
       request_id?: string | null;
     };
+    /** FollowOut */
+    FollowOut: {
+      /** Following */
+      following: boolean;
+    };
+    /** FollowedTag */
+    FollowedTag: {
+      /** Name */
+      name: string;
+      /** Slug */
+      slug: string;
+    };
     /** ForgotIn */
     ForgotIn: {
       /**
@@ -1715,6 +2245,50 @@ export interface components {
       /** Reason */
       reason: string;
     };
+    /**
+     * ItemCard
+     * @description A content item as a catalogue card; every cross-type list returns these.
+     */
+    ItemCard: {
+      author: components["schemas"]["AuthorOut"];
+      /** Call Number */
+      call_number: string;
+      /** Comment Count */
+      comment_count: number;
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+      /** Description */
+      description: string;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /** Is Research */
+      is_research: boolean;
+      /** Tags */
+      tags: string[];
+      /** Title */
+      title: string;
+      /**
+       * Type
+       * @enum {string}
+       */
+      type: "resource" | "article" | "collection" | "question";
+      /** Vote Score */
+      vote_score: number;
+    };
+    /** LeaderRow */
+    LeaderRow: {
+      person: components["schemas"]["PersonCard"];
+      /** Points */
+      points: number;
+      /** Rank */
+      rank: number;
+    };
     /** LinkIn */
     LinkIn: {
       /**
@@ -1727,6 +2301,12 @@ export interface components {
     };
     /** LinkOut */
     LinkOut: {
+      /**
+       * Health
+       * @default ok
+       * @enum {string}
+       */
+      health: "ok" | "reported" | "dead";
       /**
        * Id
        * Format: uuid
@@ -1742,6 +2322,11 @@ export interface components {
       preview_title?: string | null;
       /** Url */
       url: string;
+    };
+    /** ListIn */
+    ListIn: {
+      /** Name */
+      name: string;
     };
     /** LoginIn */
     LoginIn: {
@@ -1845,6 +2430,13 @@ export interface components {
       /** Next Cursor */
       next_cursor?: string | null;
     };
+    /** Page[ItemCard] */
+    Page_ItemCard_: {
+      /** Items */
+      items: components["schemas"]["ItemCard"][];
+      /** Next Cursor */
+      next_cursor?: string | null;
+    };
     /** Page[ModerationEvent] */
     Page_ModerationEvent_: {
       /** Items */
@@ -1859,6 +2451,13 @@ export interface components {
       /** Next Cursor */
       next_cursor?: string | null;
     };
+    /** Page[PersonCard] */
+    Page_PersonCard_: {
+      /** Items */
+      items: components["schemas"]["PersonCard"][];
+      /** Next Cursor */
+      next_cursor?: string | null;
+    };
     /** Page[QuestionOut] */
     Page_QuestionOut_: {
       /** Items */
@@ -1870,6 +2469,13 @@ export interface components {
     Page_QueueItem_: {
       /** Items */
       items: components["schemas"]["QueueItem"][];
+      /** Next Cursor */
+      next_cursor?: string | null;
+    };
+    /** Page[ReadingListOut] */
+    Page_ReadingListOut_: {
+      /** Items */
+      items: components["schemas"]["ReadingListOut"][];
       /** Next Cursor */
       next_cursor?: string | null;
     };
@@ -1908,6 +2514,33 @@ export interface components {
       /** Next Cursor */
       next_cursor?: string | null;
     };
+    /** PathIn */
+    PathIn: {
+      /** Item Ids */
+      item_ids: string[];
+    };
+    /** PersonCard */
+    PersonCard: {
+      /** Avatar Url */
+      avatar_url?: string | null;
+      /** Display Name */
+      display_name: string;
+      /** Faculty */
+      faculty: string;
+      /** Graduation Year */
+      graduation_year: number | null;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /** Job Title */
+      job_title: string;
+      /** Reputation */
+      reputation: number;
+      /** Role */
+      role: string;
+    };
     /** PointRule */
     PointRule: {
       /** Label */
@@ -1939,6 +2572,94 @@ export interface components {
       label: string;
       /** Threshold */
       threshold: number;
+    };
+    /** Profile */
+    Profile: {
+      /** Activity */
+      activity: components["schemas"]["DayCount"][];
+      /** Avatar Url */
+      avatar_url?: string | null;
+      /** Badges */
+      badges: components["schemas"]["Badge"][];
+      /** Bio */
+      bio: string;
+      /** Counts */
+      counts: {
+        [key: string]: number;
+      };
+      /** Display Name */
+      display_name: string;
+      /** Faculty */
+      faculty: string;
+      /** Graduation Year */
+      graduation_year: number | null;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /** Job Title */
+      job_title: string;
+      /**
+       * Joined At
+       * Format: date-time
+       */
+      joined_at: string;
+      /** Reputation */
+      reputation: number;
+      /** Role */
+      role: string;
+      /** Socials */
+      socials: {
+        [key: string]: string;
+      };
+    };
+    /**
+     * ProfilePatch
+     * @description Only the fields sent change.
+     */
+    ProfilePatch: {
+      /** Bio */
+      bio?: string | null;
+      /** Display Name */
+      display_name?: string | null;
+      /** Faculty */
+      faculty?: string | null;
+      /** Graduation Year */
+      graduation_year?: number | null;
+      /** Job Title */
+      job_title?: string | null;
+      socials?: components["schemas"]["Socials"] | null;
+    };
+    /** ProgramIn */
+    ProgramIn: {
+      /**
+       * Description
+       * @default
+       */
+      description: string;
+      /** Name */
+      name: string;
+      /** Slug */
+      slug: string;
+    };
+    /** ProgramOut */
+    ProgramOut: {
+      /** Courses */
+      courses: components["schemas"]["CourseOut"][];
+      /** Description */
+      description: string;
+      /** Name */
+      name: string;
+      /** Slug */
+      slug: string;
+    };
+    /** ProgramRef */
+    ProgramRef: {
+      /** Name */
+      name: string;
+      /** Slug */
+      slug: string;
     };
     /** QuestionIn */
     QuestionIn: {
@@ -2054,6 +2775,25 @@ export interface components {
     ReadIn: {
       /** Ids */
       ids?: string[] | null;
+    };
+    /** ReadingListOut */
+    ReadingListOut: {
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /** Item Count */
+      item_count: number;
+      /** Name */
+      name: string;
+      /** Share Token */
+      share_token: string | null;
     };
     /** ReportIn */
     ReportIn: {
@@ -2320,6 +3060,16 @@ export interface components {
       /** Vote Score */
       vote_score: number;
     };
+    /** SharedList */
+    SharedList: {
+      /** Items */
+      items: components["schemas"]["ItemCard"][];
+      /** Name */
+      name: string;
+      /** Next Cursor */
+      next_cursor?: string | null;
+      owner: components["schemas"]["AuthorOut"];
+    };
     /** SignupIn */
     SignupIn: {
       /** Display Name */
@@ -2342,6 +3092,17 @@ export interface components {
       has_accepted: boolean;
       /** Title */
       title: string;
+    };
+    /** Socials */
+    Socials: {
+      /** Github */
+      github?: string | null;
+      /** Linkedin */
+      linkedin?: string | null;
+      /** Website */
+      website?: string | null;
+      /** X */
+      x?: string | null;
     };
     /** TagOut */
     TagOut: {
@@ -3820,6 +4581,72 @@ export interface operations {
       };
     };
   };
+  item_courses_api_content__item_id__courses_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CourseOut"][];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  attach_api_content__item_id__courses_put: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AttachIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CourseOut"][];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
   hide_api_content__item_id__hide_post: {
     parameters: {
       query?: never;
@@ -3950,6 +4777,172 @@ export interface operations {
       };
     };
   };
+  create_course_api_courses_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CourseIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CourseOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  course_api_courses__slug__get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CourseDetail"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  course_items_api_courses__slug__items_get: {
+    parameters: {
+      query?: {
+        type?: ("resource" | "article" | "collection" | "question") | null;
+        cursor?: string | null;
+        limit?: number;
+      };
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Page_ItemCard_"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  set_path_api_courses__slug__path_put: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PathIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CourseDetail"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  for_you_api_feed_for_you_get: {
+    parameters: {
+      query?: {
+        cursor?: string | null;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Page_ItemCard_"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
   health_api_health_get: {
     parameters: {
       query?: never;
@@ -3968,6 +4961,98 @@ export interface operations {
           "application/json": {
             [key: string]: string;
           };
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  leaderboard_api_leaderboard_get: {
+    parameters: {
+      query?: {
+        period?: "month" | "all";
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["LeaderRow"][];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  contributor_of_the_month_api_leaderboard_contributor_of_the_month_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["LeaderRow"] | null;
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  report_broken_api_links__link_id__broken_put: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        link_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["LinkOut"];
         };
       };
       /** @description Error envelope */
@@ -4045,6 +5130,65 @@ export interface operations {
       };
     };
   };
+  remove_avatar_api_me_avatar_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  my_bookmarks_api_me_bookmarks_get: {
+    parameters: {
+      query?: {
+        cursor?: string | null;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Page_ItemCard_"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
   my_history_api_me_moderation_get: {
     parameters: {
       query?: {
@@ -4077,6 +5221,101 @@ export interface operations {
       };
     };
   };
+  update_profile_api_me_profile_patch: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ProfilePatch"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Profile"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  my_lists_api_me_reading_lists_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Page_ReadingListOut_"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  create_list_api_me_reading_lists_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ListIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReadingListOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
   my_reputation_api_me_reputation_get: {
     parameters: {
       query?: {
@@ -4096,6 +5335,35 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["Page_ReputationEventOut_"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  my_tags_api_me_tags_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["FollowedTag"][];
         };
       };
       /** @description Error envelope */
@@ -4253,6 +5521,168 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["UnreadOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  directory_api_people_get: {
+    parameters: {
+      query?: {
+        q?: string | null;
+        faculty?: string | null;
+        graduation_year?: number | null;
+        cursor?: string | null;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Page_PersonCard_"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  person_api_people__user_id__get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        user_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Profile"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  contributions_api_people__user_id__contributions_get: {
+    parameters: {
+      query?: {
+        cursor?: string | null;
+        limit?: number;
+      };
+      header?: never;
+      path: {
+        user_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Page_ItemCard_"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  programs_api_programs_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProgramOut"][];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  create_program_api_programs_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ProgramIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProgramRef"];
         };
       };
       /** @description Error envelope */
@@ -4528,6 +5958,230 @@ export interface operations {
       };
     };
   };
+  delete_list_api_reading_lists__list_id__delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        list_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  rename_list_api_reading_lists__list_id__patch: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        list_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ListIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReadingListOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  list_items_api_reading_lists__list_id__items_get: {
+    parameters: {
+      query?: {
+        cursor?: string | null;
+        limit?: number;
+      };
+      header?: never;
+      path: {
+        list_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Page_ItemCard_"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  add_to_list_api_reading_lists__list_id__items__item_id__put: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        list_id: string;
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReadingListOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  remove_from_list_api_reading_lists__list_id__items__item_id__delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        list_id: string;
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReadingListOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  share_list_api_reading_lists__list_id__share_put: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        list_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReadingListOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  unshare_list_api_reading_lists__list_id__share_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        list_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReadingListOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
   ready_api_ready_get: {
     parameters: {
       query?: never;
@@ -4573,6 +6227,40 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ReputationRules"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  research_api_research_get: {
+    parameters: {
+      query?: {
+        type?: ("resource" | "article" | "collection" | "question") | null;
+        tag?: string | null;
+        cursor?: string | null;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Page_ItemCard_"];
         };
       };
       /** @description Error envelope */
@@ -4790,6 +6478,40 @@ export interface operations {
       };
     };
   };
+  shared_list_api_shared_lists__token__get: {
+    parameters: {
+      query?: {
+        cursor?: string | null;
+        limit?: number;
+      };
+      header?: never;
+      path: {
+        token: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SharedList"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
   tags_api_tags_get: {
     parameters: {
       query?: {
@@ -4809,6 +6531,68 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["Page_TagOut_"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  follow_api_tags__slug__follow_put: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["FollowOut"];
+        };
+      };
+      /** @description Error envelope */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorBody"];
+        };
+      };
+    };
+  };
+  unfollow_api_tags__slug__follow_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["FollowOut"];
         };
       };
       /** @description Error envelope */

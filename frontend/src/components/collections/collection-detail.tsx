@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Comments } from "@/components/comments/comments";
+import { CourseFiling } from "@/components/courses/course-filing";
 import { ResourceActions } from "@/components/resources/actions";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonClass } from "@/components/ui/button";
@@ -9,9 +10,11 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Marginalia } from "@/components/ui/marginalia";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCollection } from "@/lib/api/library";
+import { useSession } from "@/lib/auth/use-session";
 
 export function CollectionDetail({ callNumber }: { callNumber: string }) {
   const q = useCollection(callNumber);
+  const { user } = useSession();
   const shell = "relative z-10 mx-auto max-w-3xl px-4 py-8 sm:py-12";
   if (q.isPending)
     return (
@@ -50,6 +53,10 @@ export function CollectionDetail({ callNumber }: { callNumber: string }) {
         Curated by {c.author.display_name} · {c.items.length} items
       </p>
       <p className="mt-4">{c.description}</p>
+      <CourseFiling
+        itemId={c.id}
+        canEdit={Boolean(user && (user.id === c.author.id || user.role === "admin"))}
+      />
       <ResourceActions
         resource={c}
         reportAuthor={c.author.id}

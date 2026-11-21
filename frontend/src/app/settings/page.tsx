@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ModerationHistory } from "@/components/moderation/history";
+import { ProfileForm } from "@/components/people/profile-form";
 import { Callout } from "@/components/ui/callout";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
@@ -69,6 +70,7 @@ export default function SettingsPage() {
           You cannot post, vote or comment. The history below says why and how to appeal.
         </Callout>
       )}
+      {user.status !== "banned" && <ProfileForm userId={user.id} />}
       <ModerationHistory />
       <section aria-labelledby="sessions" className="flex flex-wrap gap-3">
         <h2 id="sessions" className="sr-only">

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Comments } from "@/components/comments/comments";
+import { CourseFiling } from "@/components/courses/course-filing";
 import { ResourceActions } from "@/components/resources/actions";
 import { formatMinutes, slug } from "@/components/resources/resource-card";
 import { Badge, Stamp } from "@/components/ui/badge";
@@ -12,6 +13,9 @@ import { Icon } from "@/components/ui/icons";
 import { Marginalia } from "@/components/ui/marginalia";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useResource } from "@/lib/api/content";
+import { useReportBroken } from "@/lib/api/lists";
+import { useSession } from "@/lib/auth/use-session";
+import { useToast } from "@/components/ui/toast";
 
 const Field = ({ label, children }: { label: string; children: string }) =>
   children ? (
@@ -23,6 +27,9 @@ const Field = ({ label, children }: { label: string; children: string }) =>
 
 export function ResourceDetail({ callNumber }: { callNumber: string }) {
   const q = useResource(callNumber);
+  const { user } = useSession();
+  const broken = useReportBroken();
+  const toast = useToast();
 
   if (q.isPending)
     return (
@@ -93,7 +100,7 @@ export function ResourceDetail({ callNumber }: { callNumber: string }) {
         <h2 className="font-display text-step-2 mt-8">Where to find it</h2>
         <ul className="mt-2 flex flex-col">
           {r.links.map((l) => (
-            <li key={l.id}>
+            <li key={l.id} className="flex flex-wrap items-center gap-x-3">
               <a
                 href={l.url}
                 target="_blank"
@@ -104,6 +111,29 @@ export function ResourceDetail({ callNumber }: { callNumber: string }) {
                 {l.label || new URL(l.url).hostname}
                 <span className="sr-only">(opens in a new tab)</span>
               </a>
+              {l.health === "dead" && <Stamp tilt={-3}>Dead link</Stamp>}
+              {l.health === "reported" && <Badge tone="flame">Reported broken</Badge>}
+              {user && l.health === "ok" && (
+                <Button
+                  variant="ghost"
+                  loading={broken.isPending}
+                  onClick={() =>
+                    broken.mutate(l.id, {
+                      onSuccess: () =>
+                        toast({ title: "Thanks, we will check it", tone: "success" }),
+                      onError: (e) =>
+                        toast({
+                          title: "Could not report",
+                          description: e.message,
+                          tone: "danger",
+                        }),
+                    })
+                  }
+                >
+                  Report broken
+                  <span className="sr-only"> link {l.label || new URL(l.url).hostname}</span>
+                </Button>
+              )}
             </li>
           ))}
         </ul>
@@ -122,6 +152,11 @@ export function ResourceDetail({ callNumber }: { callNumber: string }) {
             <Marginalia>{r.student_note}</Marginalia>
           </div>
         )}
+
+        <CourseFiling
+          itemId={r.id}
+          canEdit={Boolean(user && (user.id === r.author.id || user.role === "admin"))}
+        />
 
         {r.tags.length > 0 && (
           <ul aria-label="Tags" className="mt-8 flex flex-wrap gap-x-3">
