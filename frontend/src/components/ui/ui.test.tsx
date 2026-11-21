@@ -3,11 +3,13 @@ import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import {
   Avatar,
+  Badge,
   Button,
   Callout,
   Card,
   Checkbox,
   Combobox,
+  Drawer,
   EmptyState,
   IconButton,
   Input,
@@ -17,6 +19,7 @@ import {
   Select,
   Skeleton,
   Stamp,
+  Textarea,
   Switch,
   Tabs,
   TabsContent,
@@ -294,5 +297,41 @@ describe("static primitives", () => {
 
   it("ships at least 15 icons", () => {
     expect(iconNames.length).toBeGreaterThanOrEqual(15);
+  });
+});
+
+describe("Drawer, Textarea, Badge, Stamp", () => {
+  it("Drawer is a labelled dialog with a working Close button", async () => {
+    const user = userEvent.setup();
+    wrap(
+      <Drawer title="Filters" description="Narrow it down" trigger={<Button>Open</Button>}>
+        <Textarea label="Notes" />
+      </Drawer>,
+    );
+    await user.click(screen.getByRole("button", { name: "Open" }));
+    const dialog = await screen.findByRole("dialog", { name: "Filters" });
+    expect(dialog).toHaveAccessibleDescription("Narrow it down");
+    expect(dialog).toContainElement(document.activeElement as HTMLElement);
+    await user.click(screen.getByRole("button", { name: "Close" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+  });
+
+  it("Textarea is labelled and takes typing", async () => {
+    const user = userEvent.setup();
+    wrap(<Textarea label="Bio" />);
+    const box = screen.getByRole("textbox", { name: "Bio" });
+    await user.type(box, "hello");
+    expect(box).toHaveValue("hello");
+  });
+
+  it("Badge and Stamp render their text", () => {
+    wrap(
+      <>
+        <Badge>Draft</Badge>
+        <Stamp>Verified</Stamp>
+      </>,
+    );
+    expect(screen.getByText("Draft")).toBeInTheDocument();
+    expect(screen.getByText("Verified")).toBeInTheDocument();
   });
 });

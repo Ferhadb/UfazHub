@@ -1,3 +1,4 @@
+import asyncio
 import re
 import uuid
 from datetime import UTC, datetime, timedelta
@@ -339,6 +340,40 @@ async def test_login_rate_limited_with_retry_after(client):
     assert r.status_code == 429
     assert r.json()["code"] == "rate_limited" and r.json()["request_id"]
     assert 1 <= int(r.headers["retry-after"]) <= 60
+
+
+async def test_rate_limit_window_resets():
+    from starlette.requests import Request
+
+    from app.core.errors import AppError
+    from app.core.ratelimit import rate_limit
+
+    try:
+        await get_redis().ping()
+    except Exception:
+        pytest.skip("redis not running")
+    dep = rate_limit("t-reset", 2, 1)
+    req = Request({"type": "http", "headers": [], "client": ("7.7.7.7", 1)})
+    await dep(req)
+    await dep(req)
+    with pytest.raises(AppError) as e:
+        await dep(req)
+    assert e.value.status_code == 429
+    await asyncio.sleep(1.2)
+    await dep(req)  # new window
+
+
+async def test_rate_limit_fails_open_when_redis_down(monkeypatch):
+    from redis.asyncio import Redis
+    from starlette.requests import Request
+
+    import app.core.ratelimit as rl
+
+    dead = Redis.from_url("redis://127.0.0.1:1/0", socket_connect_timeout=0.2)
+    monkeypatch.setattr(rl, "get_redis", lambda: dead)
+    req = Request({"type": "http", "headers": [], "client": ("8.8.8.8", 1)})
+    await rl.rate_limit("t-open", 1, 60)(req)  # must not raise
+    await rl.rate_limit("t-open", 1, 60)(req)
 
 
 async def test_rate_limit_identity_is_per_user_with_token():

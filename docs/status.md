@@ -27,7 +27,7 @@ Decisions to review
 ## Slice 2: design system, auth, rate limiting, audit log
 
 Built
-- Design system: 22 accessible primitives in `frontend/src/components/ui` (Button, IconButton, Input, Textarea, Select, Combobox, Checkbox, Switch, Modal, Drawer, Toast, Tabs, Badge, Stamp, Avatar, Skeleton, EmptyState, Pagination, Tooltip, Card, Callout, Marginalia) on Radix where it helps; 26 hand-drawn icons, 6 original geometric ornaments, 5 illustrations; 44px targets, accent focus rings, reduced-motion fades. `/design` documents every primitive with light and dark previews side by side (scoped `[data-theme-preview]` tokens). Vitest covers keyboard and role behaviour.
+- Design system: 22 accessible primitives in `frontend/src/components/ui` (Button, IconButton, Input, Textarea, Select, Combobox, Checkbox, Switch, Modal, Drawer, Toast, Tabs, Badge, Stamp, Avatar, Skeleton, EmptyState, Pagination, Tooltip, Card, Callout, Marginalia) on Radix where it helps; 24 hand-drawn icons, 6 original geometric ornaments, 5 illustrations; 44px targets, accent focus rings, reduced-motion fades. `/design` documents every primitive with light and dark previews side by side (scoped `[data-theme-preview]` tokens). Vitest covers keyboard and role behaviour for every primitive (Tooltip via IconButton, Combobox/Select/Tabs/Pagination/Modal/Drawer/Toast individually). Rate limiter tests cover 429 + Retry-After, window reset and fail-open when Redis is down.
 - Backend auth (`/api/auth`): signup, login, refresh (rotation), logout, logout-all, me, verify-email, resend-verification, password forgot/reset, dev-only login-as. argon2id, 15 min access JWT in the body, httpOnly SameSite=Lax refresh cookie scoped to `/api/auth`, SHA-256 hashed refresh tokens in families with reuse detection (replay revokes the family), double-submit CSRF on refresh/logout, hashed expiring single-use email tokens (newest link only), `SIGNUP_ALLOWED_DOMAINS`, production refuses the default JWT secret and `COOKIE_SECURE=false`. Banned users cannot log in or use existing tokens.
 - Redis fixed-window rate limiting (per IP and per user) with a 429 envelope and `Retry-After`; presets `limit_auth/write/vote/search` (auth applied now, the rest ready for later slices). Fails open if Redis is down.
 - `audit_log` table and `services/audit.py` (actor, action, target, before/after diff of changed keys only, reason, request id); `Page[T]` cursor schema with encode/decode helpers; mail via arq job `send_email` (logged when SMTP is unset; dev logs directly without a worker). Migration `0002`.
@@ -36,7 +36,7 @@ Built
 Deferred
 - Playwright e2e and axe runs; reference screenshots (home, article, profile) at 360/1440 in both themes.
 - Sign-in via 401-retry on an expired access token (we rely on scheduled refresh); account lockout per email (only per-IP limits); admin audit viewer; email digest.
-- Icons to 30+ (26 now) and more illustrations; theme toggle UI (OS default plus stored choice already supported).
+- Icons to 30+ (24 now) and more illustrations; theme toggle UI (OS default plus stored choice already supported).
 - Content-writing endpoints will apply `limit_write/limit_vote/limit_search` and the muted/verified checks when they exist.
 
 Decisions to review
