@@ -2,6 +2,8 @@ import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { page, renderWithProviders, stubApi } from "@/test/utils";
 import { AdminPanel } from "@/components/admin/admin-panel";
+import { AuditTab } from "@/components/admin/audit-tab";
+import { UsersTab } from "@/components/admin/users-tab";
 import { ModerationHistory } from "./history";
 import { ReportButton } from "./report-button";
 
@@ -143,5 +145,63 @@ describe("AdminPanel", () => {
     await userEvent.click(screen.getAllByRole("button", { name: "Hide" }).at(-1)!);
     await waitFor(() => expect(body).toEqual({ ids: ["i1"], action: "hide", reason: "spam link" }));
     expect(await screen.findByText("1 done")).toBeInTheDocument();
+  });
+});
+
+describe("AuditTab", () => {
+  it("lists entries and sends the filters", async () => {
+    let query = "";
+    stubApi({
+      "GET /api/admin/audit": async (req) => {
+        query = new URL(req.url).search;
+        return page([
+          {
+            id: "l1",
+            action: "content.hide",
+            target_type: "content",
+            target_id: "i1",
+            actor: { id: "a", display_name: "Root" },
+            reason: "spam link",
+            before: { status: "published" },
+            after: { status: "hidden" },
+            created_at: "2026-01-02T10:00:00Z",
+          },
+        ]);
+      },
+    });
+    renderWithProviders(<AuditTab />);
+    expect(await screen.findByText("Reason: spam link")).toBeInTheDocument();
+    expect(screen.getByText(/"hidden"/)).toBeInTheDocument();
+    await userEvent.type(screen.getByLabelText("Action"), "content.hide");
+    await userEvent.click(screen.getByRole("button", { name: "Filter" }));
+    await waitFor(() => expect(query).toContain("action=content.hide"));
+  });
+});
+
+describe("UsersTab", () => {
+  it("bans a user with a reason and offers no actions on self", async () => {
+    let body: unknown;
+    const u = (id: string, name: string) => ({
+      id,
+      display_name: name,
+      email: `${name}@ufaz.az`,
+      reputation: 3,
+      role: "user",
+      status: "active",
+    });
+    stubApi({
+      "GET /api/admin/users": () => page([u("me", "Self"), u("u2", "Leyla")]),
+      "PUT /api/admin/users/u2/status": async (req) => {
+        body = await req.json();
+        return Response.json(u("u2", "Leyla"));
+      },
+    });
+    renderWithProviders(<UsersTab selfId="me" />);
+    await screen.findByText("Leyla");
+    expect(screen.getAllByRole("button", { name: "Ban" })).toHaveLength(1);
+    await userEvent.click(screen.getByRole("button", { name: "Ban" }));
+    await userEvent.type(screen.getByLabelText("Reason"), "repeat spam");
+    await userEvent.click(screen.getAllByRole("button", { name: "Ban" }).at(-1)!);
+    await waitFor(() => expect(body).toEqual({ status: "banned", reason: "repeat spam" }));
   });
 });

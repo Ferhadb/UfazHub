@@ -148,3 +148,8 @@ Decisions to review
 - Unhide always restores to `published`, even for an item hidden while pending review.
 - Users see the reason and date of moderation actions but never which moderator acted.
 - With a report-reason filter the queue's report count and reasons only cover matching reports.
+
+### Slice 6 fix pass
+- Verifier gaps re-checked: the report button is already wired on resource, article, collection, question and answer pages (`ResourceActions` with `reportAuthor`); comments are not content items, so reporting them stays deferred above.
+- Added frontend tests for the admin audit log viewer (rows, diff, filters sent) and the users tab (ban with reason, no actions on self).
+- Decision kept: no server-component role check on `/admin`. The access token is memory-only and calling the refresh endpoint from the server would rotate the refresh cookie and sign the user out; the API's 403 is the real enforcement.
